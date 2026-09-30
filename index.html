@@ -51,7 +51,7 @@
         .devoir-card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--accent); flex-wrap: wrap; gap: 12px; }
         .badge-type { padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
 
-        /* VUE LOUISON IA */
+        /* VUE EMMA IA */
         #vue-emma-ia { display: none; }
         .emma-header-card { background: #faf5ff; border: 2px solid #e9d5ff; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 18px; }
         .emma-avatar { width: 60px; height: 60px; background: #c084fc; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; flex-shrink: 0; }
@@ -62,7 +62,7 @@
         .input-eleve-emma { width: 100%; padding: 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1.05em; font-family: inherit; box-sizing: border-box; }
         .input-eleve-emma:focus { outline: none; border-color: var(--purple); }
 
-        /* LE COIN DU PROF EXACT SILLYTAVERN */
+        /* LE COIN DU PROF */
         .coin-du-prof-box {
             background: #f8fafc;
             border: 2px solid #cbd5e0;
@@ -72,6 +72,13 @@
             margin-top: 18px;
             line-height: 1.8;
             font-size: 1em;
+        }
+
+        .traduction-texte {
+            font-size: 0.9em;
+            color: #64748b;
+            margin-top: 4px;
+            font-style: italic;
         }
 
         /* VUE A : INTERACTIF */
@@ -113,38 +120,38 @@
 
     <!-- 1. CONNEXION -->
     <div id="ecran-login">
-        <h1>👋 Espace Français</h1>
-        <p style="color:#64748b;">Entrez votre code élève pour accéder à vos devoirs :</p>
+        <h1 id="txt-login-titre">👋 Espace Français</h1>
+        <p id="txt-login-soustitre" style="color:#64748b;">Entrez votre code élève pour accéder à vos devoirs :</p>
         <input type="text" id="code-input" placeholder="EX: LUCAS01" autocomplete="off">
-        <button type="button" class="btn btn-full" onclick="seConnecter()">Ouvrir mes devoirs</button>
+        <button type="button" class="btn btn-full" id="btn-login-valider" onclick="seConnecter()">Ouvrir mes devoirs</button>
     </div>
 
     <!-- 1.5 BIENVENUE -->
     <div id="ecran-bienvenue">
-        <h1>Bienvenue !</h1>
+        <h1 id="txt-bienvenue-titre">Bienvenue !</h1>
         <div class="welcome-user-box" id="bienvenue-nom-user">-</div>
-        <button type="button" class="btn btn-full btn-success" onclick="validerBienvenue()">Accéder à mes devoirs ▶</button>
+        <button type="button" class="btn btn-full btn-success" id="btn-bienvenue-continuer" onclick="validerBienvenue()">Accéder à mes devoirs ▶</button>
     </div>
 
     <!-- EN-TÊTE ÉLÈVE CONNECTÉ -->
     <div id="header-eleve">
-        <div class="info-profil">Élève : <strong id="affichage-code-eleve" style="color:var(--accent);">-</strong></div>
+        <div class="info-profil"><span id="txt-lbl-eleve">Élève</span> : <strong id="affichage-code-eleve" style="color:var(--accent);">-</strong></div>
         <div style="display:flex; gap:8px;">
             <button type="button" class="btn btn-secondary" onclick="retourChoixLangue()">🌐</button>
-            <button type="button" class="btn btn-secondary" onclick="deconnexion()">Changer de compte</button>
+            <button type="button" class="btn btn-secondary" id="btn-changer-compte" onclick="deconnexion()">Changer de compte</button>
         </div>
     </div>
 
     <!-- 2. TABLEAU DE BORD PRINCIPAL -->
     <div id="ecran-tableau-de-bord">
-        <h2 style="color:var(--primary); margin-top:0;">📚 Vos devoirs à faire</h2>
+        <h2 id="txt-mes-devoirs-titre" style="color:var(--primary); margin-top:0;">📚 Vos devoirs à faire</h2>
         <div id="conteneur-devoirs"></div>
     </div>
 
-    <!-- 3. VUE NOUVELLE : EXERCICE IA AVEC LOUISON (SILLYTAVERN) -->
+    <!-- 3. VUE EXERCICE IA EMMA -->
     <div id="vue-emma-ia">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <button type="button" class="btn btn-secondary" onclick="retourTableauPrincipal()">← Retour aux devoirs</button>
+            <button type="button" class="btn btn-secondary" onclick="retourTableauPrincipal()">← <span id="txt-retour-devoirs">Retour aux devoirs</span></button>
             <h2 id="emma-titre" style="margin:0; color:var(--purple);">-</h2>
             <div></div>
         </div>
@@ -153,7 +160,7 @@
             <div class="emma-avatar">👧</div>
             <div>
                 <h3 style="margin:0; color:#581c87;">Emma</h3>
-                <p style="margin:4px 0 0 0; color:#6b21a8; font-size:0.95em;">Ton amie française bienveillante (A2-B1). Réponds à ses questions et elle corrigera tes phrases en détail !</p>
+                <p id="emma-description" style="margin:4px 0 0 0; color:#6b21a8; font-size:0.95em;">Ton amie française bienveillante (A2-B1). Réponds à ses questions et elle corrigera tes phrases en détail !</p>
             </div>
         </div>
 
@@ -161,7 +168,7 @@
 
         <div style="text-align:center; margin-top:30px; background:white; padding:20px; border-radius:12px;">
             <button type="button" class="btn btn-success" style="font-size:1.1em; padding:12px 28px;" onclick="marquerEmmaTermine()">
-                ✅ Terminer cette discussion avec Emma
+                ✅ <span id="txt-terminer-emma">Terminer cette discussion avec Emma</span>
             </button>
         </div>
     </div>
@@ -219,16 +226,115 @@
         db = firebase.firestore();
     } catch(e) { console.error("Firebase init:", e); }
 
+    const urlBackendRender = "https://das-plateforme.onrender.com";
+
     let langueActuelle = localStorage.getItem("langEleve") || "";
     let codeEleveActuel = localStorage.getItem("codeEleve") || "";
     let assignationsMap = {};
     let assignationActive = null;
 
-const urlBackendRender = "https://das-plateforme.onrender.com";
+    const dictionnaires = {
+        fr: {
+            titreLogin: "👋 Espace Français",
+            sousTitreLogin: "Entrez votre code élève pour accéder à vos devoirs :",
+            btnValiderLogin: "Ouvrir mes devoirs",
+            titreBienvenue: "Bienvenue !",
+            btnContinuerBienvenue: "Accéder à mes devoirs ▶",
+            lblEleve: "Élève",
+            btnChangerCompte: "Changer de compte",
+            titreDevoirs: "📚 Vos devoirs à faire",
+            aucunDevoir: "🎉 Aucun devoir en attente !",
+            btnParlerEmma: "Parler avec Emma ▶",
+            btnCommencer: "Commencer ▶",
+            btnOuvrirCours: "Ouvrir le cours ▶",
+            retourDevoirs: "Retour aux devoirs",
+            descriptionEmma: "Ton amie française bienveillante (A2-B1). Réponds à ses questions et elle corrigera tes phrases en détail !",
+            placeholderEmma: "Tape ta réponse en français...",
+            btnVerifierEmma: "Vérifier 🤖",
+            btnTerminerEmma: "Terminer cette discussion avec Emma",
+            coinDuProf: "📝 Le Coin du Prof",
+            phraseDeToi: "Phrase de toi",
+            ceQuiEstBien: "Ce qui est bien",
+            lesFautes: "Les Fautes",
+            phraseCorrigee: "Phrase Corrigée",
+            ameliorations: "Améliorations"
+        },
+        ko: {
+            titreLogin: "👋 프랑스어 학습 공간",
+            sousTitreLogin: "과제에 접속하려면 학생 코드를 입력하세요 :",
+            btnValiderLogin: "내 과제 열기",
+            titreBienvenue: "환영합니다!",
+            btnContinuerBienvenue: "과제로 이동 ▶",
+            lblEleve: "학생",
+            btnChangerCompte: "계정 변경",
+            titreDevoirs: "📚 해야 할 과제 목록",
+            aucunDevoir: "🎉 대기 중인 과제가 없습니다!",
+            btnParlerEmma: "엠마와 대화하기 ▶",
+            btnCommencer: "시작하기 ▶",
+            btnOuvrirCours: "수업 열기 ▶",
+            retourDevoirs: "과제 목록으로",
+            descriptionEmma: "친절한 프랑스인 친구 엠마(A2-B1)입니다. 질문에 답하면 문장을 자세히 교정해 줍니다!",
+            placeholderEmma: "프랑스어로 답변을 작성하세요...",
+            btnVerifierEmma: "확인받기 🤖",
+            btnTerminerEmma: "엠마와의 대화 완료하기",
+            coinDuProf: "📝 선생님의 피드백 코너",
+            phraseDeToi: "내가 쓴 문장",
+            ceQuiEstBien: "잘한 점",
+            lesFautes: "틀린 점",
+            phraseCorrigee: "수정된 문장",
+            ameliorations: "개선 팁"
+        },
+        en: {
+            titreLogin: "👋 French Learning Space",
+            sousTitreLogin: "Enter your student code to access your assignments:",
+            btnValiderLogin: "Open my homework",
+            titreBienvenue: "Welcome!",
+            btnContinuerBienvenue: "Go to homework ▶",
+            lblEleve: "Student",
+            btnChangerCompte: "Switch account",
+            titreDevoirs: "📚 Your assignments",
+            aucunDevoir: "🎉 No pending homework!",
+            btnParlerEmma: "Talk with Emma ▶",
+            btnCommencer: "Start ▶",
+            btnOuvrirCours: "Open lesson ▶",
+            retourDevoirs: "Back to homework",
+            descriptionEmma: "Your friendly French pal (A2-B1). Answer her questions and she will review your sentences in detail!",
+            placeholderEmma: "Type your answer in French...",
+            btnVerifierEmma: "Check 🤖",
+            btnTerminerEmma: "Finish this chat with Emma",
+            coinDuProf: "📝 Teacher's Corner",
+            phraseDeToi: "Your sentence",
+            ceQuiEstBien: "What's good",
+            lesFautes: "Mistakes",
+            phraseCorrigee: "Corrected sentence",
+            ameliorations: "Improvements"
+        }
+    };
+
+    function t(cle) {
+        const lang = langueActuelle || 'fr';
+        return (dictionnaires[lang] && dictionnaires[lang][cle]) ? dictionnaires[lang][cle] : (dictionnaires['fr'][cle] || cle);
+    }
+
+    function appliquerTraductionsUI() {
+        if (!langueActuelle) return;
+        document.getElementById('txt-login-titre').textContent = t('titreLogin');
+        document.getElementById('txt-login-soustitre').textContent = t('sousTitreLogin');
+        document.getElementById('btn-login-valider').textContent = t('btnValiderLogin');
+        document.getElementById('txt-bienvenue-titre').textContent = t('titreBienvenue');
+        document.getElementById('btn-bienvenue-continuer').textContent = t('btnContinuerBienvenue');
+        document.getElementById('txt-lbl-eleve').textContent = t('lblEleve');
+        document.getElementById('btn-changer-compte').textContent = t('btnChangerCompte');
+        document.getElementById('txt-mes-devoirs-titre').textContent = t('titreDevoirs');
+        document.getElementById('txt-retour-devoirs').textContent = t('retourDevoirs');
+        document.getElementById('emma-description').textContent = t('descriptionEmma');
+        document.getElementById('txt-terminer-emma').textContent = t('btnTerminerEmma');
+    }
 
     window.choisirLangue = function(lang) {
         langueActuelle = lang;
         try { localStorage.setItem("langEleve", lang); } catch(e) {}
+        appliquerTraductionsUI();
         verifierSession();
     };
 
@@ -245,6 +351,7 @@ const urlBackendRender = "https://das-plateforme.onrender.com";
 
     window.verifierSession = function() {
         if (!langueActuelle) return retourChoixLangue();
+        appliquerTraductionsUI();
         document.getElementById('ecran-langue').style.display = 'none';
 
         if (!codeEleveActuel) {
@@ -298,7 +405,7 @@ const urlBackendRender = "https://das-plateforme.onrender.com";
             const conteneur = document.getElementById('conteneur-devoirs');
 
             if (mesDevoirs.length === 0) {
-                conteneur.innerHTML = `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">🎉 Aucun devoir en attente !</div>`;
+                conteneur.innerHTML = `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">${t('aucunDevoir')}</div>`;
                 return;
             }
 
@@ -307,14 +414,14 @@ const urlBackendRender = "https://das-plateforme.onrender.com";
                 let bouton = "";
 
                 if (d.typeDevoir === "emma") {
-                    badge = `<span class="badge-type" style="background:#fae8ff; color:#86198f;">🤖 Discussion Emma IA</span>`;
-                    bouton = `<button class="btn btn-purple" onclick="ouvrirDevoirEmma('${d.id}')">Parler avec Emma ▶</button>`;
+                    badge = `<span class="badge-type" style="background:#fae8ff; color:#86198f;">🤖 Emma IA</span>`;
+                    bouton = `<button class="btn btn-purple" onclick="ouvrirDevoirEmma('${d.id}')">${t('btnParlerEmma')}</button>`;
                 } else if (d.typeDevoir === "interactif") {
-                    badge = `<span class="badge-type" style="background:#fef3c7; color:#92400e;">⚡ Devoir Interactif</span>`;
-                    bouton = `<button class="btn" onclick="ouvrirDevoirInteractif('${d.id}')">Commencer ▶</button>`;
+                    badge = `<span class="badge-type" style="background:#fef3c7; color:#92400e;">⚡ Interactif</span>`;
+                    bouton = `<button class="btn" onclick="ouvrirDevoirInteractif('${d.id}')">${t('btnCommencer')}</button>`;
                 } else {
-                    badge = `<span class="badge-type" style="background:#e0e7ff; color:#3730a3;">📖 Chapitre PDF</span>`;
-                    bouton = `<button class="btn btn-purple" onclick="ouvrirMenuChapitreBlocs('${d.id}')">Ouvrir le cours ▶</button>`;
+                    badge = `<span class="badge-type" style="background:#e0e7ff; color:#3730a3;">📖 Cours</span>`;
+                    bouton = `<button class="btn btn-purple" onclick="ouvrirMenuChapitreBlocs('${d.id}')">${t('btnOuvrirCours')}</button>`;
                 }
 
                 return `
@@ -331,7 +438,7 @@ const urlBackendRender = "https://das-plateforme.onrender.com";
     }
 
     // ==========================================
-    // EXERCICE IA AVEC LOUISON (SILLYTAVERN FORMAT)
+    // EXERCICE EMMA IA
     // ==========================================
     window.ouvrirDevoirEmma = function(id) {
         const d = assignationsMap[id];
@@ -355,14 +462,13 @@ const urlBackendRender = "https://das-plateforme.onrender.com";
             item.innerHTML = `
                 <div class="bulle-emma">💬 Emma : « ${q} »</div>
                 <div style="display:flex; gap:10px; margin-top:10px;">
-                    <input type="text" class="input-eleve-emma" id="input-emma-${idx}" value="${reponsePrecedente}" placeholder="Tape ta réponse en français...">
-                    <button type="button" class="btn btn-purple" id="btn-emma-${idx}" onclick="verifierAvecEmma(${idx})">Vérifier 🤖</button>
+                    <input type="text" class="input-eleve-emma" id="input-emma-${idx}" value="${reponsePrecedente}" placeholder="${t('placeholderEmma')}">
+                    <button type="button" class="btn btn-purple" id="btn-emma-${idx}" onclick="verifierAvecEmma(${idx})">${t('btnVerifierEmma')}</button>
                 </div>
                 <div id="coin-prof-emma-${idx}"></div>
             `;
             conteneur.appendChild(item);
 
-            // Si déjà corrigé, afficher directement le bloc
             if (retours[idx]) {
                 afficherBlocCoinDuProf(idx, retours[idx]);
             }
@@ -378,24 +484,24 @@ const urlBackendRender = "https://das-plateforme.onrender.com";
         if (!saisie) return alert("Écris une réponse avant de vérifier !");
 
         btn.disabled = true;
-        btn.textContent = "⏳ Emma réfléchit...";
+        btn.textContent = "⏳...";
 
         try {
             const res = await fetch("https://das-plateforme.onrender.com/api/corriger-emma", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ question: question, reponseEleve: saisie })
+                body: JSON.stringify({
+                    question: question,
+                    reponseEleve: saisie,
+                    langue: langueActuelle || 'fr'
+                })
             });
             const data = await res.json();
             if (data.error) throw new Error(data.error);
 
-            // Mémoriser la phrase de l'élève
             data.phrase_eleve = saisie;
-
-            // Afficher le Coin du Prof exact
             afficherBlocCoinDuProf(idx, data);
 
-            // Sauvegarder dans Firebase
             if (!assignationActive.retoursEmma) assignationActive.retoursEmma = {};
             assignationActive.retoursEmma[idx] = data;
 
@@ -408,26 +514,40 @@ const urlBackendRender = "https://das-plateforme.onrender.com";
             alert("Erreur de connexion avec Emma : " + e.message);
         } finally {
             btn.disabled = false;
-            btn.textContent = "Vérifier 🤖";
+            btn.textContent = t('btnVerifierEmma');
         }
     };
 
     function afficherBlocCoinDuProf(idx, data) {
         const zone = document.getElementById(`coin-prof-emma-${idx}`);
+        
+        let tradReponse = "";
+        if (data.traduction_reponse) {
+            tradReponse = `<div class="traduction-texte">🌐 ${data.traduction_reponse}</div>`;
+        }
+
+        let tradPhraseCorrigee = "";
+        if (data.traduction_phrase_corrigee) {
+            tradPhraseCorrigee = `<div class="traduction-texte">🌐 ${data.traduction_phrase_corrigee}</div>`;
+        }
+
         zone.innerHTML = `
             <div style="margin-top:15px; background:#faf5ff; border-radius:8px; padding:12px; font-weight:600; color:#581c87;">
                 💬 Emma : "${data.reponse_amicale}"
+                ${tradReponse}
             </div>
             
             <div class="coin-du-prof-box">
                 <div style="font-weight:bold; color:#1e40af; border-bottom:1px solid #cbd5e0; padding-bottom:5px; margin-bottom:8px;">
-                    📝 Le Coin du Prof
+                    ${t('coinDuProf')}
                 </div>
-                <div>👀 <strong>Phrase de toi</strong> : "${data.phrase_eleve}"</div>
-                <div>✅ <strong>Ce qui est bien</strong> : ${data.ce_qui_est_bien}</div>
-                <div>❌ <strong>Les Fautes</strong> : <span style="color:var(--danger); font-weight:600;">${data.les_fautes}</span></div>
-                <div>➡️ <strong>Phrase Corrigée</strong> : <strong style="color:var(--success); font-size:1.05em;">"${data.phrase_corrigee}"</strong></div>
-                <div>💡 <strong>Améliorations</strong> : ${data.ameliorations}</div>
+                <div>👀 <strong>${t('phraseDeToi')}</strong> : "${data.phrase_eleve}"</div>
+                <div>✅ <strong>${t('ceQuiEstBien')}</strong> : ${data.ce_qui_est_bien}</div>
+                <div>❌ <strong>${t('lesFautes')}</strong> : <span style="color:var(--danger); font-weight:600;">${data.les_fautes}</span></div>
+                <div>➡️ <strong>${t('phraseCorrigee')}</strong> : <strong style="color:var(--success); font-size:1.05em;">"${data.phrase_corrigee}"</strong>
+                    ${tradPhraseCorrigee}
+                </div>
+                <div>💡 <strong>${t('ameliorations')}</strong> : ${data.ameliorations}</div>
             </div>
         `;
     }

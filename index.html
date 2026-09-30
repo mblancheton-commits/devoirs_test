@@ -224,7 +224,7 @@
     let assignationsMap = {};
     let assignationActive = null;
 
-    const urlBackendRender = "https://mon-french-api.onrender.com"; // Ajustez si besoin
+const urlBackendRender = "https://das-plateforme.onrender.com";
 
     window.choisirLangue = function(lang) {
         langueActuelle = lang;
@@ -381,7 +381,7 @@
         btn.textContent = "⏳ Emma réfléchit...";
 
         try {
-            const res = await fetch("https://mon-french-api.onrender.com/api/corriger-emma", {
+            const res = await fetch("https://das-plateforme.onrender.com/api/corriger-emma", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ question: question, reponseEleve: saisie })

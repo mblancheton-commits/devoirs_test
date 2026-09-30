@@ -52,7 +52,6 @@
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
-        .surbrillance { background-color: #fef08a !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #000; text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -109,18 +108,18 @@
         </div>
     </div>
 
-    <!-- ONGLET 2 : CRÉER UN EXERCICE IA (LOUISON) -->
+    <!-- ONGLET 2 : CRÉER UN EXERCICE IA (EMMA) -->
     <div id="tab-emma" class="tab-pane" style="display:none;">
         <div class="card">
             <h2>🤖 Créer un Exercice IA avec Emma</h2>
-            <p style="color:#64748b;">Emma corrigera les phrases des élèves en appliquant strictement <strong>« Le Coin du Prof »</strong> (règles anti-hallucination, ce qui est bien, correction exacte).</p>
+            <p style="color:#64748b;">Emma corrigera les phrases des élèves dans leur propre langue (coréen, anglais ou français) en appliquant <strong>Le Coin du Prof</strong>.</p>
 
             <label for="titre-emma">1. Titre de l'exercice :</label>
             <input type="text" id="titre-emma" placeholder="Ex: Discussion avec Emma : Mes goûts et loisirs">
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
                 <label style="margin:0;">2. Questions posées par Emma (une par ligne) :</label>
-                <button type="button" class="btn btn-sm btn-purple" onclick="piocherQuestionsEmma()">🎲 Piocher 10 questions de Emma</button>
+                <button type="button" class="btn btn-sm btn-purple" onclick="piocherQuestionsEmma()">🎲 Piocher 10 questions d'Emma</button>
             </div>
             
             <textarea id="questions-emma-texte" rows="10" placeholder="Bonjour ! Qu'est-ce que tu as mangé ce midi ?&#10;Bonjour ! Quelle est ta ville préférée ?&#10;Bonjour ! Tu préfères l'été ou l'hiver ?"></textarea>
@@ -134,9 +133,9 @@
     <!-- ONGLET 3 : CRÉER UN DEVOIR INTERACTIF RAPIDE -->
     <div id="tab-creer-manuel" class="tab-pane" style="display:none;">
         <div class="card">
-            <h2>⚡ Créer un Devoir Interactif (Validation immédiate & « 바보 »)</h2>
+            <h2>⚡ Créer un Devoir Interactif (Validation immédiate)</h2>
             <label for="titre-devoir-manuel">1. Titre du devoir :</label>
-            <input type="text" id="titre-devoir-manuel" placeholder="Ex: Exercice Présent Simple vs Continu">
+            <input type="text" id="titre-devoir-manuel" placeholder="Ex: Exercice Passé Composé vs Imparfait">
 
             <label>2. Type de quiz :</label>
             <div style="display:flex; gap:15px; flex-wrap:wrap; margin-top:8px;">
@@ -147,7 +146,7 @@
 
             <div id="box-options-identiques" style="margin-top:15px;">
                 <label>Options du menu (séparées par une virgule) :</label>
-                <input type="text" id="options-globales" value="in, on, at">
+                <input type="text" id="options-globales" value="à, de, en">
             </div>
 
             <label style="margin-top:15px;">3. Collez vos phrases avec le point-virgule (;) :</label>
@@ -159,21 +158,18 @@
         </div>
     </div>
 
-    <!-- ONGLET 4 : IMPORT PDF PAR L'IA -->
+    <!-- ONGLET 4 : IMPORT PDF PAR GEMINI 3.8 FLASH -->
     <div id="tab-pdf" class="tab-pane" style="display:none;">
         <div class="card">
-            <h2>📄 Importer un Cours & Exercices depuis un PDF (IA)</h2>
+            <h2>📄 Importer un Cours & Exercices depuis un PDF (Gemini 3.8 Flash)</h2>
             <div style="display:flex; gap:15px; flex-wrap:wrap;">
                 <div style="flex:2;">
                     <label>URL de votre serveur Render :</label>
-                    <input type="text" id="api-url" placeholder="https://votre-api.onrender.com">
+                    <input type="text" id="api-url" value="https://das-plateforme.onrender.com">
                 </div>
                 <div style="flex:1;">
-                    <label>Modèle Gemini :</label>
-                    <select id="select-gemini-model">
-                        <option value="gemini-3.8-flash" selected>Gemini 3.8 Flash</option>
-                        <option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
-                    </select>
+                    <label>Modèle IA :</label>
+                    <input type="text" id="select-gemini-model" value="gemini-3.8-flash" readonly style="background:#f1f5f9;">
                 </div>
             </div>
 
@@ -181,7 +177,7 @@
             <input type="file" id="pdf-file-input" accept="application/pdf">
 
             <div style="margin-top:20px;">
-                <button class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser le PDF et générer les blocs</button>
+                <button class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser avec Gemini 3.8 Flash</button>
             </div>
         </div>
 
@@ -211,7 +207,7 @@
     </div>
 </div>
 
-<!-- MODAL GÉNÉRAL (AFFICHE ERREURS OU RETOUR LOUISON) -->
+<!-- MODAL RETOURS EMMA PROF -->
 <div class="modal" id="modal-fautes">
     <div class="modal-content">
         <h2 id="modal-titre" style="margin-top:0; color:var(--primary);">-</h2>
@@ -238,7 +234,6 @@
         db = firebase.firestore();
     } catch(e) { console.error("Firebase init:", e); }
 
-    // Les 100 questions de la carte de Emma
     const questionsBanqueEmma = [
         "Bonjour ! Quel est ton MBTI ?",
         "Bonjour ! Qu'est-ce que tu vas faire ce week-end ?",
@@ -278,9 +273,6 @@
     let assignationsMap = {};
     let donneesIAPret = null;
 
-    const urlStockee = localStorage.getItem("backendApiUrl");
-    if (urlStockee) document.getElementById('api-url').value = urlStockee;
-
     function basculerOnglet(tabId, btn) {
         document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -288,7 +280,6 @@
         if (btn) btn.classList.add('active');
     }
 
-    // --- 1. CRÉATION ÉLÈVE ---
     async function creerEleve() {
         const code = document.getElementById('nouvel-eleve-code').value.trim();
         const cle = document.getElementById('nouvel-eleve-cle').value.trim();
@@ -322,12 +313,9 @@
         }
     }
 
-    // --- 2. CRÉER EXERCICE IA (LOUISON) ---
     function piocherQuestionsEmma() {
-        // Mélanger et piocher 10 questions
         const melange = [...questionsBanqueEmma].sort(() => 0.5 - Math.random());
-        const dixQuestions = melange.slice(0, 10).join('\n');
-        document.getElementById('questions-emma-texte').value = dixQuestions;
+        document.getElementById('questions-emma-texte').value = melange.slice(0, 10).join('\n');
     }
 
     async function enregistrerDevoirEmma() {
@@ -343,13 +331,12 @@
             dateCreation: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("✅ Exercice IA avec Emma enregistré dans votre banque !");
+        alert("✅ Exercice IA avec Emma enregistré !");
         document.getElementById('titre-emma').value = "";
         document.getElementById('questions-emma-texte').value = "";
         basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
     }
 
-    // --- 3. CRÉATION MANUELLE DEVOIR INTERACTIF ---
     function ajusterFormulaireManuel() {
         const type = document.querySelector('input[name="type-exo-manuel"]:checked').value;
         document.getElementById('box-options-identiques').style.display = (type === 'select-identique') ? 'block' : 'none';
@@ -388,17 +375,14 @@
         basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
     }
 
-    // --- 4. IMPORT PDF ---
     async function analyserPDFAvecIA() {
         const urlApi = document.getElementById('api-url').value.trim();
         const fileInput = document.getElementById('pdf-file-input');
-        const model = document.getElementById('select-gemini-model').value;
-        if (!urlApi || !fileInput.files[0]) return alert("Indiquez l'URL et le fichier PDF.");
+        if (!urlApi || !fileInput.files[0]) return alert("Indiquez l'URL Render et le fichier PDF.");
 
-        localStorage.setItem("backendApiUrl", urlApi);
         const btn = document.getElementById('btn-analyser-pdf');
         btn.disabled = true;
-        btn.textContent = "⏳ Analyse en cours...";
+        btn.textContent = "⏳ Analyse en cours avec Gemini 3.8 Flash...";
 
         const formData = new FormData();
         formData.append("pdf", fileInput.files[0]);
@@ -406,7 +390,7 @@
         try {
             const res = await fetch(urlApi.replace(/\/$/, "") + "/api/analyser-pdf", {
                 method: "POST",
-                headers: { "x-gemini-model": model },
+                headers: { "x-gemini-model": "gemini-3.8-flash" },
                 body: formData
             });
             const data = await res.json();
@@ -415,12 +399,12 @@
             donneesIAPret = data;
             document.getElementById('ia-titre').value = data.titre || "Chapitre de cours";
             document.getElementById('card-resultat-ia').style.display = "block";
-            alert("✅ Analyse réussie ! Vous pouvez sauvegarder ce cours.");
+            alert("✅ Analyse 3.8 Flash réussie !");
         } catch(e) {
             alert("Erreur : " + e.message);
         } finally {
             btn.disabled = false;
-            btn.textContent = "🚀 Analyser le PDF et générer les blocs";
+            btn.textContent = "🚀 Analyser avec Gemini 3.8 Flash";
         }
     }
 
@@ -438,10 +422,9 @@
         basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
     }
 
-    // --- 5. ASSIGNATION UNIVERSELLE ---
     async function assignerDevoir(devoirId) {
         const d = devoirsMap[devoirId];
-        if (!d || listeEleves.length === 0) return alert("Sélectionnez un devoir et ayez au moins un élève.");
+        if (!d || listeEleves.length === 0) return alert("Sélectionnez un devoir et vérifiez vos élèves.");
 
         const options = listeEleves.map((e, idx) => `${idx + 1}. ${e.code}`).join('\n');
         const choix = prompt(`À quel élève assigner "${d.titre}" ?\n\n${options}\n\nTapez le numéro :`);
@@ -495,13 +478,12 @@
         }
     }
 
-    // MODAL VOIR RETOURS LOUISON
     window.voirRetoursEmmaProf = function(assignationId) {
         const a = assignationsMap[assignationId];
         if (!a) return;
 
         const modal = document.getElementById('modal-fautes');
-        document.getElementById('modal-titre').textContent = `Corrections de Emma - ${a.eleveCode}`;
+        document.getElementById('modal-titre').textContent = `Corrections Emma - ${a.eleveCode}`;
 
         const retours = a.retoursEmma || {};
         let html = `<div style="line-height:1.7;">`;
@@ -512,11 +494,13 @@
                 <strong style="color:var(--primary);">Q${idx+1} : ${q}</strong><br>`;
             if (r) {
                 html += `👀 <strong>Phrase élève</strong> : "${r.phrase_eleve}"<br>
-                         💬 <strong>Emma</strong> : ${r.reponse_amicale}<br>
-                         ✅ <strong>Ce qui est bien</strong> : ${r.ce_qui_est_bien}<br>
-                         ❌ <strong>Les Fautes</strong> : ${r.les_fautes}<br>
-                         ➡️ <strong>Corrigé</strong> : <strong style="color:var(--success);">${r.phrase_corrigee}</strong><br>
-                         💡 <strong>Améliorations</strong> : ${r.ameliorations}`;
+                         💬 <strong>Emma</strong> : ${r.reponse_amicale}<br>`;
+                if (r.traduction_reponse) html += `🌐 <em>Traduction Emma</em> : ${r.traduction_reponse}<br>`;
+                html += `✅ <strong>Ce qui est bien</strong> : ${r.ce_qui_est_bien}<br>
+                         ❌ <strong>Fautes</strong> : ${r.les_fautes}<br>
+                         ➡️ <strong>Corrigé</strong> : <strong style="color:var(--success);">${r.phrase_corrigee}</strong><br>`;
+                if (r.traduction_phrase_corrigee) html += `🌐 <em>Traduction corrigé</em> : ${r.traduction_phrase_corrigee}<br>`;
+                html += `💡 <strong>Améliorations</strong> : ${r.ameliorations}`;
             } else {
                 html += `<span style="color:#aaa;">(Pas encore répondu)</span>`;
             }
@@ -538,7 +522,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${e.code}</strong></td>
-                    <td><code>${e.cleApiPerso ? "● Clé personnalisée" : "(Clé prof par défaut)"}</code></td>
+                    <td><code>${e.cleApiPerso ? "● Clé perso" : "(Clé prof par défaut)"}</code></td>
                     <td><button class="btn btn-danger btn-sm" onclick="supprimerEleve('${e.id}')">🗑️</button></td>
                 `;
                 tbody.appendChild(tr);
@@ -558,14 +542,14 @@
                 let info = "";
 
                 if (d.typeDevoir === "emma") {
-                    badge = `<span class="badge-emma">🤖 Exercice IA (Emma)</span>`;
-                    info = `${(d.questions || []).length} questions conversationnelles`;
+                    badge = `<span class="badge-emma">🤖 Emma IA</span>`;
+                    info = `${(d.questions || []).length} questions`;
                 } else if (d.typeDevoir === "interactif") {
-                    badge = `<span class="badge-interactif">⚡ Devoir Interactif</span>`;
+                    badge = `<span class="badge-interactif">⚡ Interactif</span>`;
                     info = `${(d.phrases || []).length} phrases`;
                 } else {
-                    badge = `<span class="badge-chapitre">📖 Chapitre PDF</span>`;
-                    info = `Fiches cours + ${(d.blocs_exercices || []).length} blocs exos`;
+                    badge = `<span class="badge-chapitre">📖 Chapitre</span>`;
+                    info = `Fiches + ${(d.blocs_exercices || []).length} blocs`;
                 }
 
                 tr.innerHTML = `
@@ -598,16 +582,16 @@
                     badgeType = `<span class="badge-emma">🤖 Emma IA</span>`;
                     const nbRep = Object.keys(a.retoursEmma || {}).length;
                     const total = (a.questions || []).length;
-                    avancement = `<strong>${nbRep} / ${total}</strong> questions répondues`;
-                    actions = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Voir les corrections</button>`;
+                    avancement = `<strong>${nbRep} / ${total}</strong> réponses`;
+                    actions = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Corrections</button>`;
                 } else if (a.typeDevoir === "interactif") {
                     badgeType = `<span class="badge-interactif">⚡ Interactif</span>`;
                     avancement = `Score : <strong>${a.score || 0} / ${a.totalQuestions || 0}</strong>`;
-                    actions = `<button class="btn btn-sm btn-secondary" onclick="voirErreursInteractif('${a.id}')">🔍 Fautes</button>`;
+                    actions = `<span style="color:#64748b;">Automatique</span>`;
                 } else {
                     badgeType = `<span class="badge-chapitre">📖 Chapitre</span>`;
-                    avancement = `Suivi par blocs`;
-                    actions = `<button class="btn btn-sm btn-purple" onclick="ouvrirModalExtractionProf('${a.id}')">📄 PDF</button>`;
+                    avancement = `Par blocs`;
+                    actions = `<span style="color:#64748b;">Suivi cours</span>`;
                 }
 
                 tr.innerHTML = `

@@ -179,7 +179,7 @@ He is waiting ____ the bus stop.;at</div>
         </div>
     </div>
 
-    <!-- ONGLET 3 : IMPORT PDF AVEC L'IA (CHAPITRES MULTI-PAGES) -->
+    <!-- ONGLET 3 : IMPORT PDF AVEC L'IA -->
     <div id="tab-pdf" class="tab-pane" style="display:none;">
         <div class="card">
             <h2>📄 Importer un Cours & Exercices depuis un PDF (IA)</h2>
@@ -219,7 +219,6 @@ He is waiting ____ the bus stop.;at</div>
             <label style="margin-top:20px;">Sélectionnez le bloc à lire ou modifier :</label>
             <div class="blocs-selector-bar" id="barre-selection-blocs-ia"></div>
 
-            <!-- BOÎTE 1 : COURS FICHE PAR FICHE -->
             <div id="editeur-bloc-cours" class="editeur-bloc-box" style="display:none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                     <button class="btn btn-secondary btn-sm" onclick="naviguerSlideIA(-1)">◀ Fiche précédente</button>
@@ -233,7 +232,6 @@ He is waiting ____ the bus stop.;at</div>
                 <textarea id="slide-ia-contenu" rows="9" oninput="mettreAJourSlideIA()"></textarea>
             </div>
 
-            <!-- BOÎTE 2 : EXERCICES -->
             <div id="editeur-bloc-exo" class="editeur-bloc-box" style="display:none;">
                 <label>Titre de cet exercice :</label>
                 <input type="text" id="exo-ia-titre" oninput="mettreAJourExoIA()">
@@ -245,7 +243,6 @@ He is waiting ____ the bus stop.;at</div>
                 <textarea id="exo-ia-questions" rows="10" oninput="mettreAJourExoIA()"></textarea>
             </div>
 
-            <!-- CHAT IA -->
             <div class="chat-ai-box">
                 <h3 style="margin-top:0; color:#6b21a8;">💬 Demander un ajustement à l'IA</h3>
                 <div style="display:flex; gap:10px;">
@@ -644,7 +641,6 @@ He is waiting ____ the bus stop.;at</div>
         if (num >= 1 && num <= listeEleves.length) {
             const eleve = listeEleves[num - 1];
 
-            // Si c'est un devoir interactif classique
             if (d.typeDevoir === "interactif") {
                 await db.collection("assignations").add({
                     eleveCode: eleve.code,
@@ -661,7 +657,6 @@ He is waiting ____ the bus stop.;at</div>
                     dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
                 });
             } else {
-                // Si c'est un chapitre complet par blocs
                 const suiviBlocs = { cours: { statut: "non_lu" } };
                 (d.blocs_exercices || []).forEach(b => {
                     suiviBlocs[b.id] = { statut: "non_fait", reponses: {} };
@@ -684,7 +679,7 @@ He is waiting ____ the bus stop.;at</div>
         }
     }
 
-    // VOIR ERREURS OU EXPORT PDF SELON LE TYPE DE DEVOIR
+    // MODAL ERREURS OU EXTRACTION PDF
     window.voirErreursInteractif = function(assignationId) {
         const a = assignationsMap[assignationId];
         if (!a) return;

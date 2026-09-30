@@ -20,7 +20,6 @@
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #1e293b; margin: 0; padding: 20px; padding-bottom: 90px; }
         .container { max-width: 900px; margin: 0 auto; }
         
-        /* 0. ÉCRAN LANGUE */
         #ecran-langue { max-width: 500px; margin: 70px auto; background: white; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         #ecran-langue h1 { color: var(--primary); margin-top: 0; font-size: 1.8em; margin-bottom: 25px; }
         .lang-grid { display: flex; flex-direction: column; gap: 14px; }
@@ -29,12 +28,10 @@
         .flag-svg { width: 48px; height: 32px; border-radius: 4px; margin-right: 18px; flex-shrink: 0; }
         .lang-title { font-size: 1.15em; font-weight: bold; color: var(--primary); }
 
-        /* 1. ÉCRAN CONNEXION */
         #ecran-login { display: none; max-width: 440px; margin: 70px auto; background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         #code-input { width: 100%; padding: 14px; font-size: 1.25em; border: 2px solid #cbd5e0; border-radius: 10px; text-align: center; font-weight: bold; box-sizing: border-box; margin: 20px 0; text-transform: uppercase; }
         #code-input:focus { outline: none; border-color: var(--accent); }
 
-        /* 1.5 BIENVENUE */
         #ecran-bienvenue { display: none; max-width: 460px; margin: 70px auto; background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         .welcome-user-box { font-size: 1.5em; font-weight: bold; color: var(--accent); background: #eff6ff; padding: 12px; border-radius: 10px; margin: 15px 0 25px 0; }
 
@@ -46,28 +43,24 @@
         .btn-purple { background: #8b5cf6; }
         .btn-secondary { background: #64748b; padding: 8px 16px; font-size: 0.9em; }
 
-        /* EN-TÊTE */
         #header-eleve { display: none; background: white; padding: 15px 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 25px; justify-content: space-between; align-items: center; }
 
-        /* LISTE DES CHAPITRES */
         #ecran-tableau-de-bord { display: none; }
         .chapitre-card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; border-left: 6px solid var(--accent); }
 
-        /* LISTE DES BLOCS DU CHAPITRE */
         #ecran-menu-blocs { display: none; }
         .bloc-nav-card { background: white; padding: 18px 22px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e2e8f0; transition: all 0.2s; }
         .bloc-nav-card.fait { border-color: var(--success); background: #f0fdf4; }
 
-        /* CONTENU DU BLOC EN COURS */
         #ecran-contenu-bloc { display: none; }
         .cours-slide-container { background: white; padding: 30px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); line-height: 1.9; font-size: 1.1em; }
         .slide-nav-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
 
-        .phrase-item { background: white; border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; margin-bottom: 15px; font-size: 1.08em; line-height: 1.8; }
-        .input-calme { padding: 9px 14px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; font-family: inherit; color: #1e293b; font-weight: 600; background: white; }
+        .phrase-item { background: white; border: 1px solid #e2e8f0; padding: 18px; border-radius: 10px; margin-bottom: 15px; font-size: 1.08em; line-height: 2.2; }
+        .input-calme { padding: 8px 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; font-family: inherit; color: #1e293b; font-weight: 600; background: #f8fafc; }
+        .input-calme:focus { outline: none; border-color: var(--accent); background: white; }
         .textarea-calme { width: 100%; padding: 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; margin-top: 8px; box-sizing: border-box; font-family: inherit; }
 
-        /* MODAL EXPORT PDF SURBRILLANCE */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
         .modal-content { background: white; padding: 30px; border-radius: 14px; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
         .surbrillance { background-color: #fef08a !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #000; text-decoration: underline; }
@@ -152,7 +145,7 @@
         <div id="liste-blocs-conteneur"></div>
     </div>
 
-    <!-- 3. CONTENU D'UN BLOC SÉLECTIONNÉ (COURS OU EXERCICE) -->
+    <!-- 3. CONTENU D'UN BLOC SÉLECTIONNÉ -->
     <div id="ecran-contenu-bloc">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <button type="button" class="btn btn-secondary" onclick="retourMenuBlocs()">← Retour aux blocs</button>
@@ -160,7 +153,7 @@
             <div></div>
         </div>
 
-        <!-- AFFICHAGE SI C'EST LE BLOC COURS -->
+        <!-- BLOC COURS -->
         <div id="vue-bloc-cours" style="display:none;">
             <div class="cours-slide-container">
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:12px; margin-bottom:15px;">
@@ -177,7 +170,7 @@
             </div>
         </div>
 
-        <!-- AFFICHAGE SI C'EST UN BLOC EXERCICE -->
+        <!-- BLOC EXERCICE AVEC GESTION MULTI-TROUS SANS COUPURE -->
         <div id="vue-bloc-exercice" style="display:none;">
             <p id="consigne-exo-actif" style="color:#64748b; font-style:italic; margin-bottom:20px;"></p>
             <div id="questions-exo-conteneur"></div>
@@ -231,7 +224,7 @@
     let codeEleveActuel = localStorage.getItem("codeEleve") || "";
     let assignationsMap = {};
     let assignationActive = null;
-    let blocActif = null; // 'cours' ou objet exercice
+    let blocActif = null;
     let indexSlideCours = 0;
 
     window.choisirLangue = function(lang) {
@@ -295,7 +288,6 @@
         }
     };
 
-    // ÉCOUTER LES CHAPITRES ASSIGNÉS
     function ecouterAssignations() {
         if (!db) return;
         db.collection("assignations").onSnapshot(snapshot => {
@@ -329,7 +321,6 @@
         });
     }
 
-    // OUVRIR LE MENU DES BLOCS DU CHAPITRE
     window.ouvrirMenuBlocs = function(assignationId) {
         assignationActive = assignationsMap[assignationId];
         if (!assignationActive) return alert("Chapitre introuvable.");
@@ -343,7 +334,6 @@
         conteneur.innerHTML = "";
         const suivi = assignationActive.suiviBlocs || {};
 
-        // 1. Carte Bloc Cours
         if (assignationActive.bloc_cours) {
             const coursLu = (suivi.cours && suivi.cours.statut === "lu");
             const divCours = document.createElement('div');
@@ -362,7 +352,6 @@
             conteneur.appendChild(divCours);
         }
 
-        // 2. Cartes Blocs Exercices
         const blocsExos = Array.isArray(assignationActive.blocs_exercices) ? assignationActive.blocs_exercices : [];
         blocsExos.forEach((b, idx) => {
             const etat = (suivi[b.id] && suivi[b.id].statut === "fait") ? "fait" : "non_fait";
@@ -389,7 +378,6 @@
         document.getElementById('ecran-tableau-de-bord').style.display = 'block';
     };
 
-    // OUVRIR LE BLOC COURS
     window.ouvrirBlocCours = function() {
         blocActif = 'cours';
         document.getElementById('ecran-menu-blocs').style.display = 'none';
@@ -432,7 +420,7 @@
         retourMenuBlocs();
     };
 
-    // OUVRIR UN BLOC EXERCICE
+    // --- RECONSTITUTION MULTI-TROUS ENTIÈRE ET DYNAMIQUE ---
     window.ouvrirBlocExercice = function(blocId) {
         const b = (assignationActive.blocs_exercices || []).find(item => item.id === blocId);
         if (!b) return alert("Exercice introuvable.");
@@ -452,27 +440,40 @@
             ? assignationActive.suiviBlocs[b.id].reponses : {};
 
         (b.questions || []).forEach((q, qIdx) => {
-            const val = reponsesDuBloc[qIdx] || "";
             const item = document.createElement('div');
             item.className = "phrase-item";
 
+            // S'il s'agit d'une phrase avec des trous (____)
             if (q.q.includes('____') || q.q.includes('___')) {
                 const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
-                item.innerHTML = `<span>${qIdx + 1}.</span> ${parts[0]} <input type="text" class="input-calme" id="input-bloc-${qIdx}" value="${val}" placeholder="..." oninput="noterReponseBloc(${qIdx}, this.value)"> ${parts[1] || ""}`;
+                
+                // Reconstitution dynamique pour 1, 2, 3 trous ou plus SANS RIEN COUPER
+                let htmlPhrase = `<span>${qIdx + 1}.</span> `;
+                for (let i = 0; i < parts.length; i++) {
+                    htmlPhrase += parts[i];
+                    if (i < parts.length - 1) {
+                        const cleTrou = `${qIdx}_trou_${i}`;
+                        const val = reponsesDuBloc[cleTrou] || "";
+                        htmlPhrase += ` <input type="text" class="input-calme" value="${val}" placeholder="..." oninput="noterReponseBloc('${cleTrou}', this.value)"> `;
+                    }
+                }
+                item.innerHTML = htmlPhrase;
             } else {
+                // S'il s'agit d'une question ouverte
+                const val = reponsesDuBloc[`${qIdx}_ouverte`] || "";
                 item.innerHTML = `<div style="font-weight:bold; color:var(--primary); margin-bottom:8px;">${qIdx + 1}. ${q.q}</div>
-                    <textarea class="textarea-calme" rows="2" id="input-bloc-${qIdx}" placeholder="Écrivez votre réponse ici..." oninput="noterReponseBloc(${qIdx}, this.value)">${val}</textarea>`;
+                    <textarea class="textarea-calme" rows="2" placeholder="Écrivez votre réponse ici..." oninput="noterReponseBloc('${qIdx}_ouverte', this.value)">${val}</textarea>`;
             }
             conteneurQ.appendChild(item);
         });
     };
 
-    window.noterReponseBloc = function(qIdx, val) {
+    window.noterReponseBloc = function(cleTrou, val) {
         if (!assignationActive || !blocActif) return;
         if (!assignationActive.suiviBlocs) assignationActive.suiviBlocs = {};
         if (!assignationActive.suiviBlocs[blocActif.id]) assignationActive.suiviBlocs[blocActif.id] = { statut: "en_cours", reponses: {} };
         if (!assignationActive.suiviBlocs[blocActif.id].reponses) assignationActive.suiviBlocs[blocActif.id].reponses = {};
-        assignationActive.suiviBlocs[blocActif.id].reponses[qIdx] = val;
+        assignationActive.suiviBlocs[blocActif.id].reponses[cleTrou] = val;
     };
 
     window.sauvegarderExoBloc = async function(marquerFini) {
@@ -500,7 +501,7 @@
         ouvrirMenuBlocs(assignationActive.id);
     };
 
-    // EXPORT PDF AVEC SURBRILLANCE
+    // EXPORT PDF RECONSTITUÉ SANS COUPURE
     window.ouvrirModalExtraction = function() {
         if (!assignationActive) return;
 
@@ -522,7 +523,7 @@
             zone.innerHTML += `</div>`;
         }
 
-        // 2. Exercices avec réponses en surbrillance
+        // 2. Exercices complets
         const blocs = Array.isArray(assignationActive.blocs_exercices) ? assignationActive.blocs_exercices : [];
         blocs.forEach((b) => {
             const reponses = (suivi[b.id] && suivi[b.id].reponses) ? suivi[b.id].reponses : {};
@@ -531,13 +532,24 @@
             
             const ol = document.createElement('ol');
             ol.style.lineHeight = "2.1";
+
             (b.questions || []).forEach((q, qIdx) => {
-                const rep = reponses[qIdx] ? `<span class="surbrillance">${reponses[qIdx]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
                 const li = document.createElement('li');
+
                 if (q.q.includes('____') || q.q.includes('___')) {
                     const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
-                    li.innerHTML = `${parts[0]} ${rep} ${parts[1] || ""}`;
+                    let texteLigne = "";
+                    for (let i = 0; i < parts.length; i++) {
+                        texteLigne += parts[i];
+                        if (i < parts.length - 1) {
+                            const cleTrou = `${qIdx}_trou_${i}`;
+                            const rep = reponses[cleTrou] ? `<span class="surbrillance">${reponses[cleTrou]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
+                            texteLigne += ` ${rep} `;
+                        }
+                    }
+                    li.innerHTML = texteLigne;
                 } else {
+                    const rep = reponses[`${qIdx}_ouverte`] ? `<span class="surbrillance">${reponses[`${qIdx}_ouverte`]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
                     li.innerHTML = `<strong>${q.q}</strong><br>➔ Réponse : ${rep}`;
                 }
                 ol.appendChild(li);

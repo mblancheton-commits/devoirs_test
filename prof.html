@@ -23,8 +23,8 @@
         header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 25px; }
         h1 { margin: 0; color: var(--primary); font-size: 1.6em; }
 
-        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { padding: 12px 22px; background: #e2e8f0; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: #475569; }
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tab-btn { padding: 12px 20px; background: #e2e8f0; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: #475569; transition: all 0.2s; }
         .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(30, 41, 59, 0.15); }
 
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 25px; }
@@ -32,6 +32,7 @@
 
         label { display: block; font-weight: 600; margin-bottom: 6px; margin-top: 14px; font-size: 0.95em; color: #334155; }
         input[type="text"], textarea, select { width: 100%; padding: 11px; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.95em; }
+        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
 
         .btn { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn:hover { opacity: 0.9; }
@@ -45,10 +46,17 @@
         th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.95em; }
         th { background: #f8fafc; color: #475569; }
 
-        .badge-lu { background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
-        .badge-nonlu { background: #f1f5f9; color: #64748b; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
-        .badge-fait { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
-        .badge-nonfait { background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
+        .badge-lu { background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; }
+        .badge-nonlu { background: #f1f5f9; color: #64748b; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; }
+        .badge-fait { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; }
+        .badge-nonfait { background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; }
+
+        .badge-interactif { background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+        .badge-chapitre { background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+
+        .code-box { background: #1e293b; color: #93c5fd; padding: 12px; border-radius: 6px; font-family: monospace; font-size: 0.88em; margin-top: 8px; white-space: pre-wrap; }
+        .radio-group { display: flex; gap: 20px; margin-top: 8px; flex-wrap: wrap; }
+        .radio-option { display: flex; align-items: center; gap: 6px; cursor: pointer; }
 
         .blocs-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin: 15px 0; border-bottom: 2px solid #e2e8f0; }
         .bloc-tab-btn { padding: 10px 16px; border: 2px solid #cbd5e0; background: #f8fafc; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95em; color: #475569; white-space: nowrap; }
@@ -78,12 +86,13 @@
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" id="btn-tab-eleves" onclick="basculerOnglet('tab-eleves', this)">👥 Élèves & Suivi par Blocs</button>
-        <button class="tab-btn" id="btn-tab-pdf" onclick="basculerOnglet('tab-pdf', this)">📄 Créer depuis un PDF (IA)</button>
-        <button class="tab-btn" id="btn-tab-devoirs" onclick="basculerOnglet('tab-devoirs', this)">📚 Banque de Chapitres</button>
+        <button class="tab-btn active" id="btn-tab-eleves" onclick="basculerOnglet('tab-eleves', this)">👥 Élèves & Suivi</button>
+        <button class="tab-btn" id="btn-tab-creer-manuel" onclick="basculerOnglet('tab-creer-manuel', this)">⚡ Créer un Devoir Interactif (Copier-coller)</button>
+        <button class="tab-btn" id="btn-tab-pdf" onclick="basculerOnglet('tab-pdf', this)">📄 Importer depuis un PDF (IA)</button>
+        <button class="tab-btn" id="btn-tab-devoirs" onclick="basculerOnglet('tab-devoirs', this)">📚 Banque de Devoirs</button>
     </div>
 
-    <!-- ONGLET 1 : SUIVI DÉTAILLÉ PAR BLOC -->
+    <!-- ONGLET 1 : ÉLÈVES & SUIVI GLOBAL -->
     <div id="tab-eleves" class="tab-pane">
         <div class="card">
             <h2>Ajouter un profil élève</h2>
@@ -98,33 +107,83 @@
             <h2>📋 Élèves enregistrés</h2>
             <table>
                 <thead>
-                    <tr><th>Code Élève</th><th>Clé API personnalisée</th><th>Actions</th></tr>
+                    <tr><th>Code Élève</th><th>Clé personnalisée</th><th>Actions</th></tr>
                 </thead>
                 <tbody id="table-eleves-corps"><tr><td colspan="3">Chargement...</td></tr></tbody>
             </table>
         </div>
 
         <div class="card">
-            <h2>📊 État d'avancement par Bloc (Cours & Exercices)</h2>
+            <h2>📊 Devoirs assignés & Suivi des résultats</h2>
             <table>
                 <thead>
                     <tr>
                         <th>Élève</th>
-                        <th>Chapitre</th>
-                        <th>Avancement détaillé par bloc</th>
+                        <th>Devoir / Chapitre</th>
+                        <th>Type</th>
+                        <th>Avancement / Score</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
-                <tbody id="table-assignations-corps"><tr><td colspan="4">Aucun devoir assigné.</td></tr></tbody>
+                <tbody id="table-assignations-corps"><tr><td colspan="5">Aucun devoir assigné.</td></tr></tbody>
             </table>
         </div>
     </div>
 
-    <!-- ONGLET 2 : CRÉATION DU COURS -->
+    <!-- ONGLET 2 : CRÉER UN DEVOIR INTERACTIF RAPIDE (FONCTION D'ORIGINE RESTAURÉE) -->
+    <div id="tab-creer-manuel" class="tab-pane" style="display:none;">
+        <div class="card">
+            <h2>⚡ Créer un Devoir Interactif (Validation immédiate & « 바보 »)</h2>
+            <p style="color:#64748b;">Collez des phrases générées par une IA avec des points-virgules pour créer un quiz avec correction instantanée.</p>
+
+            <label for="titre-devoir-manuel">1. Titre du devoir :</label>
+            <input type="text" id="titre-devoir-manuel" placeholder="Ex: Exercice Présent Simple vs Continu">
+
+            <label>2. Type de quiz :</label>
+            <div class="radio-group">
+                <label class="radio-option">
+                    <input type="radio" name="type-exo-manuel" value="select-identique" checked onchange="ajusterFormulaireManuel()">
+                    Menu déroulant (Choix identiques pour tout l'exercice, ex: in, on, at)
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="type-exo-manuel" value="select-variable" onchange="ajusterFormulaireManuel()">
+                    Menu déroulant (Choix différents par phrase)
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="type-exo-manuel" value="input-texte" onchange="ajusterFormulaireManuel()">
+                    Zone de texte (L'élève tape la réponse au clavier)
+                </label>
+            </div>
+
+            <div id="box-options-identiques" style="margin-top:15px;">
+                <label for="options-globales">Options du menu (séparées par une virgule) :</label>
+                <input type="text" id="options-globales" value="in, on, at">
+            </div>
+
+            <label for="texte-brut-manuel" style="margin-top:15px;">3. Collez vos phrases avec le point-virgule (;) :</label>
+            <div id="aide-format-manuel" class="code-box">Format attendu :
+The keys are ____ the table.;on
+He is waiting ____ the bus stop.;at</div>
+
+            <textarea id="texte-brut-manuel" rows="9" placeholder="Collez vos phrases ici..."></textarea>
+
+            <div style="margin-top:15px; display:flex; gap:10px;">
+                <button class="btn" onclick="previsualiserDevoirManuel()">👁️ Prévisualiser</button>
+                <button class="btn btn-success" onclick="enregistrerDevoirManuel()">💾 Sauvegarder ce Devoir Interactif</button>
+            </div>
+        </div>
+
+        <div class="card" id="card-prev-manuel" style="display:none;">
+            <h2>Aperçu du Devoir Interactif</h2>
+            <div id="zone-prev-manuel"></div>
+        </div>
+    </div>
+
+    <!-- ONGLET 3 : IMPORT PDF AVEC L'IA (CHAPITRES MULTI-PAGES) -->
     <div id="tab-pdf" class="tab-pane" style="display:none;">
         <div class="card">
-            <h2>📄 Convertir un PDF en Blocs (Cours + Exercices)</h2>
-            <p style="color:#64748b;">L'IA extrait le cours en fiches de grammaire et les exercices en blocs distincts. Vous pourrez tout lire et retoucher avant d'enregistrer.</p>
+            <h2>📄 Importer un Cours & Exercices depuis un PDF (IA)</h2>
+            <p style="color:#64748b;">L'IA sépare automatiquement votre document en 1 bloc cours (fiches en coréen) et des blocs d'exercices.</p>
             
             <div style="display:flex; gap:15px; flex-wrap:wrap;">
                 <div style="flex:2;">
@@ -146,11 +205,11 @@
             <input type="file" id="pdf-file-input" accept="application/pdf">
 
             <div style="margin-top:20px;">
-                <button class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser le PDF et afficher le contenu</button>
+                <button class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser le PDF et générer les blocs</button>
             </div>
         </div>
 
-        <!-- ZONE D'ÉDITION DU CONTENU GÉNÉRÉ -->
+        <!-- ZONE D'ÉDITION COURS ET EXERCICES PDF -->
         <div class="card" id="card-resultat-ia" style="display:none;">
             <h2>📖 Lecture & Retouche du contenu généré</h2>
             
@@ -201,36 +260,27 @@
         </div>
     </div>
 
-    <!-- ONGLET 3 : BANQUE DE CHAPITRES -->
+    <!-- ONGLET 4 : BANQUE DE DEVOIRS ET CHAPITRES -->
     <div id="tab-devoirs" class="tab-pane" style="display:none;">
         <div class="card">
-            <h2>Banque de Chapitres disponibles</h2>
+            <h2>Banque de Devoirs & Chapitres disponibles</h2>
             <table>
                 <thead>
-                    <tr><th>Titre</th><th>Composition des blocs</th><th>Actions</th></tr>
+                    <tr><th>Titre</th><th>Type</th><th>Détails</th><th>Actions</th></tr>
                 </thead>
-                <tbody id="table-devoirs-corps"><tr><td colspan="3">Chargement...</td></tr></tbody>
+                <tbody id="table-devoirs-corps"><tr><td colspan="4">Chargement...</td></tr></tbody>
             </table>
         </div>
     </div>
 </div>
 
-<!-- MODAL EXTRACTION PDF -->
-<div class="modal" id="modal-export-prof">
+<!-- MODAL GÉNÉRAL (FAUTES INTERACTIVES OU EXTRACTION PDF) -->
+<div class="modal" id="modal-fautes">
     <div class="modal-content">
-        <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding-bottom:12px; margin-bottom:20px;">
-            <h2 style="margin:0; color:var(--primary);">📄 Copie complète de l'élève</h2>
-            <div style="display:flex; gap:8px;">
-                <button class="btn btn-success" onclick="window.print()">🖨️ Enregistrer en PDF / Imprimer</button>
-                <button class="btn btn-secondary" onclick="document.getElementById('modal-export-prof').style.display='none'">Fermer</button>
-            </div>
-        </div>
-        <div id="feuille-impression-prof">
-            <div style="border-bottom:2px solid #333; padding-bottom:10px; margin-bottom:20px;">
-                <h1 style="margin:0; font-size:1.6em;" id="prof-pdf-titre">-</h1>
-                <p style="margin:5px 0 0 0; color:#555;">Élève : <strong id="prof-pdf-eleve" style="color:var(--accent);">-</strong> · Date : <span id="prof-pdf-date">-</span></p>
-            </div>
-            <div id="prof-pdf-contenu-exercices"></div>
+        <h2 id="modal-titre" style="margin-top:0; color:var(--primary);">-</h2>
+        <div id="modal-contenu"></div>
+        <div style="text-align:right; margin-top:20px;">
+            <button class="btn btn-secondary" onclick="document.getElementById('modal-fautes').style.display='none'">Fermer</button>
         </div>
     </div>
 </div>
@@ -271,6 +321,7 @@
         if (btn) btn.classList.add('active');
     }
 
+    // --- 1. CRÉATION ÉLÈVE ---
     async function creerEleve() {
         const code = document.getElementById('nouvel-eleve-code').value.trim();
         const cle = document.getElementById('nouvel-eleve-cle').value.trim();
@@ -291,19 +342,111 @@
     }
 
     async function supprimerAssignation(id) {
-        if (confirm("Retirer ce chapitre à l'élève ?")) await db.collection("assignations").doc(id).delete();
+        if (confirm("Retirer ce devoir à l'élève ?")) await db.collection("assignations").doc(id).delete();
     }
 
     async function supprimerDevoir(id) {
-        if (confirm("Supprimer ce chapitre de la banque et chez tous les élèves ?")) {
+        if (confirm("Supprimer ce devoir de la banque et chez tous les élèves ?")) {
             await db.collection("devoirs").doc(id).delete();
-            const snap = await db.collection("assignations").where("chapitreId", "==", id).get();
+            const snap = await db.collection("assignations").where("devoirId", "==", id).get();
             const batch = db.batch();
             snap.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
         }
     }
 
+    // --- 2. CRÉATION MANUELLE DEVOIR INTERACTIF (RESTAURÉE) ---
+    function ajusterFormulaireManuel() {
+        const type = document.querySelector('input[name="type-exo-manuel"]:checked').value;
+        const boxIdentiques = document.getElementById('box-options-identiques');
+        const aide = document.getElementById('aide-format-manuel');
+
+        if (type === 'select-identique') {
+            boxIdentiques.style.display = 'block';
+            aide.textContent = `Format attendu :\nThe keys are ____ the table.;on\nHe is waiting ____ the bus stop.;at`;
+        } else if (type === 'select-variable') {
+            boxIdentiques.style.display = 'none';
+            aide.textContent = `Format attendu (Phrase;choix1;choix2;bonne_réponse) :\nThe baby ____ (cry).;cries;is crying;is crying\nWater ____ (boil) at 100 degrees.;boils;is boiling;boils`;
+        } else {
+            boxIdentiques.style.display = 'none';
+            aide.textContent = `Format attendu (Phrase;bonne_réponse) :\nListen! The baby ____ (cry).;is crying\nI ____ (not/like) vegetables.;don't like|do not like`;
+        }
+    }
+
+    function parserTexteManuel() {
+        const type = document.querySelector('input[name="type-exo-manuel"]:checked').value;
+        const texte = document.getElementById('texte-brut-manuel').value.trim();
+        const lignes = texte.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+        const phrases = [];
+
+        lignes.forEach(ligne => {
+            const parties = ligne.split(';').map(p => p.trim());
+            if (parties.length < 2) return;
+            const q = parties[0];
+
+            if (type === 'select-identique') {
+                const options = document.getElementById('options-globales').value.split(',').map(o => o.trim());
+                phrases.push({ q: q, type: 'select', options: options, a: [parties[1]] });
+            } else if (type === 'select-variable') {
+                const bonneReponse = parties[parties.length - 1];
+                const options = parties.slice(1, parties.length - 1);
+                if (!options.includes(bonneReponse)) options.push(bonneReponse);
+                phrases.push({ q: q, type: 'select', options: options, a: [bonneReponse] });
+            } else {
+                const variantes = parties[1].split('|').map(v => v.trim());
+                phrases.push({ q: q, type: 'text', a: variantes });
+            }
+        });
+        return phrases;
+    }
+
+    function previsualiserDevoirManuel() {
+        const phrases = parserTexteManuel();
+        if (phrases.length === 0) return alert("Aucune phrase valide détectée.");
+
+        const cardPrev = document.getElementById('card-prev-manuel');
+        const zone = document.getElementById('zone-prev-manuel');
+        zone.innerHTML = "";
+
+        phrases.forEach((p, idx) => {
+            const div = document.createElement('div');
+            div.style.marginBottom = "10px";
+            const parts = p.q.includes('____') ? p.q.split('____') : p.q.split('___');
+
+            if (p.type === 'select') {
+                let optionsHtml = `<option value="">---</option>` + p.options.map(o => `<option>${o}</option>`).join('');
+                div.innerHTML = `${idx + 1}. ${parts[0]} <select style="width:auto; padding:4px 8px;">${optionsHtml}</select> ${parts[1] || ""} <span style="color:#888; font-size:0.85em;">(Attendu : ${p.a.join('/')})</span>`;
+            } else {
+                div.innerHTML = `${idx + 1}. ${parts[0]} <input type="text" style="width:130px; padding:4px 8px;" placeholder="..."> ${parts[1] || ""} <span style="color:#888; font-size:0.85em;">(Attendu : ${p.a.join('/')})</span>`;
+            }
+            zone.appendChild(div);
+        });
+
+        cardPrev.style.display = 'block';
+        cardPrev.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    async function enregistrerDevoirManuel() {
+        const titre = document.getElementById('titre-devoir-manuel').value.trim();
+        const phrases = parserTexteManuel();
+        if (!titre) return alert("Indiquez un titre.");
+        if (phrases.length === 0) return alert("Collez au moins une phrase.");
+
+        await db.collection("devoirs").add({
+            titre: titre,
+            typeDevoir: "interactif",
+            phrases: phrases,
+            dateCreation: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("✅ Devoir interactif enregistré dans la banque !");
+        document.getElementById('titre-devoir-manuel').value = "";
+        document.getElementById('texte-brut-manuel').value = "";
+        document.getElementById('card-prev-manuel').style.display = "none";
+        basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
+    }
+
+    // --- 3. ANALYSE PDF PAR L'IA ---
     async function analyserPDFAvecIA() {
         const urlApi = document.getElementById('api-url').value.trim();
         const fileInput = document.getElementById('pdf-file-input');
@@ -336,7 +479,7 @@
             alert("Erreur lors de l'analyse : " + e.message);
         } finally {
             btn.disabled = false;
-            btn.textContent = "🚀 Analyser le PDF et afficher le contenu";
+            btn.textContent = "🚀 Analyser le PDF et générer les blocs";
         }
     }
 
@@ -356,10 +499,7 @@
             const endpoint = urlApi.replace(/\/$/, "") + "/api/ajuster-contenu";
             const res = await fetch(endpoint, {
                 method: "POST",
-                headers: { 
-                    "Content-Type": "application/json",
-                    "x-gemini-model": modelChoisi
-                },
+                headers: { "Content-Type": "application/json", "x-gemini-model": modelChoisi },
                 body: JSON.stringify({ contenuActuel: donneesIAPret, instruction: instruction })
             });
             const data = await res.json();
@@ -436,7 +576,6 @@
     function afficherSlideIA() {
         const slides = (donneesIAPret && donneesIAPret.bloc_cours && donneesIAPret.bloc_cours.slides) ? donneesIAPret.bloc_cours.slides : [];
         if (slides.length === 0) return;
-
         if (indexSlideIA < 0) indexSlideIA = 0;
         if (indexSlideIA >= slides.length) indexSlideIA = slides.length - 1;
 
@@ -446,10 +585,7 @@
         document.getElementById('slide-ia-contenu').value = s.contenu_coreen || "";
     }
 
-    function naviguerSlideIA(dir) {
-        indexSlideIA += dir;
-        afficherSlideIA();
-    }
+    function naviguerSlideIA(dir) { indexSlideIA += dir; afficherSlideIA(); }
 
     function mettreAJourSlideIA() {
         const slides = (donneesIAPret && donneesIAPret.bloc_cours && donneesIAPret.bloc_cours.slides) ? donneesIAPret.bloc_cours.slides : [];
@@ -463,22 +599,17 @@
         const exos = (donneesIAPret && Array.isArray(donneesIAPret.blocs_exercices)) ? donneesIAPret.blocs_exercices : [];
         const b = exos[indexExoSelectionne];
         if (!b) return;
-
         document.getElementById('exo-ia-titre').value = b.titre || "";
         document.getElementById('exo-ia-consigne').value = b.consigne || "";
-
-        const questionsTexte = (b.questions || []).map(q => q.q).join('\n');
-        document.getElementById('exo-ia-questions').value = questionsTexte;
+        document.getElementById('exo-ia-questions').value = (b.questions || []).map(q => q.q).join('\n');
     }
 
     function mettreAJourExoIA() {
         const exos = (donneesIAPret && Array.isArray(donneesIAPret.blocs_exercices)) ? donneesIAPret.blocs_exercices : [];
         const b = exos[indexExoSelectionne];
         if (!b) return;
-
         b.titre = document.getElementById('exo-ia-titre').value;
         b.consigne = document.getElementById('exo-ia-consigne').value;
-        
         const lignes = document.getElementById('exo-ia-questions').value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
         b.questions = lignes.map(l => ({ q: l }));
     }
@@ -489,6 +620,7 @@
 
         await db.collection("devoirs").add({
             titre: donneesIAPret.titre,
+            typeDevoir: "chapitre_cours",
             bloc_cours: donneesIAPret.bloc_cours || null,
             blocs_exercices: donneesIAPret.blocs_exercices || [],
             dateCreation: firebase.firestore.FieldValue.serverTimestamp()
@@ -499,6 +631,7 @@
         basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
     }
 
+    // --- 4. ASSIGNATION UNIVERSELLE ---
     async function assignerDevoir(devoirId) {
         const d = devoirsMap[devoirId];
         if (!d) return;
@@ -511,60 +644,99 @@
         if (num >= 1 && num <= listeEleves.length) {
             const eleve = listeEleves[num - 1];
 
-            const suiviBlocs = { cours: { statut: "non_lu" } };
-            (d.blocs_exercices || []).forEach(b => {
-                suiviBlocs[b.id] = { statut: "non_fait", reponses: {} };
-            });
+            // Si c'est un devoir interactif classique
+            if (d.typeDevoir === "interactif") {
+                await db.collection("assignations").add({
+                    eleveCode: eleve.code,
+                    devoirId: d.id,
+                    devoirTitre: d.titre,
+                    typeDevoir: "interactif",
+                    phrases: d.phrases || [],
+                    statut: "non_commence",
+                    score: 0,
+                    totalQuestions: (d.phrases || []).length,
+                    totalErreurs: 0,
+                    fautesDetails: [],
+                    reponsesValidees: {},
+                    dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } else {
+                // Si c'est un chapitre complet par blocs
+                const suiviBlocs = { cours: { statut: "non_lu" } };
+                (d.blocs_exercices || []).forEach(b => {
+                    suiviBlocs[b.id] = { statut: "non_fait", reponses: {} };
+                });
 
-            await db.collection("assignations").add({
-                eleveCode: eleve.code,
-                chapitreId: d.id,
-                chapitreTitre: d.titre,
-                bloc_cours: d.bloc_cours || null,
-                blocs_exercices: d.blocs_exercices || [],
-                suiviBlocs: suiviBlocs,
-                dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
-            });
+                await db.collection("assignations").add({
+                    eleveCode: eleve.code,
+                    devoirId: d.id,
+                    devoirTitre: d.titre,
+                    typeDevoir: "chapitre_cours",
+                    bloc_cours: d.bloc_cours || null,
+                    blocs_exercices: d.blocs_exercices || [],
+                    suiviBlocs: suiviBlocs,
+                    dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            }
 
-            alert(`✅ Chapitre assigné à ${eleve.code} !`);
+            alert(`✅ Devoir assigné à ${eleve.code} !`);
             basculerOnglet('tab-eleves', document.getElementById('btn-tab-eleves'));
         }
     }
 
-    // EXTRACTION PDF ENTIÈRE SANS COUPURE
+    // VOIR ERREURS OU EXPORT PDF SELON LE TYPE DE DEVOIR
+    window.voirErreursInteractif = function(assignationId) {
+        const a = assignationsMap[assignationId];
+        if (!a) return;
+
+        const modal = document.getElementById('modal-fautes');
+        document.getElementById('modal-titre').textContent = `Erreurs de ${a.eleveCode} - "${a.devoirTitre}"`;
+
+        const fautes = Array.isArray(a.fautesDetails) ? a.fautesDetails : [];
+        if (fautes.length === 0) {
+            document.getElementById('modal-contenu').innerHTML = `<p style="color:var(--success); font-weight:bold; padding:20px; text-align:center;">🎉 Aucune faute enregistrée !</p>`;
+        } else {
+            let html = `<table><thead><tr><th>Phrase</th><th>Réponse élève</th><th>Bonne réponse</th></tr></thead><tbody>`;
+            fautes.forEach(f => {
+                html += `<tr><td>${f.phrase}</td><td style="color:var(--danger); text-decoration:line-through; font-weight:bold;">${f.reponseEleve || "(vide)"}</td><td style="color:var(--success); font-weight:bold;">${f.attendu}</td></tr>`;
+            });
+            html += `</tbody></table>`;
+            document.getElementById('modal-contenu').innerHTML = html;
+        }
+        modal.style.display = "flex";
+    };
+
     window.ouvrirModalExtractionProf = function(assignationId) {
         const a = assignationsMap[assignationId];
-        if (!a) return alert("Données introuvables.");
+        if (!a) return;
 
-        document.getElementById('prof-pdf-titre').textContent = a.chapitreTitre || "Fiche de cours";
-        document.getElementById('prof-pdf-eleve').textContent = a.eleveCode || "Élève";
-        document.getElementById('prof-pdf-date').textContent = new Date().toLocaleDateString('fr-FR');
+        const modal = document.getElementById('modal-fautes');
+        document.getElementById('modal-titre').textContent = `📄 Fiche complète : ${a.devoirTitre}`;
 
-        const zone = document.getElementById('prof-pdf-contenu-exercices');
-        zone.innerHTML = "";
+        let html = `<div id="feuille-impression-prof">
+            <div style="border-bottom:2px solid #333; padding-bottom:10px; margin-bottom:20px;">
+                <h2 style="margin:0;">${a.devoirTitre}</h2>
+                <p style="margin:5px 0 0 0; color:#555;">Élève : <strong>${a.eleveCode}</strong> · Date : ${new Date().toLocaleDateString('fr-FR')}</p>
+            </div>`;
+
         const suivi = a.suiviBlocs || {};
 
         if (a.bloc_cours && a.bloc_cours.slides) {
-            zone.innerHTML += `<div style="background:#fdfbf7; border:1px solid #e0a92c; padding:15px; margin-bottom:25px; border-radius:8px;">
-                <h3 style="margin-top:0; color:#8a6314;">📖 ${a.bloc_cours.titre}</h3>`;
+            html += `<div style="background:#fdfbf7; border:1px solid #e0a92c; padding:15px; margin-bottom:25px; border-radius:8px;"><h3 style="margin-top:0; color:#8a6314;">📖 ${a.bloc_cours.titre}</h3>`;
             a.bloc_cours.slides.forEach((s, idx) => {
-                zone.innerHTML += `<div style="margin-bottom:12px;"><strong>Fiche ${idx+1} : ${s.titre}</strong><pre style="white-space:pre-wrap; font-family:inherit; margin:5px 0 0 0; line-height:1.7;">${s.contenu_coreen}</pre></div>`;
+                html += `<div style="margin-bottom:12px;"><strong>Fiche ${idx+1} : ${s.titre}</strong><pre style="white-space:pre-wrap; font-family:inherit; margin:5px 0 0 0; line-height:1.7;">${s.contenu_coreen}</pre></div>`;
             });
-            zone.innerHTML += `</div>`;
+            html += `</div>`;
         }
 
         const blocs = Array.isArray(a.blocs_exercices) ? a.blocs_exercices : [];
         blocs.forEach((b) => {
-            const reponsesDuBloc = (suivi[b.id] && suivi[b.id].reponses) ? suivi[b.id].reponses : {};
-            zone.innerHTML += `<h3 style="margin-top:25px; color:#1e293b;">${b.titre}</h3>`;
-            if (b.consigne) zone.innerHTML += `<p style="font-style:italic; color:#555;">${b.consigne}</p>`;
+            const reponses = (suivi[b.id] && suivi[b.id].reponses) ? suivi[b.id].reponses : {};
+            html += `<h3 style="margin-top:25px; color:#1e293b;">${b.titre}</h3>`;
+            if (b.consigne) html += `<p style="font-style:italic; color:#555;">${b.consigne}</p>`;
             
-            const ol = document.createElement('ol');
-            ol.style.lineHeight = "2.1";
-
+            html += `<ol style="line-height:2.1;">`;
             (b.questions || []).forEach((q, qIdx) => {
-                const li = document.createElement('li');
-
                 if (q.q.includes('____') || q.q.includes('___')) {
                     const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
                     let texteLigne = "";
@@ -572,21 +744,23 @@
                         texteLigne += parts[i];
                         if (i < parts.length - 1) {
                             const cleTrou = `${qIdx}_trou_${i}`;
-                            const rep = reponsesDuBloc[cleTrou] ? `<span class="surbrillance">${reponsesDuBloc[cleTrou]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
+                            const rep = reponses[cleTrou] ? `<span class="surbrillance">${reponses[cleTrou]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
                             texteLigne += ` ${rep} `;
                         }
                     }
-                    li.innerHTML = texteLigne;
+                    html += `<li>${texteLigne}</li>`;
                 } else {
-                    const rep = reponsesDuBloc[`${qIdx}_ouverte`] ? `<span class="surbrillance">${reponsesDuBloc[`${qIdx}_ouverte`]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
-                    li.innerHTML = `<strong>${q.q}</strong><br>➔ Réponse : ${rep}`;
+                    const rep = reponses[`${qIdx}_ouverte`] ? `<span class="surbrillance">${reponses[`${qIdx}_ouverte`]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
+                    html += `<li><strong>${q.q}</strong><br>➔ Réponse : ${rep}</li>`;
                 }
-                ol.appendChild(li);
             });
-            zone.appendChild(ol);
+            html += `</ol>`;
         });
 
-        document.getElementById('modal-export-prof').style.display = "flex";
+        html += `</div><div class="no-print" style="margin-top:20px; text-align:right;"><button class="btn btn-success" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button></div>`;
+
+        document.getElementById('modal-contenu').innerHTML = html;
+        modal.style.display = "flex";
     };
 
     function ecouterDonnees() {
@@ -615,14 +789,22 @@
             const tbody = document.getElementById('table-devoirs-corps');
             tbody.innerHTML = "";
             listeDevoirs.forEach(d => {
-                const nbFiches = d.bloc_cours?.slides ? d.bloc_cours.slides.length : 0;
-                const nbExos = Array.isArray(d.blocs_exercices) ? d.blocs_exercices.length : 0;
                 const tr = document.createElement('tr');
+                const estInteractif = (d.typeDevoir === "interactif");
+                const badgeType = estInteractif 
+                    ? `<span class="badge-interactif">⚡ Devoir Interactif</span>` 
+                    : `<span class="badge-chapitre">📖 Chapitre (Cours + Exo)</span>`;
+                
+                const details = estInteractif 
+                    ? `${(d.phrases || []).length} phrases` 
+                    : `${(d.bloc_cours?.slides || []).length} fiches · ${(d.blocs_exercices || []).length} blocs exos`;
+
                 tr.innerHTML = `
                     <td><strong>${d.titre}</strong></td>
-                    <td>1 bloc cours (${nbFiches} fiches) + ${nbExos} blocs d'exercices</td>
+                    <td>${badgeType}</td>
+                    <td>${details}</td>
                     <td style="display:flex; gap:6px;">
-                        <button class="btn btn-sm btn-success" onclick="assignerDevoir('${d.id}')">➕ Assigner à un élève</button>
+                        <button class="btn btn-sm btn-success" onclick="assignerDevoir('${d.id}')">➕ Assigner</button>
                         <button class="btn btn-sm btn-danger" onclick="supprimerDevoir('${d.id}')">🗑️</button>
                     </td>
                 `;
@@ -637,34 +819,41 @@
 
             const tbody = document.getElementById('table-assignations-corps');
             tbody.innerHTML = "";
-
-            if (assignations.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">Aucun devoir assigné.</td></tr>`;
-                return;
-            }
-
             assignations.forEach(a => {
                 const tr = document.createElement('tr');
-                const suivi = a.suiviBlocs || {};
+                const estInteractif = (a.typeDevoir === "interactif");
 
-                let badgesHtml = "";
-                const coursLu = (suivi.cours && suivi.cours.statut === "lu");
-                badgesHtml += coursLu ? `<span class="badge-lu">📖 Cours : Lu ✓</span> ` : `<span class="badge-nonlu">📖 Cours : Non lu</span> `;
+                let colType = estInteractif ? `<span class="badge-interactif">⚡ Interactif</span>` : `<span class="badge-chapitre">📖 Chapitre</span>`;
+                let colAvancement = "";
+                let colActions = "";
 
-                const blocs = Array.isArray(a.blocs_exercices) ? a.blocs_exercices : [];
-                blocs.forEach((b, idx) => {
-                    const etat = suivi[b.id] ? suivi[b.id].statut : "non_fait";
-                    badgesHtml += (etat === "fait") ? `<span class="badge-fait">✏️ Exo ${idx + 1} : Fait ✓</span> ` : `<span class="badge-nonfait">✏️ Exo ${idx + 1} : Non fait ⏳</span> `;
-                });
-
-                tr.innerHTML = `
-                    <td><strong style="color:var(--accent); font-size:1.05em;">${a.eleveCode}</strong></td>
-                    <td><strong>${a.chapitreTitre}</strong></td>
-                    <td>${badgesHtml}</td>
-                    <td style="display:flex; gap:8px;">
+                if (estInteractif) {
+                    const estTermine = (a.statut === "termine");
+                    colAvancement = `<strong style="color:${estTermine ? 'var(--success)' : '#d97706'};">${a.score || 0} / ${a.totalQuestions || 0}</strong> (${a.totalErreurs || 0} fautes)`;
+                    colActions = `
+                        <button class="btn btn-sm" onclick="voirErreursInteractif('${a.id}')">🔍 Voir les erreurs</button>
+                        <button class="btn btn-danger btn-sm" onclick="supprimerAssignation('${a.id}')">🗑️</button>
+                    `;
+                } else {
+                    const suivi = a.suiviBlocs || {};
+                    const coursLu = (suivi.cours && suivi.cours.statut === "lu");
+                    colAvancement += coursLu ? `<span class="badge-lu">Cours: Lu ✓</span> ` : `<span class="badge-nonlu">Cours: Non lu</span> `;
+                    (a.blocs_exercices || []).forEach((b, idx) => {
+                        const fait = (suivi[b.id] && suivi[b.id].statut === "fait");
+                        colAvancement += fait ? `<span class="badge-fait">Exo ${idx+1}: Fait ✓</span> ` : `<span class="badge-nonfait">Exo ${idx+1}: ⏳</span> `;
+                    });
+                    colActions = `
                         <button class="btn btn-sm btn-purple" onclick="ouvrirModalExtractionProf('${a.id}')">📄 Exporter PDF</button>
                         <button class="btn btn-danger btn-sm" onclick="supprimerAssignation('${a.id}')">🗑️</button>
-                    </td>
+                    `;
+                }
+
+                tr.innerHTML = `
+                    <td><strong style="color:var(--accent);">${a.eleveCode}</strong></td>
+                    <td><strong>${a.devoirTitre || a.chapitreTitre}</strong></td>
+                    <td>${colType}</td>
+                    <td>${colAvancement}</td>
+                    <td style="display:flex; gap:6px;">${colActions}</td>
                 `;
                 tbody.appendChild(tr);
             });

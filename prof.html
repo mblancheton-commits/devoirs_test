@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espace Professeur</title>
+    
+    <!-- SDK Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --bg: #f8fafc;
+        }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #333; margin: 0; padding: 20px; }
+        .container { max-width: 1150px; margin: 0 auto; }
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 25px; }
+        h1 { margin: 0; color: var(--primary); font-size: 1.6em; }
+
+        .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+        .tab-btn { padding: 10px 20px; background: #e2e8f0; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; color: #4a5568; }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08); margin-bottom: 25px; }
+        .card h2 { margin-top: 0; color: var(--primary); font-size: 1.25em; border-bottom: 1px solid #edf2f7; padding-bottom: 10px; }
+
+        label { display: block; font-weight: 600; margin-bottom: 6px; margin-top: 14px; font-size: 0.95em; }
+        input[type="text"], textarea { width: 100%; padding: 10px; border: 2px solid #cbd5e0; border-radius: 6px; box-sizing: border-box; font-family: inherit; }
+
+        .btn { background: var(--accent); color: white; padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+        .btn:hover { opacity: 0.9; }
+        .btn-success { background: var(--success); }
+        .btn-danger { background: var(--danger); }
+        .btn-purple { background: #8e44ad; }
+        .btn-secondary { background: #718096; }
+        .btn-sm { padding: 6px 10px; font-size: 0.85em; }
+
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #edf2f7; font-size: 0.95em; }
+        th { background: #edf2f7; color: #4a5568; }
+
+        .badge-termine { background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+        .badge-cours { background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+        .badge-nonfait { background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; font-weight: bold; }
+
+        /* MODAL EXPORT PDF SURBRILLANCE */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center; align-items: center;
+            z-index: 10000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%; max-width: 850px;
+            max-height: 85vh; overflow-y: auto;
+        }
+        .surbrillance {
+            background-color: #ffeb3b !important;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #000;
+            text-decoration: underline;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            #feuille-impression-prof, #feuille-impression-prof * { visibility: visible; }
+            #feuille-impression-prof {
+                position: absolute;
+                left: 0; top: 0; width: 100%;
+                background: white; padding: 20px;
+            }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>🎓 Tableau de bord Enseignant</h1>
+        <div><span style="color:var(--success); font-weight:bold;">● Connecté à Firebase</span></div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" id="btn-tab-eleves" onclick="basculerOnglet('tab-eleves', this)">👥 Élèves & Suivi des devoirs</button>
+        <button class="tab-btn" id="btn-tab-pdf" onclick="basculerOnglet('tab-pdf', this)">📄 Importer depuis un PDF (IA)</button>
+        <button class="tab-btn" id="btn-tab-devoirs" onclick="basculerOnglet('tab-devoirs', this)">📚 Banque de Devoirs</button>
+    </div>
+
+    <!-- ONGLET 1 : ÉLÈVES & SUIVI -->
+    <div id="tab-eleves" class="tab-pane">
+        <div class="card">
+            <h2>Ajouter un profil élève</h2>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <input type="text" id="nouvel-eleve-code" placeholder="Code élève (ex: Lucas01)" style="flex:1;">
+                <input type="text" id="nouvel-eleve-cle" placeholder="Clé API Gemini personnalisée (Optionnel)" style="flex:1;">
+                <button class="btn btn-success" onclick="creerEleve()">Ajouter l'élève</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📋 Élèves enregistrés</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Code Élève</th>
+                        <th>Clé API personnalisée</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="table-eleves-corps"><tr><td colspan="3">Chargement...</td></tr></tbody>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>📊 Devoirs en cours & Copies des élèves</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Élève</th>
+                        <th>Devoir</th>
+                        <th>Statut</th>
+                        <th>Dernière activité</th>
+                        <th>Actions & Extraction</th>
+                    </tr>
+                </thead>
+                <tbody id="table-assignations-corps"><tr><td colspan="5">Aucun devoir assigné.</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ONGLET 2 : IMPORT PDF PAR L'IA -->
+    <div id="tab-pdf" class="tab-pane" style="display:none;">
+        <div class="card">
+            <h2>📄 Convertir un cours & exercices PDF</h2>
+            <p style="color:#666;">Sélectionnez votre PDF de cours (comme la fiche sur le Futur simple/proche). L'IA va rédiger la fiche de grammaire en coréen et extraire tous les exercices prêts pour vos élèves.</p>
+            
+            <label>1. URL de votre API Render (ex: https://mon-anglais-api.onrender.com) :</label>
+            <input type="text" id="api-url" placeholder="https://votre-api.onrender.com">
+
+            <label style="margin-top:15px;">2. Fichier PDF de votre cours :</label>
+            <input type="file" id="pdf-file-input" accept="application/pdf">
+
+            <div style="margin-top:20px;">
+                <button class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser le PDF et générer le devoir</button>
+            </div>
+        </div>
+
+        <div class="card" id="card-resultat-ia" style="display:none;">
+            <h2>Résultat de l'analyse (Prêt pour enregistrement)</h2>
+            <label>Titre du devoir :</label>
+            <input type="text" id="ia-titre">
+
+            <label>Fiche de grammaire synthétique générée en coréen :</label>
+            <textarea id="ia-grammaire" rows="8"></textarea>
+
+            <div style="margin-top:20px;">
+                <button class="btn btn-success" onclick="sauvegarderDevoirIA()">💾 Enregistrer ce cours dans ma Banque de Devoirs</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ONGLET 3 : BANQUE DE DEVOIRS -->
+    <div id="tab-devoirs" class="tab-pane" style="display:none;">
+        <div class="card">
+            <h2>Banque de Devoirs disponibles</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Titre</th>
+                        <th>Type</th>
+                        <th>Exercices</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="table-devoirs-corps"><tr><td colspan="4">Chargement...</td></tr></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL D'EXTRACTION PDF CÔTÉ PROFESSEUR -->
+<div class="modal" id="modal-export-prof">
+    <div class="modal-content">
+        <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding-bottom:12px; margin-bottom:20px;">
+            <h2 style="margin:0; color:var(--primary);">📄 Copie de l'élève avec réponses en surbrillance</h2>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-success" onclick="imprimerFeuilleProf()">🖨️ Enregistrer en PDF / Imprimer</button>
+                <button class="btn btn-secondary" onclick="fermerModalExportProf()">Fermer</button>
+            </div>
+        </div>
+
+        <div id="feuille-impression-prof">
+            <div style="border-bottom:2px solid #333; padding-bottom:10px; margin-bottom:20px;">
+                <h1 style="margin:0; font-size:1.6em;" id="prof-pdf-titre">-</h1>
+                <p style="margin:5px 0 0 0; color:#555;">Élève : <strong id="prof-pdf-eleve" style="color:#2980b9;">-</strong> · Date d'extraction : <span id="prof-pdf-date">-</span></p>
+            </div>
+            
+            <div id="prof-pdf-contenu-exercices"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let db = null;
+    try {
+        const firebaseConfig = {
+            apiKey: "AIzaSyBF72uEilOlNUnRB4_BqREpXCj6NvF4Mac",
+            authDomain: "exoanglais-6dd43.firebaseapp.com",
+            projectId: "exoanglais-6dd43",
+            storageBucket: "exoanglais-6dd43.firebasestorage.app",
+            messagingSenderId: "656075154329",
+            appId: "1:656075154329:web:cfe7ccb130ae55da02a908",
+            measurementId: "G-BWY78NT061"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+    } catch(e) { console.error("Firebase init:", e); }
+
+    let listeEleves = [];
+    let listeDevoirs = [];
+    let devoirsMap = {};
+    let assignationsMap = {};
+    let donneesIAPret = null;
+
+    const urlStockee = localStorage.getItem("backendApiUrl");
+    if (urlStockee) document.getElementById('api-url').value = urlStockee;
+
+    function basculerOnglet(tabId, btn) {
+        document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).style.display = 'block';
+        if (btn) btn.classList.add('active');
+    }
+
+    async function creerEleve() {
+        const code = document.getElementById('nouvel-eleve-code').value.trim();
+        const cle = document.getElementById('nouvel-eleve-cle').value.trim();
+        if (!code) return alert("Indiquez le code élève (ex: Lucas01).");
+
+        await db.collection("eleves").add({
+            code: code,
+            cleApiPerso: cle || null,
+            dateCreation: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        document.getElementById('nouvel-eleve-code').value = "";
+        document.getElementById('nouvel-eleve-cle').value = "";
+        alert(`✅ Élève ${code} enregistré !`);
+    }
+
+    async function supprimerEleve(id) {
+        if (confirm("Supprimer cet élève ?")) await db.collection("eleves").doc(id).delete();
+    }
+
+    async function supprimerAssignation(id) {
+        if (confirm("Retirer ce devoir à l'élève ?")) await db.collection("assignations").doc(id).delete();
+    }
+
+    async function supprimerDevoir(id) {
+        if (confirm("Supprimer ce devoir de la banque et chez tous les élèves ?")) {
+            await db.collection("devoirs").doc(id).delete();
+            const snap = await db.collection("assignations").where("devoirId", "==", id).get();
+            const batch = db.batch();
+            snap.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+        }
+    }
+
+    // ANALYSE DU PDF AVEC LE BACKEND IA
+    async function analyserPDFAvecIA() {
+        const urlApi = document.getElementById('api-url').value.trim();
+        const fileInput = document.getElementById('pdf-file-input');
+        
+        if (!urlApi) return alert("Veuillez indiquer l'URL de votre serveur Render.");
+        if (!fileInput.files || fileInput.files.length === 0) return alert("Veuillez sélectionner un fichier PDF.");
+
+        localStorage.setItem("backendApiUrl", urlApi);
+        const btn = document.getElementById('btn-analyser-pdf');
+        btn.disabled = true;
+        btn.textContent = "⏳ Analyse par l'IA en cours (environ 15 secondes)...";
+
+        const formData = new FormData();
+        formData.append("pdf", fileInput.files[0]);
+
+        try {
+            const endpoint = urlApi.replace(/\/$/, "") + "/api/analyser-pdf";
+            const res = await fetch(endpoint, { method: "POST", body: formData });
+            const data = await res.json();
+
+            if (data.error) throw new Error(data.error);
+
+            donneesIAPret = data;
+            document.getElementById('ia-titre').value = data.titre || "Fiche de cours et devoirs";
+            document.getElementById('ia-grammaire').value = data.grammaire_coreen || "";
+            document.getElementById('card-resultat-ia').style.display = "block";
+            document.getElementById('card-resultat-ia').scrollIntoView({ behavior: 'smooth' });
+
+            alert("✅ Analyse terminée ! Vérifiez le titre et la grammaire ci-dessous avant d'enregistrer.");
+        } catch(e) {
+            alert("Erreur lors de l'analyse : " + e.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "🚀 Analyser le PDF et générer le devoir";
+        }
+    }
+
+    async function sauvegarderDevoirIA() {
+        if (!donneesIAPret) return;
+        const titre = document.getElementById('ia-titre').value.trim();
+        const grammaire = document.getElementById('ia-grammaire').value.trim();
+
+        await db.collection("devoirs").add({
+            titre: titre,
+            grammaireCoreen: grammaire,
+            phrases: donneesIAPret.exercices_trous || [],
+            questionsOuvertes: donneesIAPret.questions_ouvertes || [],
+            dateCreation: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("✅ Devoir enregistré dans la banque ! Vous pouvez maintenant l'assigner à vos élèves.");
+        document.getElementById('card-resultat-ia').style.display = "none";
+        basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
+    }
+
+    async function assignerDevoir(devoirId) {
+        const d = devoirsMap[devoirId];
+        if (!d) return;
+        if (listeEleves.length === 0) return alert("Créez d'abord au moins un élève.");
+
+        const options = listeEleves.map((e, idx) => `${idx + 1}. ${e.code}`).join('\n');
+        const choix = prompt(`À quel élève assigner "${d.titre}" ?\n\n${options}\n\nTapez le numéro :`);
+        const num = parseInt(choix);
+
+        if (num >= 1 && num <= listeEleves.length) {
+            const eleve = listeEleves[num - 1];
+            await db.collection("assignations").add({
+                eleveCode: eleve.code,
+                devoirId: d.id,
+                devoirTitre: d.titre,
+                grammaireCoreen: d.grammaireCoreen || "",
+                phrases: d.phrases || [],
+                questionsOuvertes: d.questionsOuvertes || [],
+                statut: "non_commence",
+                reponsesSaisies: {},
+                reponsesOuvertes: {},
+                dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert(`✅ Devoir assigné à ${eleve.code} !`);
+            basculerOnglet('tab-eleves', document.getElementById('btn-tab-eleves'));
+        }
+    }
+
+    // --- EXTRACTION DU PDF DEPUIS L'ESPACE PROFESSEUR ---
+    window.ouvrirModalExtractionProf = function(assignationId) {
+        const a = assignationsMap[assignationId];
+        if (!a) return alert("Devoir introuvable.");
+
+        document.getElementById('prof-pdf-titre').textContent = a.devoirTitre || "Fiche de devoir";
+        document.getElementById('prof-pdf-eleve').textContent = a.eleveCode || "Élève";
+        document.getElementById('prof-pdf-date').textContent = new Date().toLocaleDateString('fr-FR');
+
+        const zone = document.getElementById('prof-pdf-contenu-exercices');
+        zone.innerHTML = "";
+
+        const reponsesTrous = a.reponsesSaisies || {};
+        const reponsesOuvertes = a.reponsesOuvertes || {};
+
+        // 1. Grammaire en coréen
+        if (a.grammaireCoreen) {
+            const gDiv = document.createElement('div');
+            gDiv.style.background = "#fdfbf7";
+            gDiv.style.border = "1px solid #e0a92c";
+            gDiv.style.padding = "15px";
+            gDiv.style.marginBottom = "25px";
+            gDiv.style.borderRadius = "6px";
+            gDiv.innerHTML = `<h3 style="margin-top:0; color:#8a6314;">📖 문법 핵심 정리</h3><pre style="white-space:pre-wrap; font-family:inherit; margin:0; line-height:1.7;">${a.grammaireCoreen}</pre>`;
+            zone.appendChild(gDiv);
+        }
+
+        // 2. Phrases à trous complétées avec surbrillance
+        const phrases = Array.isArray(a.phrases) ? a.phrases : [];
+        if (phrases.length > 0) {
+            const h3 = document.createElement('h3');
+            h3.textContent = "Exercices complétés :";
+            zone.appendChild(h3);
+
+            const ol = document.createElement('ol');
+            ol.style.lineHeight = "2.1";
+            ol.style.fontSize = "1.05em";
+
+            phrases.forEach((p, idx) => {
+                const parts = p.q.includes('____') ? p.q.split('____') : p.q.split('___');
+                const rep = reponsesTrous[idx] ? `<span class="surbrillance">${reponsesTrous[idx]}</span>` : `<span style="color:#aaa; text-decoration:underline;">(non rempli)</span>`;
+                const li = document.createElement('li');
+                li.innerHTML = `${parts[0]} ${rep} ${parts[1] || ""}`;
+                ol.appendChild(li);
+            });
+            zone.appendChild(ol);
+        }
+
+        // 3. Questions ouvertes avec réponses en surbrillance
+        const ouvertes = Array.isArray(a.questionsOuvertes) ? a.questionsOuvertes : [];
+        if (ouvertes.length > 0) {
+            const h3 = document.createElement('h3');
+            h3.textContent = "Questions d'expression libre :";
+            h3.style.marginTop = "30px";
+            zone.appendChild(h3);
+
+            const ol = document.createElement('ol');
+            ol.style.lineHeight = "1.9";
+
+            ouvertes.forEach((q, idx) => {
+                const rep = reponsesOuvertes[idx] ? `<span class="surbrillance">${reponsesOuvertes[idx]}</span>` : `<span style="color:#aaa;">(Pas de réponse rédigée)</span>`;
+                const li = document.createElement('li');
+                li.style.marginBottom = "15px";
+                li.innerHTML = `<strong>${q}</strong><br>➔ Réponse de l'élève : ${rep}`;
+                ol.appendChild(li);
+            });
+            zone.appendChild(ol);
+        }
+
+        document.getElementById('modal-export-prof').style.display = "flex";
+    };
+
+    window.fermerModalExportProf = function() {
+        document.getElementById('modal-export-prof').style.display = "none";
+    };
+
+    window.imprimerFeuilleProf = function() {
+        window.print();
+    };
+
+    // ÉCOUTE DES DONNÉES
+    function ecouterDonnees() {
+        if (!db) return;
+
+        db.collection("eleves").onSnapshot(snap => {
+            listeEleves = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            const tbody = document.getElementById('table-eleves-corps');
+            tbody.innerHTML = "";
+            listeEleves.forEach(e => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${e.code}</strong></td>
+                    <td><code>${e.cleApiPerso ? "● Clé personnalisée active" : "(Utilise la clé par défaut du prof)"}</code></td>
+                    <td><button class="btn btn-danger btn-sm" onclick="supprimerEleve('${e.id}')">🗑️</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+
+        db.collection("devoirs").onSnapshot(snap => {
+            listeDevoirs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            devoirsMap = {};
+            listeDevoirs.forEach(d => { devoirsMap[d.id] = d; });
+
+            const tbody = document.getElementById('table-devoirs-corps');
+            tbody.innerHTML = "";
+            listeDevoirs.forEach(d => {
+                const total = (d.phrases ? d.phrases.length : 0) + (d.questionsOuvertes ? d.questionsOuvertes.length : 0);
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${d.titre}</strong></td>
+                    <td>${d.grammaireCoreen ? "Fiche Cours + Exercices" : "Exercices simples"}</td>
+                    <td>${total} questions</td>
+                    <td style="display:flex; gap:6px;">
+                        <button class="btn btn-sm btn-success" onclick="assignerDevoir('${d.id}')">➕ Assigner à un élève</button>
+                        <button class="btn btn-sm btn-danger" onclick="supprimerDevoir('${d.id}')">🗑️</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+
+        db.collection("assignations").onSnapshot(snap => {
+            const assignations = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            assignationsMap = {};
+            assignations.forEach(a => { assignationsMap[a.id] = a; });
+
+            const tbody = document.getElementById('table-assignations-corps');
+            tbody.innerHTML = "";
+            assignations.forEach(a => {
+                const tr = document.createElement('tr');
+                let badge = `<span class="badge-nonfait">Non commencé</span>`;
+                if (a.statut === 'en_cours') badge = `<span class="badge-cours">En cours (Enregistré)</span>`;
+                if (a.statut === 'termine') badge = `<span class="badge-termine">Terminé ✓ Rendu</span>`;
+
+                tr.innerHTML = `
+                    <td><strong style="color:#2980b9;">${a.eleveCode}</strong></td>
+                    <td>${a.devoirTitre}</td>
+                    <td>${badge}</td>
+                    <td>${a.dateDerniereActivite ? a.dateDerniereActivite.toDate().toLocaleTimeString('fr-FR') : '-'}</td>
+                    <td style="display:flex; gap:8px;">
+                        <button class="btn btn-sm btn-purple" onclick="ouvrirModalExtractionProf('${a.id}')">📄 Exporter PDF</button>
+                        <button class="btn btn-danger btn-sm" onclick="supprimerAssignation('${a.id}')">🗑️ Retirer</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        });
+    }
+
+    ecouterDonnees();
+</script>
+</body>
+</html>

@@ -16,12 +16,13 @@
             --success: #10b981;
             --danger: #ef4444;
             --warning: #f59e0b;
+            --purple: #8b5cf6;
             --bg: #f8fafc;
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #1e293b; margin: 0; padding: 20px; padding-bottom: 90px; }
         .container { max-width: 900px; margin: 0 auto; }
         
-        /* 0. ÉCRAN LANGUE */
+        /* ÉCRAN 0 : LANGUE */
         #ecran-langue { max-width: 500px; margin: 70px auto; background: white; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         #ecran-langue h1 { color: var(--primary); margin-top: 0; font-size: 1.8em; margin-bottom: 25px; }
         .lang-grid { display: flex; flex-direction: column; gap: 14px; }
@@ -30,12 +31,12 @@
         .flag-svg { width: 48px; height: 32px; border-radius: 4px; margin-right: 18px; flex-shrink: 0; }
         .lang-title { font-size: 1.15em; font-weight: bold; color: var(--primary); }
 
-        /* 1. ÉCRAN CONNEXION */
+        /* ÉCRAN 1 : CONNEXION */
         #ecran-login { display: none; max-width: 440px; margin: 70px auto; background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         #code-input { width: 100%; padding: 14px; font-size: 1.25em; border: 2px solid #cbd5e0; border-radius: 10px; text-align: center; font-weight: bold; box-sizing: border-box; margin: 20px 0; text-transform: uppercase; }
         #code-input:focus { outline: none; border-color: var(--accent); }
 
-        /* 1.5 BIENVENUE */
+        /* ÉCRAN 1.5 : BIENVENUE */
         #ecran-bienvenue { display: none; max-width: 460px; margin: 70px auto; background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         .welcome-user-box { font-size: 1.5em; font-weight: bold; color: var(--accent); background: #eff6ff; padding: 12px; border-radius: 10px; margin: 15px 0 25px 0; }
         .soft-mode-card { background: #f8fafc; border: 2px dashed #cbd5e0; padding: 14px; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left; }
@@ -45,24 +46,37 @@
         .btn-full { width: 100%; box-sizing: border-box; }
         .btn-success { background: var(--success); }
         .btn-warning { background: var(--warning); }
-        .btn-purple { background: #8b5cf6; }
+        .btn-purple { background: var(--purple); }
         .btn-secondary { background: #64748b; padding: 8px 16px; font-size: 0.9em; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85em; }
 
         /* EN-TÊTE ÉLÈVE */
         #header-eleve { display: none; background: white; padding: 15px 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 25px; justify-content: space-between; align-items: center; }
 
-        /* TABLEAU DE BORD */
+        /* TABLEAU DE BORD ONGLETS */
         #ecran-tableau-de-bord { display: none; }
-        .devoir-card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--accent); }
+        .tabs-nav { display: flex; gap: 12px; margin-bottom: 20px; }
+        .tab-btn { flex: 1; padding: 14px; background: #e2e8f0; border: none; border-radius: 10px; font-weight: bold; color: #475569; cursor: pointer; font-size: 1.05em; display: flex; justify-content: center; align-items: center; gap: 8px; }
+        .tab-btn.active { background: var(--primary); color: white; }
+        .tab-badge { background: rgba(255,255,255,0.25); color: inherit; padding: 2px 8px; border-radius: 12px; font-size: 0.85em; }
+        .tab-btn.active .tab-badge { background: white; color: var(--primary); font-weight: bold; }
+
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        .devoir-card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--accent); flex-wrap: wrap; gap: 12px; }
         .devoir-card.fait { border-left-color: var(--success); }
 
-        /* VUE A : EXERCICE INTERACTIF AVEC SCORE ET VÉRIFICATION */
+        .badge-type-interactif { background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+        .badge-type-chapitre { background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+
+        /* VUE 1 : DEVOIR INTERACTIF RAPIDE */
         #vue-exo-interactif { display: none; }
-        .phrase-box-interactif { background: white; padding: 16px 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 14px; font-size: 1.05em; line-height: 2.2; }
+        .phrase-box-interactif { background: white; padding: 16px 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 14px; font-size: 1.08em; line-height: 2.2; }
         .correct-input { border-color: var(--success) !important; background: #eafaf1 !important; color: #1e8449 !important; }
         .incorrect-input { border-color: var(--danger) !important; background: #fceae8 !important; color: #c0392b !important; }
 
-        /* VUE B : MODULE / CHAPITRE PAR BLOCS */
+        /* VUE 2 : CHAPITRE PAR BLOCS & EXPORT PDF */
         #vue-chapitre-blocs { display: none; }
         .bloc-nav-card { background: white; padding: 18px 22px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e2e8f0; }
         .bloc-nav-card.fait { border-color: var(--success); background: #f0fdf4; }
@@ -73,10 +87,13 @@
         .input-calme { padding: 8px 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; font-family: inherit; color: #1e293b; font-weight: 600; background: white; }
         .textarea-calme { width: 100%; padding: 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; margin-top: 8px; box-sizing: border-box; font-family: inherit; }
 
-        /* MODAL EXPORT PDF SURBRILLANCE */
+        /* MODALES */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
         .modal-content { background: white; padding: 30px; border-radius: 14px; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
         .surbrillance { background-color: #fef08a !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #000; text-decoration: underline; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.95em; }
+        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #edf2f7; }
+        th { background: #edf2f7; color: #4a5568; }
 
         /* OVERLAY TAQUINERIES */
         #punition-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(231, 76, 60, 0.96); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
@@ -99,7 +116,7 @@
 
     <!-- 0. CHOIX LANGUE -->
     <div id="ecran-langue">
-        <h1>Choisissez votre langue</h1>
+        <h1 id="txt-select-lang">Choisissez votre langue</h1>
         <div class="lang-grid">
             <div class="lang-card" onclick="choisirLangue('fr')">
                 <svg class="flag-svg" viewBox="0 0 900 600"><rect width="300" height="600" fill="#002395"/><rect x="300" width="300" height="600" fill="#fff"/><rect x="600" width="300" height="600" fill="#ed2939"/></svg>
@@ -118,63 +135,74 @@
 
     <!-- 1. CONNEXION -->
     <div id="ecran-login">
-        <h1>👋 Espace Français</h1>
-        <p style="color:#64748b;">Entrez votre code élève pour accéder à vos devoirs :</p>
+        <h1 id="txt-login-title">👋 Espace Français</h1>
+        <p id="txt-login-desc">Entrez votre code élève pour accéder à vos devoirs :</p>
         <input type="text" id="code-input" placeholder="EX: LUCAS01" autocomplete="off">
-        <button type="button" class="btn btn-full" onclick="seConnecter()">Ouvrir mes devoirs</button>
+        <button type="button" class="btn btn-full" id="btn-login" onclick="seConnecter()">Ouvrir mes devoirs</button>
+        <div style="margin-top:15px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="retourChoixLangue()">🌐 Langue / 언어 / Language</button>
+        </div>
     </div>
 
     <!-- 1.5 BIENVENUE -->
     <div id="ecran-bienvenue">
-        <h1>Bienvenue !</h1>
+        <h1 id="txt-welcome-heading">Bienvenue !</h1>
         <div class="welcome-user-box" id="bienvenue-nom-user">-</div>
         <div class="soft-mode-card" onclick="toggleSoftMode()">
             <input type="checkbox" id="check-soft-mode" onclick="event.stopPropagation()">
-            <label for="check-soft-mode" style="cursor:pointer; font-weight:600;">Sois doux avec moi aujourd'hui 😇</label>
+            <label for="check-soft-mode" id="txt-soft-mode" style="cursor:pointer; font-weight:600;">Sois doux avec moi aujourd'hui 😇</label>
         </div>
-        <button type="button" class="btn btn-full btn-success" onclick="validerBienvenue()">Accéder à mes devoirs ▶</button>
+        <button type="button" class="btn btn-full btn-success" id="btn-continue-welcome" onclick="validerBienvenue()">Accéder à mes devoirs ▶</button>
     </div>
 
     <!-- EN-TÊTE ÉLÈVE CONNECTÉ -->
     <div id="header-eleve">
-        <div class="info-profil">Élève : <strong id="affichage-code-eleve" style="color:var(--accent);">-</strong></div>
+        <div class="info-profil"><span id="txt-logged-as">Élève :</span> <strong id="affichage-code-eleve" style="color:var(--accent);">-</strong></div>
         <div style="display:flex; gap:8px;">
             <button type="button" class="btn btn-secondary" onclick="retourChoixLangue()">🌐</button>
-            <button type="button" class="btn btn-secondary" onclick="deconnexion()">Changer de compte</button>
+            <button type="button" class="btn btn-secondary" id="btn-logout" onclick="deconnexion()">Changer de compte</button>
         </div>
     </div>
 
-    <!-- 2. TABLEAU DE BORD PRINCIPAL -->
+    <!-- 2. TABLEAU DE BORD (ONGLETS À FAIRE ET FAITS) -->
     <div id="ecran-tableau-de-bord">
-        <h2 style="color:var(--primary); margin-top:0;">📚 Vos devoirs à faire</h2>
-        <div id="conteneur-devoirs"></div>
+        <div class="tabs-nav">
+            <button type="button" class="tab-btn active" id="btn-tab-afaire" onclick="changerOnglet('afaire')">
+                <span id="txt-tab-afaire">⏳ À faire</span> <span class="tab-badge" id="badge-nb-afaire">0</span>
+            </button>
+            <button type="button" class="tab-btn" id="btn-tab-faits" onclick="changerOnglet('faits')">
+                <span id="txt-tab-faits">🏆 Faits / Terminés</span> <span class="tab-badge" id="badge-nb-faits">0</span>
+            </button>
+        </div>
+        <div id="panel-afaire" class="tab-panel active"><div id="conteneur-afaire"></div></div>
+        <div id="panel-faits" class="tab-panel"><div id="conteneur-faits"></div></div>
     </div>
 
-    <!-- VUE A : DEVOIR INTERACTIF RAPIDE AVEC CORRECTION IMMÉDIATE -->
+    <!-- VUE A : DEVOIR INTERACTIF AVEC VÉRIFICATION ET SCORE -->
     <div id="vue-exo-interactif">
-        <div style="background:white; padding:15px 20px; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+        <div style="background:white; padding:15px 20px; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
             <div>
-                <button type="button" class="btn btn-secondary" onclick="retourTableauPrincipal()">← Retour</button>
+                <button type="button" class="btn btn-secondary" id="btn-back-interactif" onclick="retourTableauPrincipal()">← Retour</button>
                 <h2 id="interactif-titre" style="margin:8px 0 0 0; color:var(--primary); font-size:1.3em;">-</h2>
             </div>
             <div style="text-align:right;">
-                <div style="font-weight:bold; color:var(--success); font-size:1.2em;">Score : <span id="interactif-score">0</span> / <span id="interactif-total">0</span></div>
-                <div style="font-size:0.9em; color:var(--danger); font-weight:bold;">Erreurs : <span id="interactif-erreurs">0</span></div>
+                <div style="font-weight:bold; color:var(--success); font-size:1.2em;"><span id="txt-score-label">Score :</span> <span id="interactif-score">0</span> / <span id="interactif-total">0</span></div>
+                <div style="font-size:0.9em; color:var(--danger); font-weight:bold;"><span id="txt-errors-label">Erreurs :</span> <span id="interactif-erreurs">0</span></div>
             </div>
         </div>
 
         <div id="interactif-phrases-conteneur"></div>
 
         <div style="text-align:center; margin-top:30px; background:white; padding:20px; border-radius:10px;">
-            <button type="button" class="btn btn-success" style="font-size:1.1em; padding:12px 28px;" onclick="terminerDevoirInteractif()">
+            <button type="button" class="btn btn-success" id="btn-submit-interactif" style="font-size:1.1em; padding:12px 28px;" onclick="terminerDevoirInteractif()">
                 💾 Sauvegarder et terminer le devoir
             </button>
         </div>
     </div>
 
-    <!-- VUE B : CHAPITRE PAR BLOCS (COURS EN CORÉEN + EXOS SANS STRESS) -->
+    <!-- VUE B : MODULE CHAPITRE PAR BLOCS (COURS CORÉEN + EXERCICES SANS STRESS) -->
     <div id="vue-chapitre-blocs">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:10px;">
             <button type="button" class="btn btn-secondary" onclick="retourTableauPrincipal()">← Retour aux devoirs</button>
             <h2 id="chapitre-titre" style="margin:0; color:var(--primary);">-</h2>
             <button type="button" class="btn btn-purple" onclick="ouvrirModalExtraction()">📄 Exporter PDF</button>
@@ -184,7 +212,7 @@
         <div id="chapitre-liste-blocs"></div>
     </div>
 
-    <!-- VUE B-2 : CONTENU DU BLOC EN COURS (COURS OU EXERCICE) -->
+    <!-- VUE B-2 : CONTENU DU BLOC EN COURS -->
     <div id="vue-contenu-bloc-chapitre">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <button type="button" class="btn btn-secondary" onclick="retourMenuBlocs()">← Retour aux blocs</button>
@@ -209,7 +237,7 @@
             </div>
         </div>
 
-        <!-- BLOC EXERCICE SANS STRESS -->
+        <!-- BLOC EXERCICE -->
         <div id="chapitre-zone-exercice" style="display:none;">
             <p id="chapitre-consigne-exo" style="color:#64748b; font-style:italic; margin-bottom:20px;"></p>
             <div id="chapitre-questions-conteneur"></div>
@@ -223,10 +251,21 @@
 
 </div>
 
-<!-- OVERLAY TAQUINERIES "바보" POUR MODE INTERACTIF -->
+<!-- OVERLAY TAQUINERIES "바보" -->
 <div id="punition-overlay">
     <div id="punition-text">바보!</div>
     <div id="punition-sub">Niveau 1 : Ça commence mal...</div>
+</div>
+
+<!-- MODAL REVOIR LES ERREURS (INTERACTIF) -->
+<div class="modal" id="modal-fautes-eleve">
+    <div class="modal-content">
+        <h2 id="modal-titre" style="margin-top:0; color:var(--primary);">Récapitulatif des erreurs</h2>
+        <div id="modal-liste-fautes"></div>
+        <div style="text-align:right; margin-top:20px;">
+            <button type="button" class="btn btn-secondary" id="btn-modal-close" onclick="fermerModalFautes()">Fermer</button>
+        </div>
+    </div>
 </div>
 
 <!-- MODAL EXPORT PDF SURBRILLANCE -->
@@ -250,6 +289,7 @@
 </div>
 
 <script>
+    // --- 1. FIREBASE CONFIG ---
     let db = null;
     try {
         const firebaseConfig = {
@@ -265,6 +305,77 @@
         db = firebase.firestore();
     } catch(e) { console.error("Firebase init:", e); }
 
+    // --- 2. DICTIONNAIRE MULTILINGUE COMPLET (i18n) ---
+    const i18n = {
+        fr: {
+            select_lang: "Choisissez votre langue",
+            login_title: "👋 Espace Français",
+            login_desc: "Entrez votre code élève pour accéder à vos devoirs :",
+            login_placeholder: "EX: LUCAS01",
+            login_btn: "Ouvrir mes devoirs",
+            welcome_heading: "Bienvenue !",
+            soft_mode: "Sois doux avec moi aujourd'hui 😇",
+            continue_btn: "Accéder à mes devoirs ▶",
+            logged_as: "Élève :",
+            logout_btn: "Changer de compte",
+            tab_afaire: "⏳ À faire",
+            tab_faits: "🏆 Faits / Terminés",
+            score_label: "Score :",
+            errors_label: "Erreurs :",
+            btn_verify: "Vérifier",
+            btn_submit: "💾 Sauvegarder et terminer le devoir",
+            btn_close: "Fermer",
+            gentle_wrong: "Mauvaise réponse",
+            gentle_sub: "Ce n'est pas grave, continue !",
+            mistake_count_sub: "Faute n°"
+        },
+        ko: {
+            select_lang: "언어를 선택하세요",
+            login_title: "👋 프랑스어 학습 공간",
+            login_desc: "과제를 확인하려면 학생 코드를 입력하세요:",
+            login_placeholder: "예: LUCAS01",
+            login_btn: "과제 열기",
+            welcome_heading: "환영합니다!",
+            soft_mode: "오늘은 살살해 줘 😇",
+            continue_btn: "과제로 이동하기 ▶",
+            logged_as: "학생 :",
+            logout_btn: "계정 변경",
+            tab_afaire: "⏳ 해야 할 과제",
+            tab_faits: "🏆 완료된 과제",
+            score_label: "점수 :",
+            errors_label: "오답 :",
+            btn_verify: "확인",
+            btn_submit: "💾 과제 저장 및 완료",
+            btn_close: "닫기",
+            gentle_wrong: "오답입니다",
+            gentle_sub: "괜찮아요, 다시 도전해보세요!",
+            mistake_count_sub: "오답 "
+        },
+        en: {
+            select_lang: "Choose your language",
+            login_title: "👋 French Learning Portal",
+            login_desc: "Enter your student code to access your homework:",
+            login_placeholder: "EX: LUCAS01",
+            login_btn: "Open my homework",
+            welcome_heading: "Welcome!",
+            soft_mode: "Go easy on me today 😇",
+            continue_btn: "Go to homework ▶",
+            logged_as: "Student:",
+            logout_btn: "Switch account",
+            tab_afaire: "⏳ To Do",
+            tab_faits: "🏆 Completed",
+            score_label: "Score:",
+            errors_label: "Errors:",
+            btn_verify: "Check",
+            btn_submit: "💾 Save and submit homework",
+            btn_close: "Close",
+            gentle_wrong: "Wrong answer",
+            gentle_sub: "Don't worry, keep going!",
+            mistake_count_sub: "Mistake #"
+        }
+    };
+
+    // --- 3. LES 15 TAQUINERIES COMPLÈTES (CORÉEN ET ANGLAIS) ---
     const insultesOriginales = [
         { kr: "메롱~ 😜", fr: "Nananère ! Raté !" },
         { kr: "바보야~ 🙃", fr: "Petit idiot mignon !" },
@@ -277,7 +388,28 @@
         { kr: "말썽꾸러기! 😈", fr: "Espèce de petit garnement !" },
         { kr: "뇌가 쉬는 중? 🧠☕", fr: "Cerveau en pause café ?" },
         { kr: "머리 폼이야? 👒", fr: "Ta tête, c'est juste pour faire joli ?" },
-        { kr: "울지 마~ 🥺", fr: "Ne pleure pas, tu vas y arriver !" }
+        { kr: "울지 마~ 🥺", fr: "Ne pleure pas, tu vas y arriver !" },
+        { kr: "꿈꾸고 있어? 🦄", fr: "Tu es en plein rêve éveillé ?" },
+        { kr: "진짜 왜 이래~ 😅", fr: "Sérieusement, qu'est-ce que tu nous fais ?" },
+        { kr: "슈퍼 바보! 🦸‍♂️💥", fr: "Niveau Ultime : Super Babo !" }
+    ];
+
+    const insultesAnglaises = [
+        { en: "Nyah nyah! 😜", fr: "Nananère ! Raté !" },
+        { en: "Silly goose! 🪿", fr: "Petit nigaud mignon !" },
+        { en: "Buzzer! 🔔❌", fr: "Buzzer ! Mauvaise pioche !" },
+        { en: "Cheeky rascal! 🐶", fr: "Petit fripon !" },
+        { en: "Oopsie daisy! 🤦", fr: "Quelle boulette !" },
+        { en: "Need a nap? 😴💤", fr: "Besoin d'une sieste ?" },
+        { en: "Finger slipped? ✋", fr: "Ta main a glissé, avoue ?" },
+        { en: "Where're your eyes? 👀", fr: "Où as-tu mis tes yeux ?" },
+        { en: "Troublemaker! 😈", fr: "Espèce de garnement !" },
+        { en: "Brain on break? 🧠☕", fr: "Cerveau en pause café ?" },
+        { en: "Is your head decor? 👒", fr: "Ta tête, c'est pour faire joli ?" },
+        { en: "Don't cry! 🥺", fr: "Ne pleure pas, tu vas y arriver !" },
+        { en: "Daydreaming? 🦄", fr: "Tu es en plein rêve éveillé ?" },
+        { en: "Come on now~ 😅", fr: "Sérieusement, qu'est-ce que tu fais ?" },
+        { en: "Super Dunce! 🦸‍♂️💥", fr: "Niveau Ultime : Super Nigaud !" }
     ];
 
     let langueActuelle = localStorage.getItem("langEleve") || "";
@@ -286,20 +418,21 @@
 
     let assignationsMap = {};
     let assignationActive = null;
-    let blocActif = null;
 
-    // Variables mode interactif
+    // Variables Mode Interactif
     let scoreInteractif = 0;
     let erreursInteractif = 0;
     let reponsesValideesInteractif = {};
     let fautesInteractif = [];
 
-    // Variables mode chapitre
+    // Variables Mode Chapitre
     let indexSlideCours = 0;
+    let blocActif = null;
 
     window.choisirLangue = function(lang) {
         langueActuelle = lang;
         try { localStorage.setItem("langEleve", lang); } catch(e) {}
+        appliquerLangue();
         verifierSession();
     };
 
@@ -313,6 +446,31 @@
         document.getElementById('vue-chapitre-blocs').style.display = 'none';
         document.getElementById('vue-contenu-bloc-chapitre').style.display = 'none';
     };
+
+    function appliquerLangue() {
+        const lang = langueActuelle || 'fr';
+        const t = i18n[lang] || i18n.fr;
+
+        const setTxt = (id, txt) => { const el = document.getElementById(id); if (el) el.textContent = txt; };
+        setTxt('txt-select-lang', t.select_lang);
+        setTxt('txt-login-title', t.login_title);
+        setTxt('txt-login-desc', t.login_desc);
+        setTxt('btn-login', t.login_btn);
+        setTxt('txt-welcome-heading', t.welcome_heading);
+        setTxt('txt-soft-mode', t.soft_mode);
+        setTxt('btn-continue-welcome', t.continue_btn);
+        setTxt('txt-logged-as', t.logged_as);
+        setTxt('btn-logout', t.logout_btn);
+        setTxt('txt-tab-afaire', t.tab_afaire);
+        setTxt('txt-tab-faits', t.tab_faits);
+        setTxt('txt-score-label', t.score_label);
+        setTxt('txt-errors-label', t.errors_label);
+        setTxt('btn-submit-interactif', t.btn_submit);
+        setTxt('btn-modal-close', t.btn_close);
+
+        const inp = document.getElementById('code-input');
+        if (inp) inp.placeholder = t.login_placeholder;
+    }
 
     window.verifierSession = function() {
         if (!langueActuelle) return retourChoixLangue();
@@ -370,7 +528,14 @@
         }
     };
 
-    // ÉCOUTE DES DEVOIRS (INTERACTIFS ET CHAPITRES)
+    window.changerOnglet = function(tab) {
+        document.getElementById('btn-tab-afaire').classList.toggle('active', tab === 'afaire');
+        document.getElementById('btn-tab-faits').classList.toggle('active', tab === 'faits');
+        document.getElementById('panel-afaire').classList.toggle('active', tab === 'afaire');
+        document.getElementById('panel-faits').classList.toggle('active', tab === 'faits');
+    };
+
+    // --- ÉCOUTE DE TOUS LES DEVOIRS (INTERACTIFS ET CHAPITRES) ---
     function ecouterAssignations() {
         if (!db) return;
         db.collection("assignations").onSnapshot(snapshot => {
@@ -379,51 +544,65 @@
             tous.forEach(d => { assignationsMap[d.id] = d; });
 
             const mesDevoirs = tous.filter(d => d.eleveCode && d.eleveCode.toUpperCase() === codeEleveActuel.toUpperCase());
-            const conteneur = document.getElementById('conteneur-devoirs');
+            const aFaire = mesDevoirs.filter(d => d.statut !== 'termine');
+            const faits = mesDevoirs.filter(d => d.statut === 'termine');
 
-            if (mesDevoirs.length === 0) {
-                conteneur.innerHTML = `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">🎉 Aucun devoir en attente !</div>`;
-                return;
-            }
+            document.getElementById('badge-nb-afaire').textContent = aFaire.length;
+            document.getElementById('badge-nb-faits').textContent = faits.length;
 
-            conteneur.innerHTML = mesDevoirs.map(d => {
+            const renderCard = (d, estFait) => {
                 const estInteractif = (d.typeDevoir === "interactif");
                 const titre = d.devoirTitre || d.chapitreTitre || "Devoir";
+                const badgeType = estInteractif 
+                    ? `<span class="badge-type-interactif">⚡ Devoir Interactif</span>` 
+                    : `<span class="badge-type-chapitre">📖 Chapitre (Cours + Exos)</span>`;
+
+                let details = "";
+                let boutonsAction = "";
 
                 if (estInteractif) {
-                    const estTermine = (d.statut === "termine");
-                    return `
-                        <div class="devoir-card ${estTermine ? 'fait' : ''}">
-                            <div>
-                                <h3 style="margin:0 0 6px 0; color:var(--primary);">${titre}</h3>
-                                <span style="background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:6px; font-weight:bold; font-size:0.85em;">⚡ Devoir Interactif</span>
-                                <span style="color:#64748b; font-size:0.9em; margin-left:8px;">${d.totalQuestions || (d.phrases || []).length} phrases · Score : ${d.score || 0}/${d.totalQuestions || 0}</span>
-                            </div>
-                            <button class="btn ${estTermine ? 'btn-success' : 'btn-primary'}" onclick="ouvrirDevoirInteractif('${d.id}')">
-                                ${estTermine ? 'Refaire 🔄' : 'Commencer ▶'}
-                            </button>
-                        </div>
-                    `;
+                    details = `${d.totalQuestions || (d.phrases || []).length} phrases · Score : ${d.score || 0}/${d.totalQuestions || 0}`;
+                    if (estFait) {
+                        const aDesFautes = Array.isArray(d.fautesDetails) && d.fautesDetails.length > 0;
+                        boutonsAction = `
+                            ${aDesFautes ? `<button type="button" class="btn btn-secondary btn-sm" onclick="revoirFautesInteractif('${d.id}')">🔍 Revoir mes fautes</button>` : ''}
+                            <button type="button" class="btn btn-sm btn-success" onclick="ouvrirDevoirInteractif('${d.id}')">🔄 Refaire</button>
+                        `;
+                    } else {
+                        boutonsAction = `<button type="button" class="btn" onclick="ouvrirDevoirInteractif('${d.id}')">Commencer ▶</button>`;
+                    }
                 } else {
                     const nbFiches = d.bloc_cours?.slides ? d.bloc_cours.slides.length : 0;
                     const nbExos = Array.isArray(d.blocs_exercices) ? d.blocs_exercices.length : 0;
-                    return `
-                        <div class="devoir-card">
-                            <div>
-                                <h3 style="margin:0 0 6px 0; color:var(--primary);">${titre}</h3>
-                                <span style="background:#e0e7ff; color:#3730a3; padding:3px 8px; border-radius:6px; font-weight:bold; font-size:0.85em;">📖 Chapitre (Cours + Exos)</span>
-                                <span style="color:#64748b; font-size:0.9em; margin-left:8px;">${nbFiches} fiches · ${nbExos} blocs d'exercices</span>
-                            </div>
-                            <button class="btn btn-purple" onclick="ouvrirMenuChapitreBlocs('${d.id}')">Ouvrir le chapitre ▶</button>
-                        </div>
-                    `;
+                    details = `${nbFiches} fiches · ${nbExos} blocs d'exercices`;
+                    boutonsAction = `<button type="button" class="btn btn-purple" onclick="ouvrirMenuChapitreBlocs('${d.id}')">Ouvrir le chapitre ▶</button>`;
                 }
-            }).join('');
+
+                return `
+                    <div class="devoir-card ${estFait ? 'fait' : ''}">
+                        <div>
+                            <h3 style="margin:0 0 6px 0; color:var(--primary);">${titre}</h3>
+                            <div>${badgeType} <span style="color:#64748b; font-size:0.9em; margin-left:8px;">${details}</span></div>
+                        </div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">${boutonsAction}</div>
+                    </div>
+                `;
+            };
+
+            const cAFaire = document.getElementById('conteneur-afaire');
+            cAFaire.innerHTML = (aFaire.length === 0) 
+                ? `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">🎉 Aucun devoir en attente !</div>` 
+                : aFaire.map(d => renderCard(d, false)).join('');
+
+            const cFaits = document.getElementById('conteneur-faits');
+            cFaits.innerHTML = (faits.length === 0) 
+                ? `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">Aucun devoir terminé pour l'instant.</div>` 
+                : faits.map(d => renderCard(d, true)).join('');
         });
     }
 
     // ==========================================
-    // MODE A : DEVOIR INTERACTIF RAPIDE
+    // 4. MODE A : DEVOIR INTERACTIF RAPIDE
     // ==========================================
     window.ouvrirDevoirInteractif = function(id) {
         const d = assignationsMap[id];
@@ -446,7 +625,8 @@
         const conteneur = document.getElementById('interactif-phrases-conteneur');
         conteneur.innerHTML = "";
 
-        (d.phrases || []).forEach((p, idx) => {
+        const phrases = Array.isArray(d.phrases) ? d.phrases : [];
+        phrases.forEach((p, idx) => {
             const div = document.createElement('div');
             div.className = "phrase-box-interactif";
             const parts = p.q.includes('____') ? p.q.split('____') : p.q.split('___');
@@ -539,30 +719,60 @@
         retourTableauPrincipal();
     };
 
+    // DÉCLENCHEMENT DES TAQUINERIES AVEC TOUTES LES TRADUCTIONS
     function declencherTaquinerie() {
         const overlay = document.getElementById('punition-overlay');
         const text = document.getElementById('punition-text');
         const sub = document.getElementById('punition-sub');
+        const t = i18n[langueActuelle || 'fr'];
 
         if (modeDouxActif) {
             overlay.classList.add('mode-gentil');
-            text.textContent = "Mauvaise réponse";
-            sub.textContent = "Ce n'est pas grave, réessaie !";
+            text.textContent = t.gentle_wrong;
+            sub.textContent = t.gentle_sub;
+        } else if (langueActuelle === 'en') {
+            overlay.classList.remove('mode-gentil');
+            let index = Math.min(erreursInteractif - 1, insultesAnglaises.length - 1);
+            if (index < 0) index = 0;
+            const d = insultesAnglaises[index];
+            text.textContent = d.en;
+            sub.textContent = `${d.fr} (${t.mistake_count_sub}${erreursInteractif})`;
         } else {
             overlay.classList.remove('mode-gentil');
             let index = Math.min(erreursInteractif - 1, insultesOriginales.length - 1);
             if (index < 0) index = 0;
             const d = insultesOriginales[index];
             text.textContent = d.kr;
-            sub.textContent = `${d.fr} (Faute n°${erreursInteractif})`;
+            sub.textContent = `${d.fr} (${t.mistake_count_sub}${erreursInteractif})`;
         }
 
         overlay.classList.add('show');
         setTimeout(() => overlay.classList.remove('show'), 1200);
     }
 
+    window.revoirFautesInteractif = function(id) {
+        const d = assignationsMap[id];
+        if (!d) return;
+
+        const modal = document.getElementById('modal-fautes-eleve');
+        document.getElementById('modal-titre').textContent = `Erreurs sur "${d.devoirTitre}"`;
+
+        const fautes = Array.isArray(d.fautesDetails) ? d.fautesDetails : [];
+        let html = `<table><thead><tr><th>Phrase</th><th>Ta réponse</th><th>Bonne réponse</th></tr></thead><tbody>`;
+        fautes.forEach(f => {
+            html += `<tr><td>${f.phrase}</td><td style="color:var(--danger); text-decoration:line-through; font-weight:bold;">${f.reponseEleve || "(vide)"}</td><td style="color:var(--success); font-weight:bold;">${f.attendu}</td></tr>`;
+        });
+        html += `</tbody></table>`;
+        document.getElementById('modal-liste-fautes').innerHTML = html;
+        modal.style.display = "flex";
+    };
+
+    window.fermerModalFautes = function() {
+        document.getElementById('modal-fautes-eleve').style.display = "none";
+    };
+
     // ==========================================
-    // MODE B : CHAPITRE PAR BLOCS & EXPORT PDF
+    // 5. MODE B : CHAPITRE PAR BLOCS & EXPORT PDF
     // ==========================================
     window.ouvrirMenuChapitreBlocs = function(id) {
         const d = assignationsMap[id];
@@ -778,6 +988,8 @@
         document.getElementById('modal-export').style.display = "flex";
     };
 
+    // Démarrage
+    if (langueActuelle) appliquerLangue();
     verifierSession();
 </script>
 </body>

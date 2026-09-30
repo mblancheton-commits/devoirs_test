@@ -14,12 +14,14 @@
             --primary: #1e293b;
             --accent: #3b82f6;
             --success: #10b981;
+            --danger: #ef4444;
             --warning: #f59e0b;
             --bg: #f8fafc;
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #1e293b; margin: 0; padding: 20px; padding-bottom: 90px; }
         .container { max-width: 900px; margin: 0 auto; }
         
+        /* 0. ÉCRAN LANGUE */
         #ecran-langue { max-width: 500px; margin: 70px auto; background: white; padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         #ecran-langue h1 { color: var(--primary); margin-top: 0; font-size: 1.8em; margin-bottom: 25px; }
         .lang-grid { display: flex; flex-direction: column; gap: 14px; }
@@ -28,12 +30,15 @@
         .flag-svg { width: 48px; height: 32px; border-radius: 4px; margin-right: 18px; flex-shrink: 0; }
         .lang-title { font-size: 1.15em; font-weight: bold; color: var(--primary); }
 
+        /* 1. ÉCRAN CONNEXION */
         #ecran-login { display: none; max-width: 440px; margin: 70px auto; background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         #code-input { width: 100%; padding: 14px; font-size: 1.25em; border: 2px solid #cbd5e0; border-radius: 10px; text-align: center; font-weight: bold; box-sizing: border-box; margin: 20px 0; text-transform: uppercase; }
         #code-input:focus { outline: none; border-color: var(--accent); }
 
+        /* 1.5 BIENVENUE */
         #ecran-bienvenue { display: none; max-width: 460px; margin: 70px auto; background: white; padding: 35px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.06); text-align: center; }
         .welcome-user-box { font-size: 1.5em; font-weight: bold; color: var(--accent); background: #eff6ff; padding: 12px; border-radius: 10px; margin: 15px 0 25px 0; }
+        .soft-mode-card { background: #f8fafc; border: 2px dashed #cbd5e0; padding: 14px; border-radius: 8px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px; cursor: pointer; text-align: left; }
 
         .btn { background: var(--accent); color: white; padding: 12px 24px; border: none; border-radius: 10px; font-size: 1em; font-weight: bold; cursor: pointer; display: inline-block; transition: all 0.2s; }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -43,27 +48,42 @@
         .btn-purple { background: #8b5cf6; }
         .btn-secondary { background: #64748b; padding: 8px 16px; font-size: 0.9em; }
 
+        /* EN-TÊTE ÉLÈVE */
         #header-eleve { display: none; background: white; padding: 15px 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 25px; justify-content: space-between; align-items: center; }
 
+        /* TABLEAU DE BORD */
         #ecran-tableau-de-bord { display: none; }
-        .chapitre-card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; border-left: 6px solid var(--accent); }
+        .devoir-card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--accent); }
+        .devoir-card.fait { border-left-color: var(--success); }
 
-        #ecran-menu-blocs { display: none; }
-        .bloc-nav-card { background: white; padding: 18px 22px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e2e8f0; transition: all 0.2s; }
+        /* VUE A : EXERCICE INTERACTIF AVEC SCORE ET VÉRIFICATION */
+        #vue-exo-interactif { display: none; }
+        .phrase-box-interactif { background: white; padding: 16px 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 14px; font-size: 1.05em; line-height: 2.2; }
+        .correct-input { border-color: var(--success) !important; background: #eafaf1 !important; color: #1e8449 !important; }
+        .incorrect-input { border-color: var(--danger) !important; background: #fceae8 !important; color: #c0392b !important; }
+
+        /* VUE B : MODULE / CHAPITRE PAR BLOCS */
+        #vue-chapitre-blocs { display: none; }
+        .bloc-nav-card { background: white; padding: 18px 22px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e2e8f0; }
         .bloc-nav-card.fait { border-color: var(--success); background: #f0fdf4; }
 
-        #ecran-contenu-bloc { display: none; }
+        #vue-contenu-bloc-chapitre { display: none; }
         .cours-slide-container { background: white; padding: 30px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); line-height: 1.9; font-size: 1.1em; }
-        .slide-nav-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
-
-        .phrase-item { background: white; border: 1px solid #e2e8f0; padding: 18px; border-radius: 10px; margin-bottom: 15px; font-size: 1.08em; line-height: 2.2; }
-        .input-calme { padding: 8px 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; font-family: inherit; color: #1e293b; font-weight: 600; background: #f8fafc; }
-        .input-calme:focus { outline: none; border-color: var(--accent); background: white; }
+        .phrase-item { background: white; border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; margin-bottom: 15px; font-size: 1.08em; line-height: 2.2; }
+        .input-calme { padding: 8px 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; font-family: inherit; color: #1e293b; font-weight: 600; background: white; }
         .textarea-calme { width: 100%; padding: 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; margin-top: 8px; box-sizing: border-box; font-family: inherit; }
 
+        /* MODAL EXPORT PDF SURBRILLANCE */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
         .modal-content { background: white; padding: 30px; border-radius: 14px; width: 90%; max-width: 800px; max-height: 85vh; overflow-y: auto; }
         .surbrillance { background-color: #fef08a !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #000; text-decoration: underline; }
+
+        /* OVERLAY TAQUINERIES */
+        #punition-overlay { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: rgba(231, 76, 60, 0.96); display: flex; flex-direction: column; justify-content: center; align-items: center; z-index: 99999; opacity: 0; pointer-events: none; transition: opacity 0.15s ease; }
+        #punition-overlay.show { opacity: 1; pointer-events: auto; }
+        #punition-overlay.mode-gentil { background-color: rgba(52, 73, 94, 0.95) !important; }
+        #punition-text { font-family: 'Impact', 'Arial Black', sans-serif; color: #ffffff; font-size: 15vw; line-height: 1.1; text-align: center; }
+        #punition-sub { color: #ffeaa7; font-size: 2.4vw; font-weight: bold; margin-top: 18px; text-transform: uppercase; text-align: center; }
 
         @media print {
             body * { visibility: hidden; }
@@ -82,22 +102,15 @@
         <h1>Choisissez votre langue</h1>
         <div class="lang-grid">
             <div class="lang-card" onclick="choisirLangue('fr')">
-                <svg class="flag-svg" viewBox="0 0 900 600">
-                    <rect width="300" height="600" fill="#002395"/><rect x="300" width="300" height="600" fill="#fff"/><rect x="600" width="300" height="600" fill="#ed2939"/>
-                </svg>
+                <svg class="flag-svg" viewBox="0 0 900 600"><rect width="300" height="600" fill="#002395"/><rect x="300" width="300" height="600" fill="#fff"/><rect x="600" width="300" height="600" fill="#ed2939"/></svg>
                 <span class="lang-title">Français</span>
             </div>
             <div class="lang-card" onclick="choisirLangue('ko')">
-                <svg class="flag-svg" viewBox="0 0 900 600">
-                    <rect width="900" height="600" fill="#fff"/><circle cx="450" cy="300" r="150" fill="#cd2e3a"/><path d="M 300,300 A 75,75 0 0,0 450,300 A 75,75 0 0,1 600,300 A 150,150 0 0,1 300,300 Z" fill="#0047a0"/><circle cx="375" cy="300" r="75" fill="#cd2e3a"/>
-                </svg>
+                <svg class="flag-svg" viewBox="0 0 900 600"><rect width="900" height="600" fill="#fff"/><circle cx="450" cy="300" r="150" fill="#cd2e3a"/><path d="M 300,300 A 75,75 0 0,0 450,300 A 75,75 0 0,1 600,300 A 150,150 0 0,1 300,300 Z" fill="#0047a0"/><circle cx="375" cy="300" r="75" fill="#cd2e3a"/></svg>
                 <span class="lang-title">한국어</span>
             </div>
             <div class="lang-card" onclick="choisirLangue('en')">
-                <svg class="flag-svg" viewBox="0 0 60 30">
-                    <clipPath id="uk-flag"><path d="M30,15 h30 v15 z M30,15 v15 h-30 z M30,15 h-30 v-15 z M30,15 v-15 h30 z"/></clipPath>
-                    <path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#uk-flag)" stroke="#c8102e" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#c8102e" stroke-width="6"/>
-                </svg>
+                <svg class="flag-svg" viewBox="0 0 60 30"><clipPath id="uk-flag"><path d="M30,15 h30 v15 z M30,15 v15 h-30 z M30,15 h-30 v-15 z M30,15 v-15 h30 z"/></clipPath><path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#uk-flag)" stroke="#c8102e" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#c8102e" stroke-width="6"/></svg>
                 <span class="lang-title">English</span>
             </div>
         </div>
@@ -106,15 +119,19 @@
     <!-- 1. CONNEXION -->
     <div id="ecran-login">
         <h1>👋 Espace Français</h1>
-        <p style="color:#64748b;">Entrez votre code élève pour accéder à vos chapitres :</p>
+        <p style="color:#64748b;">Entrez votre code élève pour accéder à vos devoirs :</p>
         <input type="text" id="code-input" placeholder="EX: LUCAS01" autocomplete="off">
-        <button type="button" class="btn btn-full" onclick="seConnecter()">Ouvrir mes cours</button>
+        <button type="button" class="btn btn-full" onclick="seConnecter()">Ouvrir mes devoirs</button>
     </div>
 
     <!-- 1.5 BIENVENUE -->
     <div id="ecran-bienvenue">
         <h1>Bienvenue !</h1>
         <div class="welcome-user-box" id="bienvenue-nom-user">-</div>
+        <div class="soft-mode-card" onclick="toggleSoftMode()">
+            <input type="checkbox" id="check-soft-mode" onclick="event.stopPropagation()">
+            <label for="check-soft-mode" style="cursor:pointer; font-weight:600;">Sois doux avec moi aujourd'hui 😇</label>
+        </div>
         <button type="button" class="btn btn-full btn-success" onclick="validerBienvenue()">Accéder à mes devoirs ▶</button>
     </div>
 
@@ -127,34 +144,56 @@
         </div>
     </div>
 
-    <!-- 2. TABLEAU DE BORD (LISTE DES CHAPITRES) -->
+    <!-- 2. TABLEAU DE BORD PRINCIPAL -->
     <div id="ecran-tableau-de-bord">
-        <h2 style="color:var(--primary); margin-top:0;">📚 Vos Chapitres assignés</h2>
-        <div id="conteneur-chapitres"></div>
+        <h2 style="color:var(--primary); margin-top:0;">📚 Vos devoirs à faire</h2>
+        <div id="conteneur-devoirs"></div>
     </div>
 
-    <!-- 2.5 MENU DES BLOCS D'UN CHAPITRE -->
-    <div id="ecran-menu-blocs">
+    <!-- VUE A : DEVOIR INTERACTIF RAPIDE AVEC CORRECTION IMMÉDIATE -->
+    <div id="vue-exo-interactif">
+        <div style="background:white; padding:15px 20px; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <button type="button" class="btn btn-secondary" onclick="retourTableauPrincipal()">← Retour</button>
+                <h2 id="interactif-titre" style="margin:8px 0 0 0; color:var(--primary); font-size:1.3em;">-</h2>
+            </div>
+            <div style="text-align:right;">
+                <div style="font-weight:bold; color:var(--success); font-size:1.2em;">Score : <span id="interactif-score">0</span> / <span id="interactif-total">0</span></div>
+                <div style="font-size:0.9em; color:var(--danger); font-weight:bold;">Erreurs : <span id="interactif-erreurs">0</span></div>
+            </div>
+        </div>
+
+        <div id="interactif-phrases-conteneur"></div>
+
+        <div style="text-align:center; margin-top:30px; background:white; padding:20px; border-radius:10px;">
+            <button type="button" class="btn btn-success" style="font-size:1.1em; padding:12px 28px;" onclick="terminerDevoirInteractif()">
+                💾 Sauvegarder et terminer le devoir
+            </button>
+        </div>
+    </div>
+
+    <!-- VUE B : CHAPITRE PAR BLOCS (COURS EN CORÉEN + EXOS SANS STRESS) -->
+    <div id="vue-chapitre-blocs">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-            <button type="button" class="btn btn-secondary" onclick="retourListeChapitres()">← Retour aux chapitres</button>
-            <h2 id="titre-menu-chapitre" style="margin:0; color:var(--primary);">-</h2>
+            <button type="button" class="btn btn-secondary" onclick="retourTableauPrincipal()">← Retour aux devoirs</button>
+            <h2 id="chapitre-titre" style="margin:0; color:var(--primary);">-</h2>
             <button type="button" class="btn btn-purple" onclick="ouvrirModalExtraction()">📄 Exporter PDF</button>
         </div>
 
-        <p style="color:#64748b; margin-bottom:20px;">Complétez chaque bloc à votre rythme :</p>
-        <div id="liste-blocs-conteneur"></div>
+        <p style="color:#64748b; margin-bottom:15px;">Complétez les blocs à votre rythme :</p>
+        <div id="chapitre-liste-blocs"></div>
     </div>
 
-    <!-- 3. CONTENU D'UN BLOC SÉLECTIONNÉ -->
-    <div id="ecran-contenu-bloc">
+    <!-- VUE B-2 : CONTENU DU BLOC EN COURS (COURS OU EXERCICE) -->
+    <div id="vue-contenu-bloc-chapitre">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
             <button type="button" class="btn btn-secondary" onclick="retourMenuBlocs()">← Retour aux blocs</button>
-            <h2 id="titre-bloc-actif" style="margin:0; color:var(--primary); font-size:1.25em;">-</h2>
+            <h2 id="chapitre-bloc-actif-titre" style="margin:0; color:var(--primary); font-size:1.25em;">-</h2>
             <div></div>
         </div>
 
         <!-- BLOC COURS -->
-        <div id="vue-bloc-cours" style="display:none;">
+        <div id="chapitre-zone-cours" style="display:none;">
             <div class="cours-slide-container">
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:12px; margin-bottom:15px;">
                     <h3 id="cours-slide-titre" style="margin:0; color:#1e3a8a;">-</h3>
@@ -162,18 +201,18 @@
                 </div>
                 <div id="cours-slide-contenu" style="white-space:pre-wrap;"></div>
 
-                <div class="slide-nav-controls">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:25px; padding-top:20px; border-top:1px solid #e2e8f0;">
                     <button type="button" class="btn btn-secondary" onclick="naviguerSlideCours(-1)">◀ Fiche précédente</button>
-                    <button type="button" class="btn btn-success" id="btn-valider-lecture-cours" onclick="validerLectureCours()">✅ J'ai lu ce cours</button>
+                    <button type="button" class="btn btn-success" onclick="validerLectureCours()">✅ J'ai lu ce cours</button>
                     <button type="button" class="btn btn-secondary" onclick="naviguerSlideCours(1)">Fiche suivante ▶</button>
                 </div>
             </div>
         </div>
 
-        <!-- BLOC EXERCICE AVEC GESTION MULTI-TROUS SANS COUPURE -->
-        <div id="vue-bloc-exercice" style="display:none;">
-            <p id="consigne-exo-actif" style="color:#64748b; font-style:italic; margin-bottom:20px;"></p>
-            <div id="questions-exo-conteneur"></div>
+        <!-- BLOC EXERCICE SANS STRESS -->
+        <div id="chapitre-zone-exercice" style="display:none;">
+            <p id="chapitre-consigne-exo" style="color:#64748b; font-style:italic; margin-bottom:20px;"></p>
+            <div id="chapitre-questions-conteneur"></div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:25px; padding-top:20px; border-top:1px solid #e2e8f0; flex-wrap:wrap; gap:10px;">
                 <button type="button" class="btn btn-warning" onclick="sauvegarderExoBloc(false)">💾 Sauvegarder pour plus tard</button>
@@ -182,6 +221,12 @@
         </div>
     </div>
 
+</div>
+
+<!-- OVERLAY TAQUINERIES "바보" POUR MODE INTERACTIF -->
+<div id="punition-overlay">
+    <div id="punition-text">바보!</div>
+    <div id="punition-sub">Niveau 1 : Ça commence mal...</div>
 </div>
 
 <!-- MODAL EXPORT PDF SURBRILLANCE -->
@@ -220,11 +265,36 @@
         db = firebase.firestore();
     } catch(e) { console.error("Firebase init:", e); }
 
+    const insultesOriginales = [
+        { kr: "메롱~ 😜", fr: "Nananère ! Raté !" },
+        { kr: "바보야~ 🙃", fr: "Petit idiot mignon !" },
+        { kr: "땡! 🔔❌", fr: "Buzzer ! Mauvaise pioche !" },
+        { kr: "똥강아지! 🐶", fr: "Petit fripon !" },
+        { kr: "아이구~ 🤦", fr: "Aigoo~ Mais quelle boulette !" },
+        { kr: "졸려? 😴💤", fr: "Tu as besoin d'une sieste ?" },
+        { kr: "손 미끄러졌지? ✋", fr: "Ta main a glissé, avoue ?" },
+        { kr: "눈 어디 뒀어? 👀", fr: "Où as-tu laissé tes yeux ?" },
+        { kr: "말썽꾸러기! 😈", fr: "Espèce de petit garnement !" },
+        { kr: "뇌가 쉬는 중? 🧠☕", fr: "Cerveau en pause café ?" },
+        { kr: "머리 폼이야? 👒", fr: "Ta tête, c'est juste pour faire joli ?" },
+        { kr: "울지 마~ 🥺", fr: "Ne pleure pas, tu vas y arriver !" }
+    ];
+
     let langueActuelle = localStorage.getItem("langEleve") || "";
     let codeEleveActuel = localStorage.getItem("codeEleve") || "";
+    let modeDouxActif = (localStorage.getItem("modeDouxEleve") === "true");
+
     let assignationsMap = {};
     let assignationActive = null;
     let blocActif = null;
+
+    // Variables mode interactif
+    let scoreInteractif = 0;
+    let erreursInteractif = 0;
+    let reponsesValideesInteractif = {};
+    let fautesInteractif = [];
+
+    // Variables mode chapitre
     let indexSlideCours = 0;
 
     window.choisirLangue = function(lang) {
@@ -239,8 +309,9 @@
         document.getElementById('ecran-bienvenue').style.display = 'none';
         document.getElementById('header-eleve').style.display = 'none';
         document.getElementById('ecran-tableau-de-bord').style.display = 'none';
-        document.getElementById('ecran-menu-blocs').style.display = 'none';
-        document.getElementById('ecran-contenu-bloc').style.display = 'none';
+        document.getElementById('vue-exo-interactif').style.display = 'none';
+        document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'none';
     };
 
     window.verifierSession = function() {
@@ -272,10 +343,21 @@
 
         document.getElementById('ecran-login').style.display = 'none';
         document.getElementById('bienvenue-nom-user').textContent = codeEleveActuel;
+        const check = document.getElementById('check-soft-mode');
+        if (check) check.checked = modeDouxActif;
         document.getElementById('ecran-bienvenue').style.display = 'block';
     };
 
+    window.toggleSoftMode = function() {
+        const check = document.getElementById('check-soft-mode');
+        if (check) check.checked = !check.checked;
+    };
+
     window.validerBienvenue = function() {
+        const check = document.getElementById('check-soft-mode');
+        modeDouxActif = check ? check.checked : false;
+        try { localStorage.setItem("modeDouxEleve", modeDouxActif ? "true" : "false"); } catch(e) {}
+
         document.getElementById('ecran-bienvenue').style.display = 'none';
         verifierSession();
     };
@@ -288,6 +370,7 @@
         }
     };
 
+    // ÉCOUTE DES DEVOIRS (INTERACTIFS ET CHAPITRES)
     function ecouterAssignations() {
         if (!db) return;
         db.collection("assignations").onSnapshot(snapshot => {
@@ -295,96 +378,251 @@
             assignationsMap = {};
             tous.forEach(d => { assignationsMap[d.id] = d; });
 
-            const mesChapitres = tous.filter(d => d.eleveCode && d.eleveCode.toUpperCase() === codeEleveActuel.toUpperCase());
-            const conteneur = document.getElementById('conteneur-chapitres');
+            const mesDevoirs = tous.filter(d => d.eleveCode && d.eleveCode.toUpperCase() === codeEleveActuel.toUpperCase());
+            const conteneur = document.getElementById('conteneur-devoirs');
 
-            if (mesChapitres.length === 0) {
-                conteneur.innerHTML = `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">🎉 Aucun chapitre assigné pour l'instant !</div>`;
+            if (mesDevoirs.length === 0) {
+                conteneur.innerHTML = `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">🎉 Aucun devoir en attente !</div>`;
                 return;
             }
 
-            conteneur.innerHTML = mesChapitres.map(c => {
-                const nbFiches = c.bloc_cours?.slides ? c.bloc_cours.slides.length : 0;
-                const nbExos = Array.isArray(c.blocs_exercices) ? c.blocs_exercices.length : 0;
-                return `
-                    <div class="chapitre-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            conteneur.innerHTML = mesDevoirs.map(d => {
+                const estInteractif = (d.typeDevoir === "interactif");
+                const titre = d.devoirTitre || d.chapitreTitre || "Devoir";
+
+                if (estInteractif) {
+                    const estTermine = (d.statut === "termine");
+                    return `
+                        <div class="devoir-card ${estTermine ? 'fait' : ''}">
                             <div>
-                                <h3 style="margin:0 0 6px 0; color:var(--primary); font-size:1.25em;">${c.chapitreTitre}</h3>
-                                <span style="color:#64748b; font-size:0.9em;">📖 1 bloc cours (${nbFiches} fiches) · ✏️ ${nbExos} blocs d'exercices</span>
+                                <h3 style="margin:0 0 6px 0; color:var(--primary);">${titre}</h3>
+                                <span style="background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:6px; font-weight:bold; font-size:0.85em;">⚡ Devoir Interactif</span>
+                                <span style="color:#64748b; font-size:0.9em; margin-left:8px;">${d.totalQuestions || (d.phrases || []).length} phrases · Score : ${d.score || 0}/${d.totalQuestions || 0}</span>
                             </div>
-                            <button class="btn" onclick="ouvrirMenuBlocs('${c.id}')">Ouvrir les blocs ▶</button>
+                            <button class="btn ${estTermine ? 'btn-success' : 'btn-primary'}" onclick="ouvrirDevoirInteractif('${d.id}')">
+                                ${estTermine ? 'Refaire 🔄' : 'Commencer ▶'}
+                            </button>
                         </div>
-                    </div>
-                `;
+                    `;
+                } else {
+                    const nbFiches = d.bloc_cours?.slides ? d.bloc_cours.slides.length : 0;
+                    const nbExos = Array.isArray(d.blocs_exercices) ? d.blocs_exercices.length : 0;
+                    return `
+                        <div class="devoir-card">
+                            <div>
+                                <h3 style="margin:0 0 6px 0; color:var(--primary);">${titre}</h3>
+                                <span style="background:#e0e7ff; color:#3730a3; padding:3px 8px; border-radius:6px; font-weight:bold; font-size:0.85em;">📖 Chapitre (Cours + Exos)</span>
+                                <span style="color:#64748b; font-size:0.9em; margin-left:8px;">${nbFiches} fiches · ${nbExos} blocs d'exercices</span>
+                            </div>
+                            <button class="btn btn-purple" onclick="ouvrirMenuChapitreBlocs('${d.id}')">Ouvrir le chapitre ▶</button>
+                        </div>
+                    `;
+                }
             }).join('');
         });
     }
 
-    window.ouvrirMenuBlocs = function(assignationId) {
-        assignationActive = assignationsMap[assignationId];
-        if (!assignationActive) return alert("Chapitre introuvable.");
+    // ==========================================
+    // MODE A : DEVOIR INTERACTIF RAPIDE
+    // ==========================================
+    window.ouvrirDevoirInteractif = function(id) {
+        const d = assignationsMap[id];
+        if (!d) return;
+
+        assignationActive = d;
+        scoreInteractif = d.score || 0;
+        erreursInteractif = d.totalErreurs || 0;
+        reponsesValideesInteractif = d.reponsesValidees || {};
+        fautesInteractif = d.fautesDetails || [];
 
         document.getElementById('ecran-tableau-de-bord').style.display = 'none';
-        document.getElementById('ecran-menu-blocs').style.display = 'block';
-        document.getElementById('ecran-contenu-bloc').style.display = 'none';
-        document.getElementById('titre-menu-chapitre').textContent = assignationActive.chapitreTitre;
+        document.getElementById('vue-exo-interactif').style.display = 'block';
 
-        const conteneur = document.getElementById('liste-blocs-conteneur');
+        document.getElementById('interactif-titre').textContent = d.devoirTitre;
+        document.getElementById('interactif-score').textContent = scoreInteractif;
+        document.getElementById('interactif-total').textContent = d.totalQuestions || (d.phrases || []).length;
+        document.getElementById('interactif-erreurs').textContent = erreursInteractif;
+
+        const conteneur = document.getElementById('interactif-phrases-conteneur');
         conteneur.innerHTML = "";
-        const suivi = assignationActive.suiviBlocs || {};
 
-        if (assignationActive.bloc_cours) {
+        (d.phrases || []).forEach((p, idx) => {
+            const div = document.createElement('div');
+            div.className = "phrase-box-interactif";
+            const parts = p.q.includes('____') ? p.q.split('____') : p.q.split('___');
+            const dejaValide = reponsesValideesInteractif.hasOwnProperty(idx.toString());
+            const repSauvegardee = dejaValide ? reponsesValideesInteractif[idx.toString()] : "";
+
+            if (p.type === 'select') {
+                let optionsHtml = `<option value="">---</option>` + (p.options || []).map(o => {
+                    const sel = (dejaValide && o === repSauvegardee) ? 'selected' : '';
+                    return `<option value="${o}" ${sel}>${o}</option>`;
+                }).join('');
+
+                div.innerHTML = `<span>${idx + 1}.</span> ${parts[0]}
+                    <select class="input-calme ${dejaValide ? 'correct-input' : ''}" id="input-interactif-${idx}" onchange="verifierLigneInteractif(${idx})" ${dejaValide ? 'disabled' : ''}>
+                        ${optionsHtml}
+                    </select> ${parts[1] || ""}`;
+            } else {
+                div.innerHTML = `<span>${idx + 1}.</span> ${parts[0]}
+                    <input type="text" class="input-calme ${dejaValide ? 'correct-input' : ''}" id="input-interactif-${idx}" value="${repSauvegardee}" placeholder="..." ${dejaValide ? 'disabled' : ''}>
+                    <button class="btn btn-sm" id="btn-interactif-${idx}" onclick="verifierLigneInteractif(${idx})" ${dejaValide ? 'disabled' : ''}>Vérifier</button>
+                    ${parts[1] || ""}`;
+            }
+            conteneur.appendChild(div);
+
+            if (p.type === 'text' && !dejaValide) {
+                setTimeout(() => {
+                    const el = document.getElementById(`input-interactif-${idx}`);
+                    if (el) el.addEventListener('keypress', (e) => { if (e.key === 'Enter') verifierLigneInteractif(idx); });
+                }, 0);
+            }
+        });
+    };
+
+    window.verifierLigneInteractif = async function(idx) {
+        const p = assignationActive.phrases[idx];
+        const input = document.getElementById(`input-interactif-${idx}`);
+        const btn = document.getElementById(`btn-interactif-${idx}`);
+
+        if (input.disabled) return;
+        const saisie = input.value.trim().toLowerCase();
+        if (!saisie) return;
+
+        const bonnesReponses = (p.a || []).map(a => a.trim().toLowerCase());
+
+        if (bonnesReponses.includes(saisie)) {
+            input.classList.remove('incorrect-input');
+            input.classList.add('correct-input');
+            input.disabled = true;
+            if (btn) btn.disabled = true;
+
+            reponsesValideesInteractif[idx.toString()] = saisie;
+            scoreInteractif = Object.keys(reponsesValideesInteractif).length;
+            document.getElementById('interactif-score').textContent = scoreInteractif;
+
+            await db.collection("assignations").doc(assignationActive.id).update({
+                score: scoreInteractif,
+                reponsesValidees: reponsesValideesInteractif,
+                statut: "en_cours"
+            });
+        } else {
+            erreursInteractif++;
+            document.getElementById('interactif-erreurs').textContent = erreursInteractif;
+            input.classList.add('incorrect-input');
+
+            fautesInteractif.push({
+                phrase: p.q,
+                reponseEleve: saisie,
+                attendu: (p.a || []).join(' / ')
+            });
+
+            await db.collection("assignations").doc(assignationActive.id).update({
+                totalErreurs: erreursInteractif,
+                fautesDetails: fautesInteractif
+            });
+
+            declencherTaquinerie();
+            input.focus();
+        }
+    };
+
+    window.terminerDevoirInteractif = async function() {
+        if (!assignationActive) return;
+        await db.collection("assignations").doc(assignationActive.id).update({
+            statut: "termine",
+            score: scoreInteractif,
+            totalErreurs: erreursInteractif,
+            fautesDetails: fautesInteractif
+        });
+        alert(`✅ Devoir terminé ! Score : ${scoreInteractif} / ${assignationActive.totalQuestions}`);
+        retourTableauPrincipal();
+    };
+
+    function declencherTaquinerie() {
+        const overlay = document.getElementById('punition-overlay');
+        const text = document.getElementById('punition-text');
+        const sub = document.getElementById('punition-sub');
+
+        if (modeDouxActif) {
+            overlay.classList.add('mode-gentil');
+            text.textContent = "Mauvaise réponse";
+            sub.textContent = "Ce n'est pas grave, réessaie !";
+        } else {
+            overlay.classList.remove('mode-gentil');
+            let index = Math.min(erreursInteractif - 1, insultesOriginales.length - 1);
+            if (index < 0) index = 0;
+            const d = insultesOriginales[index];
+            text.textContent = d.kr;
+            sub.textContent = `${d.fr} (Faute n°${erreursInteractif})`;
+        }
+
+        overlay.classList.add('show');
+        setTimeout(() => overlay.classList.remove('show'), 1200);
+    }
+
+    // ==========================================
+    // MODE B : CHAPITRE PAR BLOCS & EXPORT PDF
+    // ==========================================
+    window.ouvrirMenuChapitreBlocs = function(id) {
+        const d = assignationsMap[id];
+        if (!d) return;
+
+        assignationActive = d;
+        document.getElementById('ecran-tableau-de-bord').style.display = 'none';
+        document.getElementById('vue-chapitre-blocs').style.display = 'block';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'none';
+        document.getElementById('chapitre-titre').textContent = d.chapitreTitre || d.devoirTitre;
+
+        const conteneur = document.getElementById('chapitre-liste-blocs');
+        conteneur.innerHTML = "";
+        const suivi = d.suiviBlocs || {};
+
+        if (d.bloc_cours) {
             const coursLu = (suivi.cours && suivi.cours.statut === "lu");
-            const divCours = document.createElement('div');
-            divCours.className = `bloc-nav-card ${coursLu ? 'fait' : ''}`;
-            divCours.innerHTML = `
+            const div = document.createElement('div');
+            div.className = `bloc-nav-card ${coursLu ? 'fait' : ''}`;
+            div.innerHTML = `
                 <div>
-                    <h3 style="margin:0 0 4px 0; color:var(--primary);">📖 ${assignationActive.bloc_cours.titre || 'Cours de Grammaire'}</h3>
+                    <h3 style="margin:0 0 4px 0;">📖 ${d.bloc_cours.titre || 'Cours de Grammaire'}</h3>
                     <span style="font-weight:600; font-size:0.9em; color:${coursLu ? 'var(--success)' : '#64748b'};">
-                        ${coursLu ? '✓ Lu et compris' : '⏳ Non lu'} · ${(assignationActive.bloc_cours.slides || []).length} fiches
+                        ${coursLu ? '✓ Lu et compris' : '⏳ Non lu'} · ${(d.bloc_cours.slides || []).length} fiches
                     </span>
                 </div>
                 <button class="btn ${coursLu ? 'btn-secondary' : 'btn-primary'}" onclick="ouvrirBlocCours()">
                     ${coursLu ? 'Relire le cours' : 'Lire le cours ▶'}
                 </button>
             `;
-            conteneur.appendChild(divCours);
+            conteneur.appendChild(div);
         }
 
-        const blocsExos = Array.isArray(assignationActive.blocs_exercices) ? assignationActive.blocs_exercices : [];
-        blocsExos.forEach((b, idx) => {
-            const etat = (suivi[b.id] && suivi[b.id].statut === "fait") ? "fait" : "non_fait";
-            const estFait = (etat === "fait");
-            const divExo = document.createElement('div');
-            divExo.className = `bloc-nav-card ${estFait ? 'fait' : ''}`;
-            divExo.innerHTML = `
+        const blocs = Array.isArray(d.blocs_exercices) ? d.blocs_exercices : [];
+        blocs.forEach((b, idx) => {
+            const fait = (suivi[b.id] && suivi[b.id].statut === "fait");
+            const div = document.createElement('div');
+            div.className = `bloc-nav-card ${fait ? 'fait' : ''}`;
+            div.innerHTML = `
                 <div>
-                    <h3 style="margin:0 0 4px 0; color:var(--primary);">✏️ ${b.titre || ('Exercice ' + (idx + 1))}</h3>
-                    <span style="font-weight:600; font-size:0.9em; color:${estFait ? 'var(--success)' : 'var(--danger)'};">
-                        ${estFait ? '✓ Terminé' : '⏳ À faire'} · ${(b.questions || []).length} questions
+                    <h3 style="margin:0 0 4px 0;">✏️ ${b.titre || ('Exercice ' + (idx + 1))}</h3>
+                    <span style="font-weight:600; font-size:0.9em; color:${fait ? 'var(--success)' : 'var(--danger)'};">
+                        ${fait ? '✓ Terminé' : '⏳ À faire'} · ${(b.questions || []).length} questions
                     </span>
                 </div>
-                <button class="btn ${estFait ? 'btn-secondary' : 'btn-warning'}" onclick="ouvrirBlocExercice('${b.id}')">
-                    ${estFait ? 'Modifier mes réponses' : 'Faire cet exercice ▶'}
+                <button class="btn ${fait ? 'btn-secondary' : 'btn-warning'}" onclick="ouvrirBlocExercice('${b.id}')">
+                    ${fait ? 'Modifier mes réponses' : 'Faire cet exercice ▶'}
                 </button>
             `;
-            conteneur.appendChild(divExo);
+            conteneur.appendChild(div);
         });
-    };
-
-    window.retourListeChapitres = function() {
-        document.getElementById('ecran-menu-blocs').style.display = 'none';
-        document.getElementById('ecran-tableau-de-bord').style.display = 'block';
     };
 
     window.ouvrirBlocCours = function() {
         blocActif = 'cours';
-        document.getElementById('ecran-menu-blocs').style.display = 'none';
-        document.getElementById('ecran-contenu-bloc').style.display = 'block';
-        document.getElementById('vue-bloc-cours').style.display = 'block';
-        document.getElementById('vue-bloc-exercice').style.display = 'none';
-        document.getElementById('titre-bloc-actif').textContent = assignationActive.bloc_cours.titre || "Cours de Grammaire";
+        document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'block';
+        document.getElementById('chapitre-zone-cours').style.display = 'block';
+        document.getElementById('chapitre-zone-exercice').style.display = 'none';
+        document.getElementById('chapitre-bloc-actif-titre').textContent = assignationActive.bloc_cours.titre || "Cours";
 
         indexSlideCours = 0;
         afficherSlideCours();
@@ -393,7 +631,6 @@
     function afficherSlideCours() {
         const slides = assignationActive.bloc_cours?.slides || [];
         if (slides.length === 0) return;
-
         if (indexSlideCours < 0) indexSlideCours = 0;
         if (indexSlideCours >= slides.length) indexSlideCours = slides.length - 1;
 
@@ -403,64 +640,51 @@
         document.getElementById('cours-slide-contenu').textContent = s.contenu_coreen || "";
     }
 
-    window.naviguerSlideCours = function(dir) {
-        indexSlideCours += dir;
-        afficherSlideCours();
-    };
+    window.naviguerSlideCours = function(dir) { indexSlideCours += dir; afficherSlideCours(); };
 
     window.validerLectureCours = async function() {
-        if (!assignationActive) return;
         const suivi = assignationActive.suiviBlocs || {};
-        suivi.cours = { statut: "lu", dateLecture: new Date().toISOString() };
-
-        await db.collection("assignations").doc(assignationActive.id).update({
-            suiviBlocs: suivi
-        });
-        alert("✅ Cours validé ! Vous pouvez maintenant passer aux exercices.");
+        suivi.cours = { statut: "lu" };
+        await db.collection("assignations").doc(assignationActive.id).update({ suiviBlocs: suivi });
+        alert("✅ Cours validé !");
         retourMenuBlocs();
     };
 
-    // --- RECONSTITUTION MULTI-TROUS ENTIÈRE ET DYNAMIQUE ---
     window.ouvrirBlocExercice = function(blocId) {
         const b = (assignationActive.blocs_exercices || []).find(item => item.id === blocId);
-        if (!b) return alert("Exercice introuvable.");
+        if (!b) return;
 
         blocActif = b;
-        document.getElementById('ecran-menu-blocs').style.display = 'none';
-        document.getElementById('ecran-contenu-bloc').style.display = 'block';
-        document.getElementById('vue-bloc-cours').style.display = 'none';
-        document.getElementById('vue-bloc-exercice').style.display = 'block';
-        document.getElementById('titre-bloc-actif').textContent = b.titre;
-        document.getElementById('consigne-exo-actif').textContent = b.consigne || "";
+        document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'block';
+        document.getElementById('chapitre-zone-cours').style.display = 'none';
+        document.getElementById('chapitre-zone-exercice').style.display = 'block';
+        document.getElementById('chapitre-bloc-actif-titre').textContent = b.titre;
+        document.getElementById('chapitre-consigne-exo').textContent = b.consigne || "";
 
-        const conteneurQ = document.getElementById('questions-exo-conteneur');
+        const conteneurQ = document.getElementById('chapitre-questions-conteneur');
         conteneurQ.innerHTML = "";
-
-        const reponsesDuBloc = (assignationActive.suiviBlocs && assignationActive.suiviBlocs[b.id] && assignationActive.suiviBlocs[b.id].reponses) 
+        const reponses = (assignationActive.suiviBlocs && assignationActive.suiviBlocs[b.id] && assignationActive.suiviBlocs[b.id].reponses) 
             ? assignationActive.suiviBlocs[b.id].reponses : {};
 
         (b.questions || []).forEach((q, qIdx) => {
             const item = document.createElement('div');
             item.className = "phrase-item";
 
-            // S'il s'agit d'une phrase avec des trous (____)
             if (q.q.includes('____') || q.q.includes('___')) {
                 const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
-                
-                // Reconstitution dynamique pour 1, 2, 3 trous ou plus SANS RIEN COUPER
                 let htmlPhrase = `<span>${qIdx + 1}.</span> `;
                 for (let i = 0; i < parts.length; i++) {
                     htmlPhrase += parts[i];
                     if (i < parts.length - 1) {
                         const cleTrou = `${qIdx}_trou_${i}`;
-                        const val = reponsesDuBloc[cleTrou] || "";
+                        const val = reponses[cleTrou] || "";
                         htmlPhrase += ` <input type="text" class="input-calme" value="${val}" placeholder="..." oninput="noterReponseBloc('${cleTrou}', this.value)"> `;
                     }
                 }
                 item.innerHTML = htmlPhrase;
             } else {
-                // S'il s'agit d'une question ouverte
-                const val = reponsesDuBloc[`${qIdx}_ouverte`] || "";
+                const val = reponses[`${qIdx}_ouverte`] || "";
                 item.innerHTML = `<div style="font-weight:bold; color:var(--primary); margin-bottom:8px;">${qIdx + 1}. ${q.q}</div>
                     <textarea class="textarea-calme" rows="2" placeholder="Écrivez votre réponse ici..." oninput="noterReponseBloc('${qIdx}_ouverte', this.value)">${val}</textarea>`;
             }
@@ -477,35 +701,32 @@
     };
 
     window.sauvegarderExoBloc = async function(marquerFini) {
-        if (!assignationActive || !blocActif) return;
         const suivi = assignationActive.suiviBlocs || {};
         if (!suivi[blocActif.id]) suivi[blocActif.id] = { reponses: {} };
-
         suivi[blocActif.id].statut = marquerFini ? "fait" : "en_cours";
 
-        await db.collection("assignations").doc(assignationActive.id).update({
-            suiviBlocs: suivi,
-            dateDerniereActivite: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        if (marquerFini) {
-            alert("✅ Exercice validé et marqué comme terminé !");
-        } else {
-            alert("💾 Réponses enregistrées pour plus tard !");
-        }
+        await db.collection("assignations").doc(assignationActive.id).update({ suiviBlocs: suivi });
+        alert(marquerFini ? "✅ Exercice terminé !" : "💾 Réponses sauvegardées !");
         retourMenuBlocs();
     };
 
     window.retourMenuBlocs = function() {
-        document.getElementById('ecran-contenu-bloc').style.display = 'none';
-        ouvrirMenuBlocs(assignationActive.id);
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'none';
+        ouvrirMenuChapitreBlocs(assignationActive.id);
     };
 
-    // EXPORT PDF RECONSTITUÉ SANS COUPURE
+    window.retourTableauPrincipal = function() {
+        document.getElementById('vue-exo-interactif').style.display = 'none';
+        document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'none';
+        document.getElementById('ecran-tableau-de-bord').style.display = 'block';
+    };
+
+    // EXPORT PDF RECONSTITUÉ
     window.ouvrirModalExtraction = function() {
         if (!assignationActive) return;
 
-        document.getElementById('pdf-titre').textContent = assignationActive.chapitreTitre;
+        document.getElementById('pdf-titre').textContent = assignationActive.chapitreTitre || assignationActive.devoirTitre;
         document.getElementById('pdf-eleve').textContent = codeEleveActuel;
         document.getElementById('pdf-date').textContent = new Date().toLocaleDateString('fr-FR');
 
@@ -513,7 +734,6 @@
         zone.innerHTML = "";
         const suivi = assignationActive.suiviBlocs || {};
 
-        // 1. Cours
         if (assignationActive.bloc_cours && assignationActive.bloc_cours.slides) {
             zone.innerHTML += `<div style="background:#fdfbf7; border:1px solid #e0a92c; padding:15px; margin-bottom:20px; border-radius:8px;">
                 <h3 style="margin-top:0; color:#8a6314;">📖 ${assignationActive.bloc_cours.titre}</h3>`;
@@ -523,7 +743,6 @@
             zone.innerHTML += `</div>`;
         }
 
-        // 2. Exercices complets
         const blocs = Array.isArray(assignationActive.blocs_exercices) ? assignationActive.blocs_exercices : [];
         blocs.forEach((b) => {
             const reponses = (suivi[b.id] && suivi[b.id].reponses) ? suivi[b.id].reponses : {};
@@ -535,7 +754,6 @@
 
             (b.questions || []).forEach((q, qIdx) => {
                 const li = document.createElement('li');
-
                 if (q.q.includes('____') || q.q.includes('___')) {
                     const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
                     let texteLigne = "";

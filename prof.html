@@ -50,16 +50,13 @@
         .badge-fait { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
         .badge-nonfait { background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
 
-        /* ÉDITEUR ET SÉLECTEUR DE BLOCS */
         .blocs-selector-bar { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin: 15px 0; border-bottom: 2px solid #e2e8f0; }
         .bloc-tab-btn { padding: 10px 16px; border: 2px solid #cbd5e0; background: #f8fafc; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 0.95em; color: #475569; white-space: nowrap; }
         .bloc-tab-btn.active { background: #eff6ff; border-color: var(--accent); color: var(--accent); }
 
         .editeur-bloc-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-top: 15px; }
-
         .chat-ai-box { background: #faf5ff; border: 2px solid #d8b4fe; border-radius: 10px; padding: 20px; margin-top: 25px; }
 
-        /* MODAL EXPORT PDF SURBRILLANCE */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
         .surbrillance { background-color: #fef08a !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #000; text-decoration: underline; }
@@ -123,7 +120,7 @@
         </div>
     </div>
 
-    <!-- ONGLET 2 : CRÉATION DU COURS + LECTURE ET MODIFICATION DU CONTENU -->
+    <!-- ONGLET 2 : CRÉATION DU COURS -->
     <div id="tab-pdf" class="tab-pane" style="display:none;">
         <div class="card">
             <h2>📄 Convertir un PDF en Blocs (Cours + Exercices)</h2>
@@ -153,18 +150,17 @@
             </div>
         </div>
 
-        <!-- ZONE D'ÉDITION ET DE LECTURE DU CONTENU GÉNÉRÉ -->
+        <!-- ZONE D'ÉDITION DU CONTENU GÉNÉRÉ -->
         <div class="card" id="card-resultat-ia" style="display:none;">
             <h2>📖 Lecture & Retouche du contenu généré</h2>
             
             <label>Titre global de la leçon :</label>
             <input type="text" id="ia-titre" oninput="donneesIAPret.titre = this.value">
 
-            <!-- Sélecteur des Blocs (Cours vs Blocs d'Exercices) -->
             <label style="margin-top:20px;">Sélectionnez le bloc à lire ou modifier :</label>
             <div class="blocs-selector-bar" id="barre-selection-blocs-ia"></div>
 
-            <!-- BOÎTE 1 : ÉDITION DU BLOC COURS (FICHE PAR FICHE) -->
+            <!-- BOÎTE 1 : COURS FICHE PAR FICHE -->
             <div id="editeur-bloc-cours" class="editeur-bloc-box" style="display:none;">
                 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                     <button class="btn btn-secondary btn-sm" onclick="naviguerSlideIA(-1)">◀ Fiche précédente</button>
@@ -174,11 +170,11 @@
                 <label>Titre de cette fiche :</label>
                 <input type="text" id="slide-ia-titre" oninput="mettreAJourSlideIA()">
                 
-                <label style="margin-top:10px;">Texte d'explication en coréen (avec exemples) :</label>
+                <label style="margin-top:10px;">Texte d'explication en coréen :</label>
                 <textarea id="slide-ia-contenu" rows="9" oninput="mettreAJourSlideIA()"></textarea>
             </div>
 
-            <!-- BOÎTE 2 : ÉDITION D'UN BLOC EXERCICE -->
+            <!-- BOÎTE 2 : EXERCICES -->
             <div id="editeur-bloc-exo" class="editeur-bloc-box" style="display:none;">
                 <label>Titre de cet exercice :</label>
                 <input type="text" id="exo-ia-titre" oninput="mettreAJourExoIA()">
@@ -186,15 +182,13 @@
                 <label style="margin-top:10px;">Consigne :</label>
                 <input type="text" id="exo-ia-consigne" oninput="mettreAJourExoIA()">
 
-                <label style="margin-top:10px;">Questions / Phrases de cet exercice (une par ligne) :</label>
-                <p style="color:#64748b; font-size:0.85em; margin:2px 0 6px 0;">Vous pouvez modifier les phrases ou en ajouter de nouvelles directement ici :</p>
+                <label style="margin-top:10px;">Questions / Phrases complètes (une par ligne) :</label>
                 <textarea id="exo-ia-questions" rows="10" oninput="mettreAJourExoIA()"></textarea>
             </div>
 
-            <!-- CHAT IA POUR MODIFICATIONS AUTOMATIQUES -->
+            <!-- CHAT IA -->
             <div class="chat-ai-box">
                 <h3 style="margin-top:0; color:#6b21a8;">💬 Demander un ajustement à l'IA</h3>
-                <p style="color:#64748b; font-size:0.9em; margin-top:0;">Vous pouvez aussi demander à l'IA d'ajuster le texte ci-dessus (ex: <em>« Ajoute un exemple sur la fiche 4 »</em>, <em>« Simplifie le coréen »</em>, <em>« Ajoute 3 questions à l'exercice 2 »</em>).</p>
                 <div style="display:flex; gap:10px;">
                     <input type="text" id="chat-instruction" placeholder="Votre consigne pour l'IA...">
                     <button class="btn btn-purple" id="btn-chat-ai" onclick="demanderAjustementIA()">✨ Modifier avec l'IA</button>
@@ -263,7 +257,7 @@
     let assignationsMap = {};
     
     let donneesIAPret = null;
-    let blocSelectionneType = "cours"; // "cours" ou "exo_idx"
+    let blocSelectionneType = "cours";
     let indexSlideIA = 0;
     let indexExoSelectionne = 0;
 
@@ -310,7 +304,6 @@
         }
     }
 
-    // --- ANALYSE DU PDF ---
     async function analyserPDFAvecIA() {
         const urlApi = document.getElementById('api-url').value.trim();
         const fileInput = document.getElementById('pdf-file-input');
@@ -347,7 +340,6 @@
         }
     }
 
-    // --- CHAT INTERACTIF AVEC L'IA ---
     async function demanderAjustementIA() {
         const urlApi = document.getElementById('api-url').value.trim();
         const instruction = document.getElementById('chat-instruction').value.trim();
@@ -384,7 +376,6 @@
         }
     }
 
-    // --- AFFICHAGE DE L'ÉDITEUR AVEC LECTURE COMPLÈTE ---
     function afficherApercuInteractif(data) {
         donneesIAPret = data;
         document.getElementById('ia-titre').value = data.titre || "Chapitre de français";
@@ -392,7 +383,6 @@
         const barre = document.getElementById('barre-selection-blocs-ia');
         barre.innerHTML = "";
 
-        // 1. Bouton pour le bloc cours
         const slides = (data.bloc_cours && data.bloc_cours.slides) ? data.bloc_cours.slides : [];
         const btnCours = document.createElement('button');
         btnCours.type = "button";
@@ -402,7 +392,6 @@
         btnCours.onclick = () => changerBlocEditeur("cours");
         barre.appendChild(btnCours);
 
-        // 2. Boutons pour chaque bloc d'exercices
         const exos = Array.isArray(data.blocs_exercices) ? data.blocs_exercices : [];
         exos.forEach((b, idx) => {
             const btnExo = document.createElement('button');
@@ -444,7 +433,6 @@
         }
     }
 
-    // Gestion de la lecture/modification du cours (Slide par slide)
     function afficherSlideIA() {
         const slides = (donneesIAPret && donneesIAPret.bloc_cours && donneesIAPret.bloc_cours.slides) ? donneesIAPret.bloc_cours.slides : [];
         if (slides.length === 0) return;
@@ -471,7 +459,6 @@
         }
     }
 
-    // Gestion de la lecture/modification d'un exercice
     function afficherExoIA() {
         const exos = (donneesIAPret && Array.isArray(donneesIAPret.blocs_exercices)) ? donneesIAPret.blocs_exercices : [];
         const b = exos[indexExoSelectionne];
@@ -480,7 +467,6 @@
         document.getElementById('exo-ia-titre').value = b.titre || "";
         document.getElementById('exo-ia-consigne').value = b.consigne || "";
 
-        // Afficher les questions une par ligne dans le textarea
         const questionsTexte = (b.questions || []).map(q => q.q).join('\n');
         document.getElementById('exo-ia-questions').value = questionsTexte;
     }
@@ -493,7 +479,6 @@
         b.titre = document.getElementById('exo-ia-titre').value;
         b.consigne = document.getElementById('exo-ia-consigne').value;
         
-        // Reconstituer les questions depuis le texte
         const lignes = document.getElementById('exo-ia-questions').value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
         b.questions = lignes.map(l => ({ q: l }));
     }
@@ -546,7 +531,7 @@
         }
     }
 
-    // EXTRACTION PDF EN SURBRILLANCE
+    // EXTRACTION PDF ENTIÈRE SANS COUPURE
     window.ouvrirModalExtractionProf = function(assignationId) {
         const a = assignationsMap[assignationId];
         if (!a) return alert("Données introuvables.");
@@ -576,13 +561,24 @@
             
             const ol = document.createElement('ol');
             ol.style.lineHeight = "2.1";
+
             (b.questions || []).forEach((q, qIdx) => {
-                const rep = reponsesDuBloc[qIdx] ? `<span class="surbrillance">${reponsesDuBloc[qIdx]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
                 const li = document.createElement('li');
+
                 if (q.q.includes('____') || q.q.includes('___')) {
                     const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
-                    li.innerHTML = `${parts[0]} ${rep} ${parts[1] || ""}`;
+                    let texteLigne = "";
+                    for (let i = 0; i < parts.length; i++) {
+                        texteLigne += parts[i];
+                        if (i < parts.length - 1) {
+                            const cleTrou = `${qIdx}_trou_${i}`;
+                            const rep = reponsesDuBloc[cleTrou] ? `<span class="surbrillance">${reponsesDuBloc[cleTrou]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
+                            texteLigne += ` ${rep} `;
+                        }
+                    }
+                    li.innerHTML = texteLigne;
                 } else {
+                    const rep = reponsesDuBloc[`${qIdx}_ouverte`] ? `<span class="surbrillance">${reponsesDuBloc[`${qIdx}_ouverte`]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
                     li.innerHTML = `<strong>${q.q}</strong><br>➔ Réponse : ${rep}`;
                 }
                 ol.appendChild(li);

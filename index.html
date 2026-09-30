@@ -46,34 +46,25 @@
         .btn-purple { background: #8b5cf6; }
         .btn-secondary { background: #64748b; padding: 8px 16px; font-size: 0.9em; }
 
-        /* EN-TÊTE ÉLÈVE */
+        /* EN-TÊTE */
         #header-eleve { display: none; background: white; padding: 15px 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 25px; justify-content: space-between; align-items: center; }
 
-        /* TABLEAU DE BORD */
+        /* LISTE DES CHAPITRES */
         #ecran-tableau-de-bord { display: none; }
-        .tabs-nav { display: flex; gap: 12px; margin-bottom: 20px; }
-        .tab-btn { flex: 1; padding: 14px; background: #e2e8f0; border: none; border-radius: 10px; font-weight: bold; color: #475569; cursor: pointer; font-size: 1.05em; }
-        .tab-btn.active { background: var(--primary); color: white; }
+        .chapitre-card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; border-left: 6px solid var(--accent); }
 
-        .devoir-card { background: white; padding: 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; border-left: 6px solid var(--accent); }
-        .devoir-card.fait { border-left-color: var(--success); }
+        /* LISTE DES BLOCS DU CHAPITRE */
+        #ecran-menu-blocs { display: none; }
+        .bloc-nav-card { background: white; padding: 18px 22px; border-radius: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.04); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e2e8f0; transition: all 0.2s; }
+        .bloc-nav-card.fait { border-color: var(--success); background: #f0fdf4; }
 
-        /* ÉCRAN DEVOIR (COURS & EXOS SÉPARÉS) */
-        #ecran-exercice { display: none; }
-        
-        .mode-view-nav { display: flex; gap: 10px; margin-bottom: 20px; }
-        .mode-view-btn { flex: 1; padding: 12px; border: 2px solid #cbd5e0; background: white; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.05em; color: #475569; }
-        .mode-view-btn.active { background: #eff6ff; border-color: var(--accent); color: var(--accent); box-shadow: 0 2px 8px rgba(59, 130, 246, 0.15); }
-
-        /* SECTION COURS EN SLIDES */
+        /* CONTENU DU BLOC EN COURS */
+        #ecran-contenu-bloc { display: none; }
         .cours-slide-container { background: white; padding: 30px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); line-height: 1.9; font-size: 1.1em; }
         .slide-nav-controls { display: flex; justify-content: space-between; align-items: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid #e2e8f0; }
 
-        /* SECTION EXERCICES */
-        .exo-section-box { background: white; padding: 25px; border-radius: 14px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 25px; }
-        .phrase-item { background: #f8fafc; border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; margin-bottom: 15px; font-size: 1.08em; line-height: 1.8; }
+        .phrase-item { background: white; border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; margin-bottom: 15px; font-size: 1.08em; line-height: 1.8; }
         .input-calme { padding: 9px 14px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; font-family: inherit; color: #1e293b; font-weight: 600; background: white; }
-        .input-calme:focus { outline: none; border-color: var(--accent); }
         .textarea-calme { width: 100%; padding: 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; margin-top: 8px; box-sizing: border-box; font-family: inherit; }
 
         /* MODAL EXPORT PDF SURBRILLANCE */
@@ -122,17 +113,16 @@
     <!-- 1. CONNEXION -->
     <div id="ecran-login">
         <h1>👋 Espace Français</h1>
-        <p style="color:#64748b;">Entrez votre code élève pour accéder à vos leçons :</p>
+        <p style="color:#64748b;">Entrez votre code élève pour accéder à vos chapitres :</p>
         <input type="text" id="code-input" placeholder="EX: LUCAS01" autocomplete="off">
-        <button type="button" class="btn btn-full" onclick="seConnecter()">Ouvrir mes leçons</button>
+        <button type="button" class="btn btn-full" onclick="seConnecter()">Ouvrir mes cours</button>
     </div>
 
     <!-- 1.5 BIENVENUE -->
     <div id="ecran-bienvenue">
         <h1>Bienvenue !</h1>
         <div class="welcome-user-box" id="bienvenue-nom-user">-</div>
-        <p style="color:#64748b; margin-bottom:25px;">Vos fiches de grammaire et vos exercices sont prêts.</p>
-        <button type="button" class="btn btn-full btn-success" onclick="validerBienvenue()">Commencer ▶</button>
+        <button type="button" class="btn btn-full btn-success" onclick="validerBienvenue()">Accéder à mes devoirs ▶</button>
     </div>
 
     <!-- EN-TÊTE ÉLÈVE CONNECTÉ -->
@@ -144,62 +134,57 @@
         </div>
     </div>
 
-    <!-- 2. TABLEAU DE BORD -->
+    <!-- 2. TABLEAU DE BORD (LISTE DES CHAPITRES) -->
     <div id="ecran-tableau-de-bord">
-        <div class="tabs-nav">
-            <button type="button" class="tab-btn active" id="btn-tab-afaire" onclick="changerOnglet('afaire')">
-                ⏳ À faire <span id="badge-nb-afaire" style="background:rgba(0,0,0,0.12); padding:2px 8px; border-radius:10px;">0</span>
-            </button>
-            <button type="button" class="tab-btn" id="btn-tab-faits" onclick="changerOnglet('faits')">
-                ✅ Terminés <span id="badge-nb-faits" style="background:rgba(0,0,0,0.12); padding:2px 8px; border-radius:10px;">0</span>
-            </button>
-        </div>
-        <div id="panel-afaire"><div id="conteneur-afaire"></div></div>
-        <div id="panel-faits" style="display:none;"><div id="conteneur-faits"></div></div>
+        <h2 style="color:var(--primary); margin-top:0;">📚 Vos Chapitres assignés</h2>
+        <div id="conteneur-chapitres"></div>
     </div>
 
-    <!-- 3. ÉCRAN DU DEVOIR : SÉPARATION COURS VS EXERCICES -->
-    <div id="ecran-exercice">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; flex-wrap:wrap; gap:10px;">
-            <button type="button" class="btn btn-secondary" onclick="sauvegarderEtQuitter()">← Sauvegarder & Quitter</button>
-            <h2 id="exo-titre" style="margin:0; color:var(--primary); font-size:1.3em;">-</h2>
-            <button type="button" class="btn btn-purple" onclick="ouvrirModalExtraction()">📄 Exporter en PDF</button>
+    <!-- 2.5 MENU DES BLOCS D'UN CHAPITRE -->
+    <div id="ecran-menu-blocs">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <button type="button" class="btn btn-secondary" onclick="retourListeChapitres()">← Retour aux chapitres</button>
+            <h2 id="titre-menu-chapitre" style="margin:0; color:var(--primary);">-</h2>
+            <button type="button" class="btn btn-purple" onclick="ouvrirModalExtraction()">📄 Exporter PDF</button>
         </div>
 
-        <!-- SÉLECTEUR DE MODE : COURS OU EXERCICES -->
-        <div class="mode-view-nav">
-            <button type="button" class="mode-view-btn active" id="btn-mode-cours" onclick="basculerMode('cours')">📖 Fiches de Cours (<span id="nb-slides-eleve">0</span> fiches)</button>
-            <button type="button" class="mode-view-btn" id="btn-mode-exos" onclick="basculerMode('exos')">✏️ Exercices à faire</button>
+        <p style="color:#64748b; margin-bottom:20px;">Complétez chaque bloc à votre rythme :</p>
+        <div id="liste-blocs-conteneur"></div>
+    </div>
+
+    <!-- 3. CONTENU D'UN BLOC SÉLECTIONNÉ (COURS OU EXERCICE) -->
+    <div id="ecran-contenu-bloc">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <button type="button" class="btn btn-secondary" onclick="retourMenuBlocs()">← Retour aux blocs</button>
+            <h2 id="titre-bloc-actif" style="margin:0; color:var(--primary); font-size:1.25em;">-</h2>
+            <div></div>
         </div>
 
-        <!-- ESPACE 1 : LE COURS EN SLIDES DE POCHE -->
-        <div id="zone-cours-view">
+        <!-- AFFICHAGE SI C'EST LE BLOC COURS -->
+        <div id="vue-bloc-cours" style="display:none;">
             <div class="cours-slide-container">
                 <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e2e8f0; padding-bottom:12px; margin-bottom:15px;">
-                    <h3 id="eleve-slide-titre" style="margin:0; color:#1e3a8a;">-</h3>
-                    <span id="eleve-slide-compteur" style="background:#eff6ff; color:#1d4ed8; padding:4px 10px; border-radius:20px; font-weight:bold; font-size:0.9em;">-</span>
+                    <h3 id="cours-slide-titre" style="margin:0; color:#1e3a8a;">-</h3>
+                    <span id="cours-slide-compteur" style="background:#eff6ff; color:#1d4ed8; padding:4px 10px; border-radius:20px; font-weight:bold; font-size:0.9em;">-</span>
                 </div>
-                <div id="eleve-slide-contenu" style="white-space:pre-wrap;"></div>
+                <div id="cours-slide-contenu" style="white-space:pre-wrap;"></div>
 
                 <div class="slide-nav-controls">
-                    <button type="button" class="btn btn-secondary" onclick="naviguerSlideEleve(-1)">◀ Fiche précédente</button>
-                    <button type="button" class="btn btn-primary" onclick="basculerMode('exos')">Passer aux exercices ▶</button>
-                    <button type="button" class="btn btn-secondary" onclick="naviguerSlideEleve(1)">Fiche suivante ▶</button>
+                    <button type="button" class="btn btn-secondary" onclick="naviguerSlideCours(-1)">◀ Fiche précédente</button>
+                    <button type="button" class="btn btn-success" id="btn-valider-lecture-cours" onclick="validerLectureCours()">✅ J'ai lu ce cours</button>
+                    <button type="button" class="btn btn-secondary" onclick="naviguerSlideCours(1)">Fiche suivante ▶</button>
                 </div>
             </div>
         </div>
 
-        <!-- ESPACE 2 : LES EXERCICES À COMPLÉTER -->
-        <div id="zone-exos-view" style="display:none;">
-            <div style="text-align:right; margin-bottom:15px;">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="basculerMode('cours')">📖 Revoir la règle de grammaire</button>
-            </div>
-            
-            <div id="conteneur-exercices-eleve"></div>
+        <!-- AFFICHAGE SI C'EST UN BLOC EXERCICE -->
+        <div id="vue-bloc-exercice" style="display:none;">
+            <p id="consigne-exo-actif" style="color:#64748b; font-style:italic; margin-bottom:20px;"></p>
+            <div id="questions-exo-conteneur"></div>
 
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:25px; padding-top:20px; border-top:1px solid #e2e8f0; flex-wrap:wrap; gap:10px;">
-                <button type="button" class="btn btn-warning" onclick="sauvegarderEtQuitter()">💾 Sauvegarder pour plus tard</button>
-                <button type="button" class="btn btn-success" onclick="marquerTermine()">✅ Valider et Terminer le devoir</button>
+                <button type="button" class="btn btn-warning" onclick="sauvegarderExoBloc(false)">💾 Sauvegarder pour plus tard</button>
+                <button type="button" class="btn btn-success" onclick="sauvegarderExoBloc(true)">✅ Marquer cet exercice comme terminé</button>
             </div>
         </div>
     </div>
@@ -210,13 +195,12 @@
 <div class="modal" id="modal-export">
     <div class="modal-content">
         <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding-bottom:12px; margin-bottom:20px;">
-            <h2 style="margin:0; color:var(--primary);">📄 Aperçu de votre fiche de cours</h2>
+            <h2 style="margin:0; color:var(--primary);">📄 Aperçu de la copie complète</h2>
             <div style="display:flex; gap:8px;">
                 <button class="btn btn-success" onclick="window.print()">🖨️ Enregistrer en PDF / Imprimer</button>
                 <button class="btn btn-secondary" onclick="document.getElementById('modal-export').style.display='none'">Fermer</button>
             </div>
         </div>
-
         <div id="feuille-impression">
             <div style="border-bottom:2px solid #333; padding-bottom:10px; margin-bottom:20px;">
                 <h1 style="margin:0; font-size:1.6em;" id="pdf-titre">-</h1>
@@ -245,11 +229,10 @@
 
     let langueActuelle = localStorage.getItem("langEleve") || "";
     let codeEleveActuel = localStorage.getItem("codeEleve") || "";
-    let devoirsChargesMap = {};
-    let devoirActuel = null;
-    let assignationIdActuelle = null;
-    let reponsesEleveMap = {};
-    let slideEleveIndex = 0;
+    let assignationsMap = {};
+    let assignationActive = null;
+    let blocActif = null; // 'cours' ou objet exercice
+    let indexSlideCours = 0;
 
     window.choisirLangue = function(lang) {
         langueActuelle = lang;
@@ -263,7 +246,8 @@
         document.getElementById('ecran-bienvenue').style.display = 'none';
         document.getElementById('header-eleve').style.display = 'none';
         document.getElementById('ecran-tableau-de-bord').style.display = 'none';
-        document.getElementById('ecran-exercice').style.display = 'none';
+        document.getElementById('ecran-menu-blocs').style.display = 'none';
+        document.getElementById('ecran-contenu-bloc').style.display = 'none';
     };
 
     window.verifierSession = function() {
@@ -275,7 +259,6 @@
             document.getElementById('ecran-bienvenue').style.display = 'none';
             document.getElementById('header-eleve').style.display = 'none';
             document.getElementById('ecran-tableau-de-bord').style.display = 'none';
-            document.getElementById('ecran-exercice').style.display = 'none';
             return;
         }
 
@@ -283,8 +266,7 @@
         document.getElementById('header-eleve').style.display = 'flex';
         document.getElementById('affichage-code-eleve').textContent = codeEleveActuel;
         document.getElementById('ecran-tableau-de-bord').style.display = 'block';
-        document.getElementById('ecran-exercice').style.display = 'none';
-        ecouterDevoirs();
+        ecouterAssignations();
     };
 
     window.seConnecter = function() {
@@ -313,203 +295,245 @@
         }
     };
 
-    window.changerOnglet = function(tab) {
-        document.getElementById('btn-tab-afaire').classList.toggle('active', tab === 'afaire');
-        document.getElementById('btn-tab-faits').classList.toggle('active', tab === 'faits');
-        document.getElementById('panel-afaire').style.display = tab === 'afaire' ? 'block' : 'none';
-        document.getElementById('panel-faits').style.display = tab === 'faits' ? 'block' : 'none';
-    };
-
-    function ecouterDevoirs() {
+    // ÉCOUTER LES CHAPITRES ASSIGNÉS
+    function ecouterAssignations() {
         if (!db) return;
         db.collection("assignations").onSnapshot(snapshot => {
             const tous = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            devoirsChargesMap = {};
-            tous.forEach(d => { devoirsChargesMap[d.id] = d; });
+            assignationsMap = {};
+            tous.forEach(d => { assignationsMap[d.id] = d; });
 
-            const mesDevoirs = tous.filter(d => d.eleveCode && d.eleveCode.toUpperCase() === codeEleveActuel.toUpperCase());
-            const aFaire = mesDevoirs.filter(d => d.statut !== 'termine');
-            const faits = mesDevoirs.filter(d => d.statut === 'termine');
+            const mesChapitres = tous.filter(d => d.eleveCode && d.eleveCode.toUpperCase() === codeEleveActuel.toUpperCase());
+            const conteneur = document.getElementById('conteneur-chapitres');
 
-            document.getElementById('badge-nb-afaire').textContent = aFaire.length;
-            document.getElementById('badge-nb-faits').textContent = faits.length;
+            if (mesChapitres.length === 0) {
+                conteneur.innerHTML = `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">🎉 Aucun chapitre assigné pour l'instant !</div>`;
+                return;
+            }
 
-            const cAFaire = document.getElementById('conteneur-afaire');
-            cAFaire.innerHTML = aFaire.length === 0 
-                ? `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">🎉 Toutes vos leçons sont à jour !</div>`
-                : aFaire.map(d => {
-                    const nbFiches = Array.isArray(d.slides_cours) ? d.slides_cours.length : 0;
-                    return `
-                    <div class="devoir-card">
-                        <div>
-                            <h3 style="margin:0 0 6px 0; color:var(--primary); font-size:1.2em;">${d.devoirTitre}</h3>
-                            <span style="color:#64748b; font-size:0.9em;">📖 ${nbFiches} fiches de grammaire & exercices</span>
+            conteneur.innerHTML = mesChapitres.map(c => {
+                const nbFiches = c.bloc_cours?.slides ? c.bloc_cours.slides.length : 0;
+                const nbExos = Array.isArray(c.blocs_exercices) ? c.blocs_exercices.length : 0;
+                return `
+                    <div class="chapitre-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+                            <div>
+                                <h3 style="margin:0 0 6px 0; color:var(--primary); font-size:1.25em;">${c.chapitreTitre}</h3>
+                                <span style="color:#64748b; font-size:0.9em;">📖 1 bloc cours (${nbFiches} fiches) · ✏️ ${nbExos} blocs d'exercices</span>
+                            </div>
+                            <button class="btn" onclick="ouvrirMenuBlocs('${c.id}')">Ouvrir les blocs ▶</button>
                         </div>
-                        <button class="btn" onclick="ouvrirFicheDevoir('${d.id}')">Ouvrir la leçon ▶</button>
-                    </div>`;
-                }).join('');
-
-            const cFaits = document.getElementById('conteneur-faits');
-            cFaits.innerHTML = faits.length === 0
-                ? `<div style="background:white; padding:35px; text-align:center; border-radius:12px; color:#64748b;">Aucun devoir terminé pour l'instant.</div>`
-                : faits.map(d => `
-                    <div class="devoir-card fait">
-                        <div>
-                            <h3 style="margin:0 0 6px 0; color:var(--primary);">${d.devoirTitre}</h3>
-                            <span style="color:var(--success); font-weight:bold;">Terminé ✓ Prêt pour le cours</span>
-                        </div>
-                        <button class="btn btn-purple" onclick="ouvrirFicheDevoir('${d.id}')">Consulter & Exporter PDF</button>
-                    </div>`).join('');
+                    </div>
+                `;
+            }).join('');
         });
     }
 
-    // --- OUVERTURE DE LA LEÇON : COURS ET EXOS SÉPARÉS ---
-    window.ouvrirFicheDevoir = function(id) {
-        const d = devoirsChargesMap[id];
-        if (!d) return alert("Devoir introuvable.");
-
-        devoirActuel = d;
-        assignationIdActuelle = d.id;
-        reponsesEleveMap = d.reponsesEleve || {};
+    // OUVRIR LE MENU DES BLOCS DU CHAPITRE
+    window.ouvrirMenuBlocs = function(assignationId) {
+        assignationActive = assignationsMap[assignationId];
+        if (!assignationActive) return alert("Chapitre introuvable.");
 
         document.getElementById('ecran-tableau-de-bord').style.display = 'none';
-        document.getElementById('ecran-exercice').style.display = 'block';
-        document.getElementById('exo-titre').textContent = d.devoirTitre;
+        document.getElementById('ecran-menu-blocs').style.display = 'block';
+        document.getElementById('ecran-contenu-bloc').style.display = 'none';
+        document.getElementById('titre-menu-chapitre').textContent = assignationActive.chapitreTitre;
 
-        const slides = Array.isArray(d.slides_cours) ? d.slides_cours : [];
-        document.getElementById('nb-slides-eleve').textContent = slides.length;
-        slideEleveIndex = 0;
-        afficherSlideEleve();
+        const conteneur = document.getElementById('liste-blocs-conteneur');
+        conteneur.innerHTML = "";
+        const suivi = assignationActive.suiviBlocs || {};
 
-        // Rendu des exercices
-        const conteneurExos = document.getElementById('conteneur-exercices-eleve');
-        conteneurExos.innerHTML = "";
-        const exos = Array.isArray(d.exercices) ? d.exercices : [];
-
-        if (exos.length === 0) {
-            conteneurExos.innerHTML = `<p style="color:#64748b;">Aucun exercice à remplir pour cette leçon.</p>`;
-        } else {
-            exos.forEach((sec, sIdx) => {
-                const box = document.createElement('div');
-                box.className = "exo-section-box";
-                box.innerHTML = `<h3 style="margin-top:0; color:var(--primary);">${sec.titre || 'Exercice'}</h3>`;
-                if (sec.consigne) box.innerHTML += `<p style="color:#64748b; font-style:italic; margin-bottom:15px;">${sec.consigne}</p>`;
-
-                (sec.questions || []).forEach((q, qIdx) => {
-                    const cleRep = `${sIdx}_${qIdx}`;
-                    const val = reponsesEleveMap[cleRep] || "";
-                    const item = document.createElement('div');
-                    item.className = "phrase-item";
-
-                    if (q.q.includes('____') || q.q.includes('___')) {
-                        const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
-                        item.innerHTML = `<span>${qIdx + 1}.</span> ${parts[0]} <input type="text" class="input-calme" value="${val}" placeholder="..." oninput="noterReponse('${cleRep}', this.value)"> ${parts[1] || ""}`;
-                    } else {
-                        item.innerHTML = `<div style="font-weight:bold; color:var(--primary); margin-bottom:8px;">${qIdx + 1}. ${q.q}</div>
-                            <textarea class="textarea-calme" rows="2" placeholder="Écrivez votre réponse ici..." oninput="noterReponse('${cleRep}', this.value)">${val}</textarea>`;
-                    }
-                    box.appendChild(item);
-                });
-                conteneurExos.appendChild(box);
-            });
+        // 1. Carte Bloc Cours
+        if (assignationActive.bloc_cours) {
+            const coursLu = (suivi.cours && suivi.cours.statut === "lu");
+            const divCours = document.createElement('div');
+            divCours.className = `bloc-nav-card ${coursLu ? 'fait' : ''}`;
+            divCours.innerHTML = `
+                <div>
+                    <h3 style="margin:0 0 4px 0; color:var(--primary);">📖 ${assignationActive.bloc_cours.titre || 'Cours de Grammaire'}</h3>
+                    <span style="font-weight:600; font-size:0.9em; color:${coursLu ? 'var(--success)' : '#64748b'};">
+                        ${coursLu ? '✓ Lu et compris' : '⏳ Non lu'} · ${(assignationActive.bloc_cours.slides || []).length} fiches
+                    </span>
+                </div>
+                <button class="btn ${coursLu ? 'btn-secondary' : 'btn-primary'}" onclick="ouvrirBlocCours()">
+                    ${coursLu ? 'Relire le cours' : 'Lire le cours ▶'}
+                </button>
+            `;
+            conteneur.appendChild(divCours);
         }
 
-        basculerMode('cours');
-    };
-
-    window.basculerMode = function(mode) {
-        document.getElementById('btn-mode-cours').classList.toggle('active', mode === 'cours');
-        document.getElementById('btn-mode-exos').classList.toggle('active', mode === 'exos');
-        document.getElementById('zone-cours-view').style.display = (mode === 'cours') ? 'block' : 'none';
-        document.getElementById('zone-exos-view').style.display = (mode === 'exos') ? 'block' : 'none';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
-
-    function afficherSlideEleve() {
-        const slides = devoirActuel && Array.isArray(devoirActuel.slides_cours) ? devoirActuel.slides_cours : [];
-        if (slides.length === 0) {
-            document.getElementById('eleve-slide-titre').textContent = "Aucune fiche de cours";
-            document.getElementById('eleve-slide-compteur').textContent = "-";
-            document.getElementById('eleve-slide-contenu').textContent = "";
-            return;
-        }
-
-        if (slideEleveIndex < 0) slideEleveIndex = 0;
-        if (slideEleveIndex >= slides.length) slideEleveIndex = slides.length - 1;
-
-        const slide = slides[slideEleveIndex];
-        document.getElementById('eleve-slide-titre').textContent = slide.titre || `Fiche ${slideEleveIndex + 1}`;
-        document.getElementById('eleve-slide-compteur').textContent = `Fiche ${slideEleveIndex + 1} / ${slides.length}`;
-        document.getElementById('eleve-slide-contenu').textContent = slide.contenu_coreen || "";
-    }
-
-    window.naviguerSlideEleve = function(dir) {
-        slideEleveIndex += dir;
-        afficherSlideEleve();
-    };
-
-    window.noterReponse = function(cle, val) {
-        reponsesEleveMap[cle] = val;
-    };
-
-    async function sauvegarderProgression(statut) {
-        if (!assignationIdActuelle) return;
-        await db.collection("assignations").doc(assignationIdActuelle).update({
-            reponsesEleve: reponsesEleveMap,
-            statut: statut,
-            dateDerniereActivite: firebase.firestore.FieldValue.serverTimestamp()
+        // 2. Cartes Blocs Exercices
+        const blocsExos = Array.isArray(assignationActive.blocs_exercices) ? assignationActive.blocs_exercices : [];
+        blocsExos.forEach((b, idx) => {
+            const etat = (suivi[b.id] && suivi[b.id].statut === "fait") ? "fait" : "non_fait";
+            const estFait = (etat === "fait");
+            const divExo = document.createElement('div');
+            divExo.className = `bloc-nav-card ${estFait ? 'fait' : ''}`;
+            divExo.innerHTML = `
+                <div>
+                    <h3 style="margin:0 0 4px 0; color:var(--primary);">✏️ ${b.titre || ('Exercice ' + (idx + 1))}</h3>
+                    <span style="font-weight:600; font-size:0.9em; color:${estFait ? 'var(--success)' : 'var(--danger)'};">
+                        ${estFait ? '✓ Terminé' : '⏳ À faire'} · ${(b.questions || []).length} questions
+                    </span>
+                </div>
+                <button class="btn ${estFait ? 'btn-secondary' : 'btn-warning'}" onclick="ouvrirBlocExercice('${b.id}')">
+                    ${estFait ? 'Modifier mes réponses' : 'Faire cet exercice ▶'}
+                </button>
+            `;
+            conteneur.appendChild(divExo);
         });
-    }
+    };
 
-    window.sauvegarderEtQuitter = async function() {
-        await sauvegarderProgression("en_cours");
-        alert("💾 Travail sauvegardé !");
-        document.getElementById('ecran-exercice').style.display = 'none';
+    window.retourListeChapitres = function() {
+        document.getElementById('ecran-menu-blocs').style.display = 'none';
         document.getElementById('ecran-tableau-de-bord').style.display = 'block';
     };
 
-    window.marquerTermine = async function() {
-        if (confirm("Valider et marquer ce devoir comme terminé ?")) {
-            await sauvegarderProgression("termine");
-            alert("✅ Devoir terminé ! Vos réponses sont enregistrées.");
-            document.getElementById('ecran-exercice').style.display = 'none';
-            document.getElementById('ecran-tableau-de-bord').style.display = 'block';
-        }
+    // OUVRIR LE BLOC COURS
+    window.ouvrirBlocCours = function() {
+        blocActif = 'cours';
+        document.getElementById('ecran-menu-blocs').style.display = 'none';
+        document.getElementById('ecran-contenu-bloc').style.display = 'block';
+        document.getElementById('vue-bloc-cours').style.display = 'block';
+        document.getElementById('vue-bloc-exercice').style.display = 'none';
+        document.getElementById('titre-bloc-actif').textContent = assignationActive.bloc_cours.titre || "Cours de Grammaire";
+
+        indexSlideCours = 0;
+        afficherSlideCours();
     };
 
-    // EXPORT PDF SURBRILLANCE
+    function afficherSlideCours() {
+        const slides = assignationActive.bloc_cours?.slides || [];
+        if (slides.length === 0) return;
+
+        if (indexSlideCours < 0) indexSlideCours = 0;
+        if (indexSlideCours >= slides.length) indexSlideCours = slides.length - 1;
+
+        const s = slides[indexSlideCours];
+        document.getElementById('cours-slide-titre').textContent = s.titre || `Fiche ${indexSlideCours + 1}`;
+        document.getElementById('cours-slide-compteur').textContent = `Fiche ${indexSlideCours + 1} / ${slides.length}`;
+        document.getElementById('cours-slide-contenu').textContent = s.contenu_coreen || "";
+    }
+
+    window.naviguerSlideCours = function(dir) {
+        indexSlideCours += dir;
+        afficherSlideCours();
+    };
+
+    window.validerLectureCours = async function() {
+        if (!assignationActive) return;
+        const suivi = assignationActive.suiviBlocs || {};
+        suivi.cours = { statut: "lu", dateLecture: new Date().toISOString() };
+
+        await db.collection("assignations").doc(assignationActive.id).update({
+            suiviBlocs: suivi
+        });
+        alert("✅ Cours validé ! Vous pouvez maintenant passer aux exercices.");
+        retourMenuBlocs();
+    };
+
+    // OUVRIR UN BLOC EXERCICE
+    window.ouvrirBlocExercice = function(blocId) {
+        const b = (assignationActive.blocs_exercices || []).find(item => item.id === blocId);
+        if (!b) return alert("Exercice introuvable.");
+
+        blocActif = b;
+        document.getElementById('ecran-menu-blocs').style.display = 'none';
+        document.getElementById('ecran-contenu-bloc').style.display = 'block';
+        document.getElementById('vue-bloc-cours').style.display = 'none';
+        document.getElementById('vue-bloc-exercice').style.display = 'block';
+        document.getElementById('titre-bloc-actif').textContent = b.titre;
+        document.getElementById('consigne-exo-actif').textContent = b.consigne || "";
+
+        const conteneurQ = document.getElementById('questions-exo-conteneur');
+        conteneurQ.innerHTML = "";
+
+        const reponsesDuBloc = (assignationActive.suiviBlocs && assignationActive.suiviBlocs[b.id] && assignationActive.suiviBlocs[b.id].reponses) 
+            ? assignationActive.suiviBlocs[b.id].reponses : {};
+
+        (b.questions || []).forEach((q, qIdx) => {
+            const val = reponsesDuBloc[qIdx] || "";
+            const item = document.createElement('div');
+            item.className = "phrase-item";
+
+            if (q.q.includes('____') || q.q.includes('___')) {
+                const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
+                item.innerHTML = `<span>${qIdx + 1}.</span> ${parts[0]} <input type="text" class="input-calme" id="input-bloc-${qIdx}" value="${val}" placeholder="..." oninput="noterReponseBloc(${qIdx}, this.value)"> ${parts[1] || ""}`;
+            } else {
+                item.innerHTML = `<div style="font-weight:bold; color:var(--primary); margin-bottom:8px;">${qIdx + 1}. ${q.q}</div>
+                    <textarea class="textarea-calme" rows="2" id="input-bloc-${qIdx}" placeholder="Écrivez votre réponse ici..." oninput="noterReponseBloc(${qIdx}, this.value)">${val}</textarea>`;
+            }
+            conteneurQ.appendChild(item);
+        });
+    };
+
+    window.noterReponseBloc = function(qIdx, val) {
+        if (!assignationActive || !blocActif) return;
+        if (!assignationActive.suiviBlocs) assignationActive.suiviBlocs = {};
+        if (!assignationActive.suiviBlocs[blocActif.id]) assignationActive.suiviBlocs[blocActif.id] = { statut: "en_cours", reponses: {} };
+        if (!assignationActive.suiviBlocs[blocActif.id].reponses) assignationActive.suiviBlocs[blocActif.id].reponses = {};
+        assignationActive.suiviBlocs[blocActif.id].reponses[qIdx] = val;
+    };
+
+    window.sauvegarderExoBloc = async function(marquerFini) {
+        if (!assignationActive || !blocActif) return;
+        const suivi = assignationActive.suiviBlocs || {};
+        if (!suivi[blocActif.id]) suivi[blocActif.id] = { reponses: {} };
+
+        suivi[blocActif.id].statut = marquerFini ? "fait" : "en_cours";
+
+        await db.collection("assignations").doc(assignationActive.id).update({
+            suiviBlocs: suivi,
+            dateDerniereActivite: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        if (marquerFini) {
+            alert("✅ Exercice validé et marqué comme terminé !");
+        } else {
+            alert("💾 Réponses enregistrées pour plus tard !");
+        }
+        retourMenuBlocs();
+    };
+
+    window.retourMenuBlocs = function() {
+        document.getElementById('ecran-contenu-bloc').style.display = 'none';
+        ouvrirMenuBlocs(assignationActive.id);
+    };
+
+    // EXPORT PDF AVEC SURBRILLANCE
     window.ouvrirModalExtraction = function() {
-        if (!devoirActuel) return;
-        document.getElementById('pdf-titre').textContent = devoirActuel.devoirTitre;
+        if (!assignationActive) return;
+
+        document.getElementById('pdf-titre').textContent = assignationActive.chapitreTitre;
         document.getElementById('pdf-eleve').textContent = codeEleveActuel;
         document.getElementById('pdf-date').textContent = new Date().toLocaleDateString('fr-FR');
 
         const zone = document.getElementById('pdf-contenu-exercices');
         zone.innerHTML = "";
+        const suivi = assignationActive.suiviBlocs || {};
 
-        // Fiches de grammaire
-        const slides = Array.isArray(devoirActuel.slides_cours) ? devoirActuel.slides_cours : [];
-        if (slides.length > 0) {
+        // 1. Cours
+        if (assignationActive.bloc_cours && assignationActive.bloc_cours.slides) {
             zone.innerHTML += `<div style="background:#fdfbf7; border:1px solid #e0a92c; padding:15px; margin-bottom:20px; border-radius:8px;">
-                <h3 style="margin-top:0; color:#8a6314;">📖 Fiches de cours (문법 핵심 정리)</h3>`;
-            slides.forEach((s, idx) => {
+                <h3 style="margin-top:0; color:#8a6314;">📖 ${assignationActive.bloc_cours.titre}</h3>`;
+            assignationActive.bloc_cours.slides.forEach((s, idx) => {
                 zone.innerHTML += `<div style="margin-bottom:12px;"><strong>Fiche ${idx+1} : ${s.titre}</strong><pre style="white-space:pre-wrap; font-family:inherit; margin:5px 0 0 0; line-height:1.7;">${s.contenu_coreen}</pre></div>`;
             });
             zone.innerHTML += `</div>`;
         }
 
-        // Exercices avec surbrillance
-        const exos = Array.isArray(devoirActuel.exercices) ? devoirActuel.exercices : [];
-        exos.forEach((sec) => {
-            zone.innerHTML += `<h3 style="margin-top:20px;">${sec.titre || 'Exercice'}</h3>`;
-            if (sec.consigne) zone.innerHTML += `<p style="font-style:italic; color:#555;">${sec.consigne}</p>`;
+        // 2. Exercices avec réponses en surbrillance
+        const blocs = Array.isArray(assignationActive.blocs_exercices) ? assignationActive.blocs_exercices : [];
+        blocs.forEach((b) => {
+            const reponses = (suivi[b.id] && suivi[b.id].reponses) ? suivi[b.id].reponses : {};
+            zone.innerHTML += `<h3 style="margin-top:25px; color:#1e293b;">${b.titre}</h3>`;
+            if (b.consigne) zone.innerHTML += `<p style="font-style:italic; color:#555;">${b.consigne}</p>`;
             
             const ol = document.createElement('ol');
             ol.style.lineHeight = "2.1";
-            (sec.questions || []).forEach((q, qIdx) => {
-                const rep = reponsesEleveMap[`0_${qIdx}`] ? `<span class="surbrillance">${reponsesEleveMap[`0_${qIdx}`]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
+            (b.questions || []).forEach((q, qIdx) => {
+                const rep = reponses[qIdx] ? `<span class="surbrillance">${reponses[qIdx]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
                 const li = document.createElement('li');
-                
                 if (q.q.includes('____') || q.q.includes('___')) {
                     const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
                     li.innerHTML = `${parts[0]} ${rep} ${parts[1] || ""}`;

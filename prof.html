@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Espace Professeur - Français</title>
+    <title>Espace Professeur - Gestion</title>
     
     <!-- SDK Firebase -->
     <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
@@ -19,12 +19,12 @@
             --bg: #f8fafc;
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #1e293b; margin: 0; padding: 25px; }
-        .container { max-width: 1150px; margin: 0 auto; }
+        .container { max-width: 1200px; margin: 0 auto; }
         header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 25px; }
         h1 { margin: 0; color: var(--primary); font-size: 1.6em; }
 
         .tabs { display: flex; gap: 10px; margin-bottom: 20px; }
-        .tab-btn { padding: 12px 22px; background: #e2e8f0; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: #475569; transition: all 0.2s; }
+        .tab-btn { padding: 12px 22px; background: #e2e8f0; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; color: #475569; }
         .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 10px rgba(30, 41, 59, 0.15); }
 
         .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 25px; }
@@ -32,10 +32,9 @@
 
         label { display: block; font-weight: 600; margin-bottom: 6px; margin-top: 14px; font-size: 0.95em; color: #334155; }
         input[type="text"], textarea, select { width: 100%; padding: 11px; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.95em; }
-        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
 
-        .btn { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
-        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn:hover { opacity: 0.9; }
         .btn-success { background: var(--success); }
         .btn-danger { background: var(--danger); }
         .btn-purple { background: var(--purple); }
@@ -46,19 +45,15 @@
         th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.95em; }
         th { background: #f8fafc; color: #475569; }
 
-        /* PRÉVISUALISATION COURS VS EXERCICES */
-        .preview-toggle { display: flex; gap: 10px; margin: 15px 0; }
-        .toggle-sub-btn { flex: 1; padding: 10px; background: #f1f5f9; border: 2px solid #cbd5e0; border-radius: 8px; cursor: pointer; font-weight: bold; color: #475569; }
-        .toggle-sub-btn.active { background: #eff6ff; border-color: var(--accent); color: var(--accent); }
+        /* BADGES D'ÉTAT PAR BLOC */
+        .badge-lu { background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
+        .badge-nonlu { background: #f1f5f9; color: #64748b; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
+        .badge-fait { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
+        .badge-nonfait { background: #fee2e2; color: #991b1b; padding: 3px 8px; border-radius: 6px; font-weight: 600; font-size: 0.85em; display: inline-block; margin: 2px; }
 
-        .slide-carousel-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 20px; margin-top: 10px; }
-        .slide-nav-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-
-        /* BOÎTE CHAT IA */
         .chat-ai-box { background: #faf5ff; border: 2px solid #d8b4fe; border-radius: 10px; padding: 20px; margin-top: 25px; }
-        .chat-ai-box h3 { margin-top: 0; color: #6b21a8; display: flex; align-items: center; gap: 8px; }
 
-        /* MODAL EXTRACTION PDF */
+        /* MODAL EXPORT PDF SURBRILLANCE */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
         .surbrillance { background-color: #fef08a !important; padding: 2px 6px; border-radius: 4px; font-weight: bold; color: #000; text-decoration: underline; }
@@ -75,23 +70,23 @@
 
 <div class="container">
     <header>
-        <h1>🎓 Tableau de bord Enseignant (Français)</h1>
+        <h1>🎓 Tableau de bord Enseignant</h1>
         <div><span style="color:var(--success); font-weight:bold;">● Connecté à Firebase</span></div>
     </header>
 
     <div class="tabs">
-        <button class="tab-btn active" id="btn-tab-eleves" onclick="basculerOnglet('tab-eleves', this)">👥 Élèves & Suivi</button>
+        <button class="tab-btn active" id="btn-tab-eleves" onclick="basculerOnglet('tab-eleves', this)">👥 Élèves & Suivi par Blocs</button>
         <button class="tab-btn" id="btn-tab-pdf" onclick="basculerOnglet('tab-pdf', this)">📄 Créer depuis un PDF (IA)</button>
-        <button class="tab-btn" id="btn-tab-devoirs" onclick="basculerOnglet('tab-devoirs', this)">📚 Banque de Devoirs</button>
+        <button class="tab-btn" id="btn-tab-devoirs" onclick="basculerOnglet('tab-devoirs', this)">📚 Banque de Chapitres</button>
     </div>
 
-    <!-- ONGLET 1 : ÉLÈVES & SUIVI -->
+    <!-- ONGLET 1 : SUIVI DÉTAILLÉ PAR BLOC -->
     <div id="tab-eleves" class="tab-pane">
         <div class="card">
             <h2>Ajouter un profil élève</h2>
             <div style="display:flex; gap:12px; flex-wrap:wrap;">
                 <input type="text" id="nouvel-eleve-code" placeholder="Code élève (ex: Lucas01)" style="flex:1;">
-                <input type="text" id="nouvel-eleve-cle" placeholder="Clé API Gemini personnalisée (Optionnel)" style="flex:1;">
+                <input type="text" id="nouvel-eleve-cle" placeholder="Clé API Gemini (Optionnel)" style="flex:1;">
                 <button class="btn btn-success" onclick="creerEleve()">Ajouter l'élève</button>
             </div>
         </div>
@@ -106,22 +101,28 @@
             </table>
         </div>
 
+        <!-- TABLEAU DE SUIVI PAR BLOC -->
         <div class="card">
-            <h2>📊 Devoirs assignés & Fiches des élèves</h2>
+            <h2>📊 État d'avancement par Bloc (Cours & Exercices)</h2>
             <table>
                 <thead>
-                    <tr><th>Élève</th><th>Devoir</th><th>Statut</th><th>Dernière activité</th><th>Actions & Extraction</th></tr>
+                    <tr>
+                        <th>Élève</th>
+                        <th>Chapitre</th>
+                        <th>Avancement détaillé par bloc</th>
+                        <th>Actions</th>
+                    </tr>
                 </thead>
-                <tbody id="table-assignations-corps"><tr><td colspan="5">Aucun devoir assigné.</td></tr></tbody>
+                <tbody id="table-assignations-corps"><tr><td colspan="4">Aucun devoir assigné.</td></tr></tbody>
             </table>
         </div>
     </div>
 
-    <!-- ONGLET 2 : ANALYSE PDF & CHAT IA -->
+    <!-- ONGLET 2 : CRÉATION DU COURS EN BLOCS PAR L'IA -->
     <div id="tab-pdf" class="tab-pane" style="display:none;">
         <div class="card">
-            <h2>📄 Convertir un cours & exercices PDF</h2>
-            <p style="color:#64748b;">L'IA sépare automatiquement votre document en <strong>Fiches de cours de poche (en coréen)</strong> et <strong>Exercices pratiques</strong>.</p>
+            <h2>📄 Convertir un PDF en Blocs (Cours + Exercices)</h2>
+            <p style="color:#64748b;">L'IA crée automatiquement <strong>1 bloc cours de fiches en coréen</strong> et <strong>autant de blocs d'exercices</strong> qu'il y en a dans votre document.</p>
             
             <div style="display:flex; gap:15px; flex-wrap:wrap;">
                 <div style="flex:2;">
@@ -129,13 +130,13 @@
                     <input type="text" id="api-url" placeholder="https://votre-api.onrender.com">
                 </div>
                 <div style="flex:1;">
-                    <label>Modèle Gemini souhaité :</label>
-                   <select id="select-gemini-model">
-    <option value="gemini-3.8-flash" selected>Gemini 3.8 Flash</option>
-    <option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
-    <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
-    <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
-</select>
+                    <label>Modèle Gemini prioritaire :</label>
+                    <select id="select-gemini-model">
+                        <option value="gemini-3.8-flash" selected>Gemini 3.8 Flash (Recommandé)</option>
+                        <option value="gemini-3.7-flash">Gemini 3.7 Flash</option>
+                        <option value="gemini-3.6-flash">Gemini 3.6 Flash</option>
+                        <option value="gemini-3.5-flash">Gemini 3.5 Flash</option>
+                    </select>
                 </div>
             </div>
 
@@ -143,66 +144,42 @@
             <input type="file" id="pdf-file-input" accept="application/pdf">
 
             <div style="margin-top:20px;">
-                <button class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser le PDF et générer le contenu</button>
+                <button class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser le PDF et générer les blocs</button>
             </div>
         </div>
 
-        <!-- PRÉVISUALISATION COURS ET EXERCICES SÉPARÉS -->
+        <!-- APERÇU DES BLOCS DÉTECTÉS -->
         <div class="card" id="card-resultat-ia" style="display:none;">
-            <h2>Aperçu du cours généré</h2>
-            <label>Titre de la leçon :</label>
+            <h2>Blocs générés par l'IA</h2>
+            <label>Titre global du chapitre :</label>
             <input type="text" id="ia-titre">
 
-            <div class="preview-toggle">
-                <button class="toggle-sub-btn active" id="btn-toggle-cours" onclick="basculerApercu('cours')">📖 Fiches de Grammaire (<span id="nb-slides-badge">0</span> fiches)</button>
-                <button class="toggle-sub-btn" id="btn-toggle-exos" onclick="basculerApercu('exos')">✏️ Exercices pratiques</button>
-            </div>
+            <div id="zone-apercu-blocs" style="margin-top:20px;"></div>
 
-            <!-- APERÇU 1 : LES SLIDES DE COURS -->
-            <div id="apercu-section-cours">
-                <div class="slide-carousel-box">
-                    <div class="slide-nav-bar">
-                        <button class="btn btn-secondary btn-sm" onclick="naviguerSlide(-1)">◀ Fiche précédente</button>
-                        <strong id="slide-indicateur">Fiche 1 / 1</strong>
-                        <button class="btn btn-secondary btn-sm" onclick="naviguerSlide(1)">Fiche suivante ▶</button>
-                    </div>
-                    <label>Titre de la fiche :</label>
-                    <input type="text" id="slide-titre-edit" oninput="mettreAJourSlideCourante()">
-                    <label style="margin-top:10px;">Contenu en coréen :</label>
-                    <textarea id="slide-contenu-edit" rows="8" oninput="mettreAJourSlideCourante()"></textarea>
-                </div>
-            </div>
-
-            <!-- APERÇU 2 : LES EXERCICES -->
-            <div id="apercu-section-exos" style="display:none;">
-                <div id="zone-apercu-exercices" style="line-height:1.8; background:#f8fafc; padding:20px; border-radius:10px; border:1px solid #e2e8f0;"></div>
-            </div>
-
-            <!-- BOÎTE DE DIALOGUE AVEC L'IA -->
+            <!-- CHAT IA -->
             <div class="chat-ai-box">
-                <h3>💬 Demander un ajustement à l'IA</h3>
-                <p style="color:#64748b; font-size:0.9em; margin-top:0;">Écrivez ce que vous souhaitez retoucher (ex: <em>« Ajoute un exemple avec le verbe partir sur la fiche 3 »</em>, <em>« Simplifie le vocabulaire coréen »</em>, <em>« Ajoute 3 questions à l'exercice 1 »</em>).</p>
+                <h3 style="margin-top:0; color:#6b21a8;">💬 Demander une modification à l'IA</h3>
                 <div style="display:flex; gap:10px;">
-                    <input type="text" id="chat-instruction" placeholder="Votre consigne pour l'IA...">
+                    <input type="text" id="chat-instruction" placeholder="Ex: Ajoute un exemple sur la slide 3, crée un 3ème bloc d'exercices...">
                     <button class="btn btn-purple" id="btn-chat-ai" onclick="demanderAjustementIA()">✨ Modifier avec l'IA</button>
                 </div>
             </div>
 
             <div style="margin-top:25px;">
-                <button class="btn btn-success" style="font-size:1.05em; padding:12px 24px;" onclick="sauvegarderDevoirIA()">💾 Enregistrer cette leçon dans ma Banque de Devoirs</button>
+                <button class="btn btn-success" style="font-size:1.05em; padding:12px 24px;" onclick="sauvegarderDevoirIA()">💾 Enregistrer ce Chapitre dans ma Banque</button>
             </div>
         </div>
     </div>
 
-    <!-- ONGLET 3 : BANQUE DE DEVOIRS -->
+    <!-- ONGLET 3 : BANQUE DE CHAPITRES -->
     <div id="tab-devoirs" class="tab-pane" style="display:none;">
         <div class="card">
-            <h2>Banque de Devoirs disponibles</h2>
+            <h2>Banque de Chapitres disponibles</h2>
             <table>
                 <thead>
-                    <tr><th>Titre</th><th>Structure</th><th>Contenu</th><th>Actions</th></tr>
+                    <tr><th>Titre</th><th>Composition des blocs</th><th>Actions</th></tr>
                 </thead>
-                <tbody id="table-devoirs-corps"><tr><td colspan="4">Chargement...</td></tr></tbody>
+                <tbody id="table-devoirs-corps"><tr><td colspan="3">Chargement...</td></tr></tbody>
             </table>
         </div>
     </div>
@@ -212,7 +189,7 @@
 <div class="modal" id="modal-export-prof">
     <div class="modal-content">
         <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding-bottom:12px; margin-bottom:20px;">
-            <h2 style="margin:0; color:var(--primary);">📄 Copie de l'élève (Réponses en surbrillance)</h2>
+            <h2 style="margin:0; color:var(--primary);">📄 Copie complète de l'élève</h2>
             <div style="display:flex; gap:8px;">
                 <button class="btn btn-success" onclick="window.print()">🖨️ Enregistrer en PDF / Imprimer</button>
                 <button class="btn btn-secondary" onclick="document.getElementById('modal-export-prof').style.display='none'">Fermer</button>
@@ -248,9 +225,7 @@
     let listeDevoirs = [];
     let devoirsMap = {};
     let assignationsMap = {};
-    
     let donneesIAPret = null;
-    let indexSlideCourante = 0;
 
     const urlStockee = localStorage.getItem("backendApiUrl");
     if (urlStockee) document.getElementById('api-url').value = urlStockee;
@@ -260,13 +235,6 @@
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).style.display = 'block';
         if (btn) btn.classList.add('active');
-    }
-
-    function basculerApercu(vue) {
-        document.getElementById('btn-toggle-cours').classList.toggle('active', vue === 'cours');
-        document.getElementById('btn-toggle-exos').classList.toggle('active', vue === 'exos');
-        document.getElementById('apercu-section-cours').style.display = (vue === 'cours') ? 'block' : 'none';
-        document.getElementById('apercu-section-exos').style.display = (vue === 'exos') ? 'block' : 'none';
     }
 
     async function creerEleve() {
@@ -289,20 +257,20 @@
     }
 
     async function supprimerAssignation(id) {
-        if (confirm("Retirer ce devoir à l'élève ?")) await db.collection("assignations").doc(id).delete();
+        if (confirm("Retirer ce chapitre à l'élève ?")) await db.collection("assignations").doc(id).delete();
     }
 
     async function supprimerDevoir(id) {
-        if (confirm("Supprimer ce devoir de la banque et chez tous les élèves ?")) {
+        if (confirm("Supprimer ce chapitre de la banque et chez tous les élèves ?")) {
             await db.collection("devoirs").doc(id).delete();
-            const snap = await db.collection("assignations").where("devoirId", "==", id).get();
+            const snap = await db.collection("assignations").where("chapitreId", "==", id).get();
             const batch = db.batch();
             snap.forEach(doc => batch.delete(doc.ref));
             await batch.commit();
         }
     }
 
-    // --- ANALYSE INITIALE DU PDF ---
+    // --- ANALYSE DU PDF ---
     async function analyserPDFAvecIA() {
         const urlApi = document.getElementById('api-url').value.trim();
         const fileInput = document.getElementById('pdf-file-input');
@@ -329,28 +297,28 @@
             const data = await res.json();
             if (data.error) throw new Error(data.error);
 
-            afficherApercuComplet(data);
-            alert("✅ Analyse réussie ! Vous pouvez naviguer dans les fiches et utiliser la boîte de discussion ci-dessous.");
+            afficherApercuBlocs(data);
+            alert("✅ Analyse réussie ! Les blocs ont été générés ci-dessous.");
         } catch(e) {
             alert("Erreur lors de l'analyse : " + e.message);
         } finally {
             btn.disabled = false;
-            btn.textContent = "🚀 Analyser le PDF et générer le contenu";
+            btn.textContent = "🚀 Analyser le PDF et générer les blocs";
         }
     }
 
-    // --- CHAT INTERACTIF AVEC L'IA ---
+    // --- DIALOGUE AVEC L'IA ---
     async function demanderAjustementIA() {
         const urlApi = document.getElementById('api-url').value.trim();
         const instruction = document.getElementById('chat-instruction').value.trim();
         const modelChoisi = document.getElementById('select-gemini-model').value;
 
         if (!instruction) return alert("Indiquez ce que l'IA doit modifier.");
-        if (!donneesIAPret) return alert("Aucun devoir chargé.");
+        if (!donneesIAPret) return alert("Aucun chapitre chargé.");
 
         const btn = document.getElementById('btn-chat-ai');
         btn.disabled = true;
-        btn.textContent = "⏳ Ajustement en cours...";
+        btn.textContent = "⏳ Modification en cours...";
 
         try {
             const endpoint = urlApi.replace(/\/$/, "") + "/api/ajuster-contenu";
@@ -365,75 +333,47 @@
             const data = await res.json();
             if (data.error) throw new Error(data.error);
 
-            afficherApercuComplet(data);
+            afficherApercuBlocs(data);
             document.getElementById('chat-instruction').value = "";
-            alert("✨ L'IA a mis à jour votre devoir !");
+            alert("✨ L'IA a ajusté les blocs !");
         } catch(e) {
-            alert("Erreur lors de l'ajustement : " + e.message);
+            alert("Erreur ajustement : " + e.message);
         } finally {
             btn.disabled = false;
             btn.textContent = "✨ Modifier avec l'IA";
         }
     }
 
-    function afficherApercuComplet(data) {
+    function afficherApercuBlocs(data) {
         donneesIAPret = data;
-        document.getElementById('ia-titre').value = data.titre || "Leçon de français";
-        
-        // Slides
-        const slides = Array.isArray(data.slides_cours) ? data.slides_cours : [];
-        document.getElementById('nb-slides-badge').textContent = slides.length;
-        indexSlideCourante = 0;
-        afficherSlideCourante();
+        document.getElementById('ia-titre').value = data.titre || "Chapitre de français";
 
-        // Exercices
-        const zoneExos = document.getElementById('zone-apercu-exercices');
-        zoneExos.innerHTML = "";
-        const exos = Array.isArray(data.exercices) ? data.exercices : [];
-        if (exos.length === 0) {
-            zoneExos.innerHTML = `<p style="color:#888;">Aucun exercice extrait.</p>`;
-        } else {
-            exos.forEach((sec, sIdx) => {
-                let html = `<h3 style="color:var(--primary); margin-top:${sIdx > 0 ? '25px' : '0'};">${sec.titre || 'Exercice'}</h3>`;
-                if (sec.consigne) html += `<p style="color:#64748b; font-style:italic;">${sec.consigne}</p>`;
-                html += `<ol style="line-height:2;">`;
-                (sec.questions || []).forEach(q => {
-                    html += `<li>${q.q}</li>`;
-                });
-                html += `</ol>`;
-                zoneExos.innerHTML += html;
-            });
-        }
+        const zone = document.getElementById('zone-apercu-blocs');
+        zone.innerHTML = "";
+
+        // Bloc Cours
+        const slides = (data.bloc_cours && data.bloc_cours.slides) ? data.bloc_cours.slides : [];
+        zone.innerHTML += `
+            <div style="background:#f8fafc; border-left:5px solid #3b82f6; padding:15px; border-radius:8px; margin-bottom:15px;">
+                <h4 style="margin:0 0 5px 0; color:#1e3a8a;">📘 Bloc Cours : ${data.bloc_cours?.titre || 'Grammaire'} (${slides.length} fiches)</h4>
+                <p style="color:#64748b; font-size:0.9em; margin:0;">Découpé en fiches atomiques en coréen avec exemples.</p>
+            </div>
+        `;
+
+        // Blocs Exercices
+        const blocsExos = Array.isArray(data.blocs_exercices) ? data.blocs_exercices : [];
+        blocsExos.forEach((b, idx) => {
+            const nbQ = (b.questions || []).length;
+            zone.innerHTML += `
+                <div style="background:#f8fafc; border-left:5px solid #10b981; padding:15px; border-radius:8px; margin-bottom:15px;">
+                    <h4 style="margin:0 0 5px 0; color:#065f46;">✏️ Bloc Exercice ${idx + 1} : ${b.titre} (${nbQ} questions)</h4>
+                    <p style="color:#64748b; font-size:0.9em; margin:0;">${b.consigne || 'Exercice pratique'}</p>
+                </div>
+            `;
+        });
 
         document.getElementById('card-resultat-ia').style.display = "block";
         document.getElementById('card-resultat-ia').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    function afficherSlideCourante() {
-        const slides = donneesIAPret && Array.isArray(donneesIAPret.slides_cours) ? donneesIAPret.slides_cours : [];
-        if (slides.length === 0) return;
-
-        if (indexSlideCourante < 0) indexSlideCourante = 0;
-        if (indexSlideCourante >= slides.length) indexSlideCourante = slides.length - 1;
-
-        const slide = slides[indexSlideCourante];
-        document.getElementById('slide-indicateur').textContent = `Fiche ${indexSlideCourante + 1} / ${slides.length}`;
-        document.getElementById('slide-titre-edit').value = slide.titre || "";
-        document.getElementById('slide-contenu-edit').value = slide.contenu_coreen || "";
-    }
-
-    function naviguerSlide(dir) {
-        indexSlideCourante += dir;
-        afficherSlideCourante();
-    }
-
-    function mettreAJourSlideCourante() {
-        if (!donneesIAPret || !donneesIAPret.slides_cours) return;
-        const slide = donneesIAPret.slides_cours[indexSlideCourante];
-        if (slide) {
-            slide.titre = document.getElementById('slide-titre-edit').value;
-            slide.contenu_coreen = document.getElementById('slide-contenu-edit').value;
-        }
     }
 
     async function sauvegarderDevoirIA() {
@@ -442,16 +382,17 @@
 
         await db.collection("devoirs").add({
             titre: donneesIAPret.titre,
-            slides_cours: donneesIAPret.slides_cours || [],
-            exercices: donneesIAPret.exercices || [],
+            bloc_cours: donneesIAPret.bloc_cours || null,
+            blocs_exercices: donneesIAPret.blocs_exercices || [],
             dateCreation: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("✅ Devoir enregistré dans la banque !");
+        alert("✅ Chapitre enregistré dans la banque !");
         document.getElementById('card-resultat-ia').style.display = "none";
         basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
     }
 
+    // ASSIGNER LE CHAPITRE AVEC SUIVI PAR BLOC
     async function assignerDevoir(devoirId) {
         const d = devoirsMap[devoirId];
         if (!d) return;
@@ -463,64 +404,71 @@
 
         if (num >= 1 && num <= listeEleves.length) {
             const eleve = listeEleves[num - 1];
+
+            // Initialiser l'état de chaque bloc
+            const suiviBlocs = {
+                cours: { statut: "non_lu" }
+            };
+            (d.blocs_exercices || []).forEach(b => {
+                suiviBlocs[b.id] = { statut: "non_fait", reponses: {} };
+            });
+
             await db.collection("assignations").add({
                 eleveCode: eleve.code,
-                devoirId: d.id,
-                devoirTitre: d.titre,
-                slides_cours: d.slides_cours || [],
-                exercices: d.exercices || [],
-                statut: "non_commence",
-                reponsesEleve: {}, // Stocke { "sectionIdx_questionIdx": "réponse" }
+                chapitreId: d.id,
+                chapitreTitre: d.titre,
+                bloc_cours: d.bloc_cours || null,
+                blocs_exercices: d.blocs_exercices || [],
+                suiviBlocs: suiviBlocs,
                 dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
             });
-            alert(`✅ Devoir assigné à ${eleve.code} !`);
+
+            alert(`✅ Chapitre assigné à ${eleve.code} avec suivi par bloc !`);
             basculerOnglet('tab-eleves', document.getElementById('btn-tab-eleves'));
         }
     }
 
-    // EXTRACTION PDF EN SURBRILLANCE
+    // EXPORT PDF DE TOUT LE CHAPITRE
     window.ouvrirModalExtractionProf = function(assignationId) {
         const a = assignationsMap[assignationId];
-        if (!a) return alert("Devoir introuvable.");
+        if (!a) return alert("Données introuvables.");
 
-        document.getElementById('prof-pdf-titre').textContent = a.devoirTitre || "Fiche de devoir";
+        document.getElementById('prof-pdf-titre').textContent = a.chapitreTitre || "Fiche de cours";
         document.getElementById('prof-pdf-eleve').textContent = a.eleveCode || "Élève";
         document.getElementById('prof-pdf-date').textContent = new Date().toLocaleDateString('fr-FR');
 
         const zone = document.getElementById('prof-pdf-contenu-exercices');
         zone.innerHTML = "";
 
-        const reponses = a.reponsesEleve || {};
+        const suivi = a.suiviBlocs || {};
 
-        // 1. Cours en fiches
-        const slides = Array.isArray(a.slides_cours) ? a.slides_cours : [];
-        if (slides.length > 0) {
+        // 1. Cours
+        if (a.bloc_cours && a.bloc_cours.slides) {
             zone.innerHTML += `<div style="background:#fdfbf7; border:1px solid #e0a92c; padding:15px; margin-bottom:25px; border-radius:8px;">
-                <h3 style="margin-top:0; color:#8a6314;">📖 Fiches de cours (문법 핵심 요약)</h3>`;
-            slides.forEach((s, idx) => {
+                <h3 style="margin-top:0; color:#8a6314;">📖 ${a.bloc_cours.titre}</h3>`;
+            a.bloc_cours.slides.forEach((s, idx) => {
                 zone.innerHTML += `<div style="margin-bottom:12px;"><strong>Fiche ${idx+1} : ${s.titre}</strong><pre style="white-space:pre-wrap; font-family:inherit; margin:5px 0 0 0; line-height:1.7;">${s.contenu_coreen}</pre></div>`;
             });
             zone.innerHTML += `</div>`;
         }
 
-        // 2. Exercices avec réponses en surbrillance
-        const exos = Array.isArray(a.exercices) ? a.exercices : [];
-        exos.forEach((sec, sIdx) => {
-            zone.innerHTML += `<h3 style="margin-top:25px;">${sec.titre || 'Exercice'}</h3>`;
-            if (sec.consigne) zone.innerHTML += `<p style="font-style:italic; color:#555;">${sec.consigne}</p>`;
+        // 2. Exercices par blocs avec surbrillance
+        const blocs = Array.isArray(a.blocs_exercices) ? a.blocs_exercices : [];
+        blocs.forEach((b) => {
+            const reponsesDuBloc = (suivi[b.id] && suivi[b.id].reponses) ? suivi[b.id].reponses : {};
+            zone.innerHTML += `<h3 style="margin-top:25px; color:#1e293b;">${b.titre}</h3>`;
+            if (b.consigne) zone.innerHTML += `<p style="font-style:italic; color:#555;">${b.consigne}</p>`;
             
             const ol = document.createElement('ol');
             ol.style.lineHeight = "2.1";
-            (sec.questions || []).forEach((q, qIdx) => {
-                const cleRep = `${sIdx}_${qIdx}`;
-                const rep = reponses[cleRep] ? `<span class="surbrillance">${reponses[cleRep]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
+            (b.questions || []).forEach((q, qIdx) => {
+                const rep = reponsesDuBloc[qIdx] ? `<span class="surbrillance">${reponsesDuBloc[qIdx]}</span>` : `<span style="color:#aaa;">(non rempli)</span>`;
                 const li = document.createElement('li');
-                
                 if (q.q.includes('____') || q.q.includes('___')) {
                     const parts = q.q.includes('____') ? q.q.split('____') : q.q.split('___');
                     li.innerHTML = `${parts[0]} ${rep} ${parts[1] || ""}`;
                 } else {
-                    li.innerHTML = `<strong>${q.q}</strong><br>➔ Réponse élève : ${rep}`;
+                    li.innerHTML = `<strong>${q.q}</strong><br>➔ Réponse : ${rep}`;
                 }
                 ol.appendChild(li);
             });
@@ -556,15 +504,14 @@
             const tbody = document.getElementById('table-devoirs-corps');
             tbody.innerHTML = "";
             listeDevoirs.forEach(d => {
-                const nbSlides = Array.isArray(d.slides_cours) ? d.slides_cours.length : 0;
-                const nbExos = Array.isArray(d.exercices) ? d.exercices.length : 0;
+                const nbFiches = d.bloc_cours?.slides ? d.bloc_cours.slides.length : 0;
+                const nbExos = Array.isArray(d.blocs_exercices) ? d.blocs_exercices.length : 0;
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td><strong>${d.titre}</strong></td>
-                    <td><span style="background:#eff6ff; color:#1d4ed8; padding:3px 8px; border-radius:4px; font-weight:600;">Cours & Exercices séparés</span></td>
-                    <td>${nbSlides} fiches · ${nbExos} sections d'exos</td>
+                    <td>1 bloc cours (${nbFiches} fiches) + ${nbExos} blocs d'exercices</td>
                     <td style="display:flex; gap:6px;">
-                        <button class="btn btn-sm btn-success" onclick="assignerDevoir('${d.id}')">➕ Assigner</button>
+                        <button class="btn btn-sm btn-success" onclick="assignerDevoir('${d.id}')">➕ Assigner à un élève</button>
                         <button class="btn btn-sm btn-danger" onclick="supprimerDevoir('${d.id}')">🗑️</button>
                     </td>
                 `;
@@ -572,6 +519,7 @@
             });
         });
 
+        // TABLEAU DE SUIVI AVEC ÉTAT DE CHAQUE BLOC
         db.collection("assignations").onSnapshot(snap => {
             const assignations = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             assignationsMap = {};
@@ -579,17 +527,40 @@
 
             const tbody = document.getElementById('table-assignations-corps');
             tbody.innerHTML = "";
+
+            if (assignations.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#888;">Aucun devoir assigné.</td></tr>`;
+                return;
+            }
+
             assignations.forEach(a => {
                 const tr = document.createElement('tr');
-                let badge = `<span style="background:#f1f5f9; color:#475569; padding:3px 8px; border-radius:4px; font-weight:bold;">Non commencé</span>`;
-                if (a.statut === 'en_cours') badge = `<span style="background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:4px; font-weight:bold;">En cours</span>`;
-                if (a.statut === 'termine') badge = `<span style="background:#dcfce7; color:#166534; padding:3px 8px; border-radius:4px; font-weight:bold;">Terminé ✓ Rendu</span>`;
+                const suivi = a.suiviBlocs || {};
+
+                // Construire les badges pour chaque bloc
+                let badgesHtml = "";
+                
+                // Badge Cours
+                const coursLu = (suivi.cours && suivi.cours.statut === "lu");
+                badgesHtml += coursLu 
+                    ? `<span class="badge-lu">📖 Cours : Lu ✓</span> ` 
+                    : `<span class="badge-nonlu">📖 Cours : Non lu</span> `;
+
+                // Badges Exercices
+                const blocs = Array.isArray(a.blocs_exercices) ? a.blocs_exercices : [];
+                blocs.forEach((b, idx) => {
+                    const etat = suivi[b.id] ? suivi[b.id].statut : "non_fait";
+                    if (etat === "fait") {
+                        badgesHtml += `<span class="badge-fait">✏️ Exo ${idx + 1} : Fait ✓</span> `;
+                    } else {
+                        badgesHtml += `<span class="badge-nonfait">✏️ Exo ${idx + 1} : Non fait ⏳</span> `;
+                    }
+                });
 
                 tr.innerHTML = `
-                    <td><strong style="color:var(--accent);">${a.eleveCode}</strong></td>
-                    <td>${a.devoirTitre}</td>
-                    <td>${badge}</td>
-                    <td>${a.dateDerniereActivite ? a.dateDerniereActivite.toDate().toLocaleTimeString('fr-FR') : '-'}</td>
+                    <td><strong style="color:var(--accent); font-size:1.05em;">${a.eleveCode}</strong></td>
+                    <td><strong>${a.chapitreTitre}</strong></td>
+                    <td>${badgesHtml}</td>
                     <td style="display:flex; gap:8px;">
                         <button class="btn btn-sm btn-purple" onclick="ouvrirModalExtractionProf('${a.id}')">📄 Exporter PDF</button>
                         <button class="btn btn-danger btn-sm" onclick="supprimerAssignation('${a.id}')">🗑️</button>

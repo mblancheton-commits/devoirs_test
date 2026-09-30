@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace Devoirs</title>
+    
+    <!-- SDK Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --bg: #f4f7f6;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 90px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        
+        /* ÉCRAN LANGUE */
+        #ecran-langue {
+            max-width: 520px;
+            margin: 70px auto;
+            background: white;
+            padding: 35px 30px;
+            border-radius: 14px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        #ecran-langue h1 { color: var(--primary); margin-top: 0; font-size: 1.8em; margin-bottom: 25px; }
+        .lang-grid { display: flex; flex-direction: column; gap: 14px; }
+        .lang-card {
+            display: flex;
+            align-items: center;
+            padding: 14px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        .lang-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.15);
+        }
+        .flag-svg { width: 46px; height: 32px; border-radius: 4px; margin-right: 18px; flex-shrink: 0; }
+        .lang-title { font-size: 1.15em; font-weight: bold; color: var(--primary); }
+
+        /* ÉCRAN CONNEXION */
+        #ecran-login {
+            display: none;
+            max-width: 440px;
+            margin: 70px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        #code-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1.25em;
+            border: 2px solid #cbd5e0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            box-sizing: border-box;
+            margin: 20px 0;
+            text-transform: uppercase;
+        }
+        #code-input:focus { outline: none; border-color: var(--accent); }
+
+        /* ÉCRAN BIENVENUE */
+        #ecran-bienvenue {
+            display: none;
+            max-width: 480px;
+            margin: 70px auto;
+            background: white;
+            padding: 35px 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+            text-align: center;
+        }
+        .welcome-user-box {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--accent);
+            background: #ebf8ff;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 15px 0 25px 0;
+        }
+
+        .btn {
+            background: var(--accent);
+            color: white;
+            padding: 12px 22px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            display: inline-block;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-full { width: 100%; box-sizing: border-box; }
+        .btn-success { background: var(--success); }
+        .btn-warning { background: var(--warning); }
+        .btn-secondary { background: #718096; padding: 7px 14px; font-size: 0.9em; }
+
+        /* EN-TÊTE ÉLÈVE */
+        #header-eleve {
+            display: none;
+            background: white;
+            padding: 14px 22px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* TABLEAU DE BORD */
+        #ecran-tableau-de-bord { display: none; }
+        .tabs-nav { display: flex; gap: 12px; margin-bottom: 20px; }
+        .tab-btn {
+            flex: 1;
+            padding: 14px;
+            background: #e2e8f0;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: #4a5568;
+            cursor: pointer;
+        }
+        .tab-btn.active { background: var(--primary); color: white; }
+
+        .devoir-card {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 10px;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.05);
+            margin-bottom: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid var(--accent);
+        }
+        .devoir-card.fait { border-left-color: var(--success); }
+
+        /* FICHE D'EXERCICES SANS STRESS */
+        #ecran-exercice { display: none; }
+        .grammaire-card {
+            background: #fdfbf7;
+            border: 2px solid #f3e8cb;
+            border-left: 6px solid #e0a92c;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+        .grammaire-card h3 { margin-top: 0; color: #8a6314; }
+
+        .phrase-item {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+            margin-bottom: 14px;
+            font-size: 1.1em;
+            line-height: 1.8;
+        }
+
+        .input-calme {
+            padding: 8px 12px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 1em;
+            margin: 0 6px;
+            font-family: inherit;
+            color: #1a365d;
+            font-weight: bold;
+            background: #f8fafc;
+        }
+        .input-calme:focus { outline: none; border-color: var(--accent); background: white; }
+
+        .textarea-calme {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 1em;
+            margin-top: 8px;
+            box-sizing: border-box;
+            font-family: inherit;
+            color: #1a365d;
+            font-weight: 500;
+        }
+
+        /* ACTIONS */
+        .barre-actions {
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        /* MODAL EXPORT PDF SURBRILLANCE */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            justify-content: center; align-items: center;
+            z-index: 10000;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%; max-width: 800px;
+            max-height: 85vh; overflow-y: auto;
+        }
+        .surbrillance {
+            background-color: #ffeb3b !important;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+            color: #000;
+            text-decoration: underline;
+        }
+
+        @media print {
+            body * { visibility: hidden; }
+            #feuille-impression, #feuille-impression * { visibility: visible; }
+            #feuille-impression {
+                position: absolute;
+                left: 0; top: 0; width: 100%;
+                background: white; padding: 20px;
+            }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <!-- 0. CHOIX LANGUE -->
+    <div id="ecran-langue">
+        <h1 id="txt-select-lang">Choisissez votre langue</h1>
+        <div class="lang-grid">
+            <div class="lang-card" onclick="choisirLangue('fr')">
+                <svg class="flag-svg" viewBox="0 0 900 600">
+                    <rect width="300" height="600" fill="#002395"/><rect x="300" width="300" height="600" fill="#fff"/><rect x="600" width="300" height="600" fill="#ed2939"/>
+                </svg>
+                <span class="lang-title">Français</span>
+            </div>
+            <div class="lang-card" onclick="choisirLangue('ko')">
+                <svg class="flag-svg" viewBox="0 0 900 600">
+                    <rect width="900" height="600" fill="#fff"/><circle cx="450" cy="300" r="150" fill="#cd2e3a"/><path d="M 300,300 A 75,75 0 0,0 450,300 A 75,75 0 0,1 600,300 A 150,150 0 0,1 300,300 Z" fill="#0047a0"/><circle cx="375" cy="300" r="75" fill="#cd2e3a"/>
+                </svg>
+                <span class="lang-title">한국어</span>
+            </div>
+            <div class="lang-card" onclick="choisirLangue('en')">
+                <svg class="flag-svg" viewBox="0 0 60 30">
+                    <clipPath id="uk-flag"><path d="M30,15 h30 v15 z M30,15 v15 h-30 z M30,15 h-30 v-15 z M30,15 v-15 h30 z"/></clipPath>
+                    <path d="M0,0 v30 h60 v-30 z" fill="#012169"/><path d="M0,0 L60,30 M60,0 L0,30" stroke="#fff" stroke-width="6"/><path d="M0,0 L60,30 M60,0 L0,30" clip-path="url(#uk-flag)" stroke="#c8102e" stroke-width="4"/><path d="M30,0 v30 M0,15 h60" stroke="#fff" stroke-width="10"/><path d="M30,0 v30 M0,15 h60" stroke="#c8102e" stroke-width="6"/>
+                </svg>
+                <span class="lang-title">English</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. CONNEXION -->
+    <div id="ecran-login">
+        <h1 id="txt-login-title">👋 Espace Devoirs</h1>
+        <p id="txt-login-desc">Entrez votre code élève pour accéder à vos exercices :</p>
+        <input type="text" id="code-input" placeholder="EX: LUCAS01" autocomplete="off">
+        <button type="button" class="btn btn-full" id="btn-login" onclick="seConnecter()">Voir mes devoirs</button>
+    </div>
+
+    <!-- 1.5 BIENVENUE -->
+    <div id="ecran-bienvenue">
+        <h1 id="txt-welcome-heading">Bienvenue !</h1>
+        <div class="welcome-user-box" id="bienvenue-nom-user">-</div>
+        <p style="color:#666; margin-bottom:25px;">Vos fiches de travail et exercices sont prêts.</p>
+        <button type="button" class="btn btn-full btn-success" onclick="validerBienvenue()">Accéder à mes devoirs ▶</button>
+    </div>
+
+    <!-- EN-TÊTE ÉLÈVE CONNECTÉ -->
+    <div id="header-eleve">
+        <div class="info-profil">Élève : <strong id="affichage-code-eleve" style="color:var(--accent);">-</strong></div>
+        <div style="display:flex; gap:8px;">
+            <button type="button" class="btn btn-secondary" onclick="retourChoixLangue()">🌐</button>
+            <button type="button" class="btn btn-secondary" onclick="deconnexion()">Changer de compte</button>
+        </div>
+    </div>
+
+    <!-- 2. TABLEAU DE BORD -->
+    <div id="ecran-tableau-de-bord">
+        <div class="tabs-nav">
+            <button type="button" class="tab-btn active" id="btn-tab-afaire" onclick="changerOnglet('afaire')">
+                ⏳ À faire <span id="badge-nb-afaire" style="background:rgba(0,0,0,0.15); padding:2px 8px; border-radius:10px;">0</span>
+            </button>
+            <button type="button" class="tab-btn" id="btn-tab-faits" onclick="changerOnglet('faits')">
+                ✅ Terminés <span id="badge-nb-faits" style="background:rgba(0,0,0,0.15); padding:2px 8px; border-radius:10px;">0</span>
+            </button>
+        </div>
+
+        <div id="panel-afaire"><div id="conteneur-afaire"><p style="text-align:center; color:#888;">Chargement...</p></div></div>
+        <div id="panel-faits" style="display:none;"><div id="conteneur-faits"><p style="text-align:center; color:#888;">Chargement...</p></div></div>
+    </div>
+
+    <!-- 3. ÉCRAN DU DEVOIR / FICHE (SANS PRESSION NI CORRECTION AUTO) -->
+    <div id="ecran-exercice">
+        <div style="background:white; padding:15px 20px; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <button type="button" class="btn btn-secondary" onclick="sauvegarderEtQuitter()">← Sauvegarder & Quitter</button>
+                <h2 id="exo-titre" style="margin:8px 0 0 0; color:var(--primary);">-</h2>
+            </div>
+            <div>
+                <button type="button" class="btn" style="background:#8e44ad;" onclick="ouvrirModalExtraction()">📄 Exporter en PDF</button>
+            </div>
+        </div>
+
+        <!-- Fiche Grammaire synthétique en Coréen (si présente) -->
+        <div class="grammaire-card" id="box-grammaire" style="display:none;">
+            <h3>📖 문법 핵심 정리 (Fiche Grammaire)</h3>
+            <div id="texte-grammaire-coreen" style="white-space: pre-wrap;"></div>
+        </div>
+
+        <!-- Section 1 : Phrases à trous -->
+        <div id="section-trous">
+            <h3 style="color:var(--primary);">✏️ Exercices à compléter</h3>
+            <div id="phrases-conteneur"></div>
+        </div>
+
+        <!-- Section 2 : Questions ouvertes -->
+        <div id="section-ouvertes" style="margin-top:30px; display:none;">
+            <h3 style="color:var(--primary);">💬 Questions d'expression libre</h3>
+            <div id="ouvertes-conteneur"></div>
+        </div>
+
+        <!-- Barre d'action en bas -->
+        <div class="barre-actions">
+            <button type="button" class="btn btn-warning" onclick="sauvegarderEtQuitter()">💾 Sauvegarder pour plus tard</button>
+            <button type="button" class="btn" style="background:#8e44ad;" onclick="ouvrirModalExtraction()">📄 Exporter en PDF (Réponses en surbrillance)</button>
+            <button type="button" class="btn btn-success" onclick="marquerTermine()">✅ Marquer le devoir comme terminé</button>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL D'EXTRACTION PDF AVEC RÉPONSES EN SURBRILLANCE -->
+<div class="modal" id="modal-export">
+    <div class="modal-content">
+        <div class="no-print" style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #ddd; padding-bottom:12px; margin-bottom:20px;">
+            <h2 style="margin:0; color:var(--primary);">📄 Aperçu du PDF avec vos réponses</h2>
+            <div>
+                <button class="btn btn-success" onclick="imprimerFeuille()">🖨️ Enregistrer en PDF / Imprimer</button>
+                <button class="btn btn-secondary" onclick="fermerModalExport()">Fermer</button>
+            </div>
+        </div>
+
+        <div id="feuille-impression">
+            <div style="border-bottom:2px solid #333; padding-bottom:10px; margin-bottom:20px;">
+                <h1 style="margin:0; font-size:1.6em;" id="pdf-titre">-</h1>
+                <p style="margin:5px 0 0 0; color:#555;">Élève : <strong id="pdf-eleve">-</strong> · Date : <span id="pdf-date">-</span></p>
+            </div>
+            
+            <div id="pdf-contenu-exercices"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- 1. FIREBASE CONFIG ---
+    let db = null;
+    try {
+        const firebaseConfig = {
+            apiKey: "AIzaSyBF72uEilOlNUnRB4_BqREpXCj6NvF4Mac",
+            authDomain: "exoanglais-6dd43.firebaseapp.com",
+            projectId: "exoanglais-6dd43",
+            storageBucket: "exoanglais-6dd43.firebasestorage.app",
+            messagingSenderId: "656075154329",
+            appId: "1:656075154329:web:cfe7ccb130ae55da02a908",
+            measurementId: "G-BWY78NT061"
+        };
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+    } catch(e) { console.error("Firebase init:", e); }
+
+    let langueActuelle = localStorage.getItem("langEleve") || "";
+    let codeEleveActuel = localStorage.getItem("codeEleve") || "";
+    let devoirsChargesMap = {};
+    let devoirActuel = null;
+    let assignationIdActuelle = null;
+    let reponsesEnregistrees = {};
+    let reponsesOuvertesEnregistrees = {};
+
+    window.choisirLangue = function(lang) {
+        langueActuelle = lang;
+        try { localStorage.setItem("langEleve", lang); } catch(e) {}
+        verifierSession();
+    };
+
+    window.retourChoixLangue = function() {
+        document.getElementById('ecran-langue').style.display = 'block';
+        document.getElementById('ecran-login').style.display = 'none';
+        document.getElementById('ecran-bienvenue').style.display = 'none';
+        document.getElementById('header-eleve').style.display = 'none';
+        document.getElementById('ecran-tableau-de-bord').style.display = 'none';
+        document.getElementById('ecran-exercice').style.display = 'none';
+    };
+
+    window.verifierSession = function() {
+        if (!langueActuelle) return retourChoixLangue();
+
+        document.getElementById('ecran-langue').style.display = 'none';
+
+        if (!codeEleveActuel) {
+            document.getElementById('ecran-login').style.display = 'block';
+            document.getElementById('ecran-bienvenue').style.display = 'none';
+            document.getElementById('header-eleve').style.display = 'none';
+            document.getElementById('ecran-tableau-de-bord').style.display = 'none';
+            document.getElementById('ecran-exercice').style.display = 'none';
+            return;
+        }
+
+        document.getElementById('ecran-login').style.display = 'none';
+        document.getElementById('header-eleve').style.display = 'flex';
+        document.getElementById('affichage-code-eleve').textContent = codeEleveActuel;
+        document.getElementById('ecran-tableau-de-bord').style.display = 'block';
+        document.getElementById('ecran-exercice').style.display = 'none';
+        ecouterDevoirs();
+    };
+
+    window.seConnecter = function() {
+        const input = document.getElementById('code-input');
+        const saisie = input ? input.value.trim().toUpperCase() : "";
+        if (!saisie) return alert("Veuillez entrer votre code élève.");
+
+        codeEleveActuel = saisie;
+        try { localStorage.setItem("codeEleve", codeEleveActuel); } catch(e) {}
+
+        document.getElementById('ecran-login').style.display = 'none';
+        document.getElementById('bienvenue-nom-user').textContent = codeEleveActuel;
+        document.getElementById('ecran-bienvenue').style.display = 'block';
+    };
+
+    window.validerBienvenue = function() {
+        document.getElementById('ecran-bienvenue').style.display = 'none';
+        verifierSession();
+    };
+
+    window.deconnexion = function() {
+        if (confirm("Changer de compte élève ?")) {
+            try { localStorage.removeItem("codeEleve"); } catch(e) {}
+            codeEleveActuel = "";
+            verifierSession();
+        }
+    };
+
+    window.changerOnglet = function(tab) {
+        document.getElementById('btn-tab-afaire').classList.toggle('active', tab === 'afaire');
+        document.getElementById('btn-tab-faits').classList.toggle('active', tab === 'faits');
+        document.getElementById('panel-afaire').style.display = tab === 'afaire' ? 'block' : 'none';
+        document.getElementById('panel-faits').style.display = tab === 'faits' ? 'block' : 'none';
+    };
+
+    function ecouterDevoirs() {
+        if (!db) return;
+        db.collection("assignations").onSnapshot(snapshot => {
+            const tous = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            devoirsChargesMap = {};
+            tous.forEach(d => { devoirsChargesMap[d.id] = d; });
+
+            const mesDevoirs = tous.filter(d => d.eleveCode && d.eleveCode.toUpperCase() === codeEleveActuel.toUpperCase());
+            const aFaire = mesDevoirs.filter(d => d.statut !== 'termine');
+            const faits = mesDevoirs.filter(d => d.statut === 'termine');
+
+            document.getElementById('badge-nb-afaire').textContent = aFaire.length;
+            document.getElementById('badge-nb-faits').textContent = faits.length;
+
+            const cAFaire = document.getElementById('conteneur-afaire');
+            if (aFaire.length === 0) {
+                cAFaire.innerHTML = `<div style="background:white; padding:30px; text-align:center; border-radius:10px; color:#888;">🎉 Aucun devoir en attente !</div>`;
+            } else {
+                cAFaire.innerHTML = "";
+                aFaire.forEach(d => {
+                    const card = document.createElement('div');
+                    card.className = "devoir-card";
+                    card.innerHTML = `
+                        <div>
+                            <h3 style="margin:0 0 5px 0; color:var(--primary);">${d.devoirTitre}</h3>
+                            <span style="color:#718096; font-size:0.9em;">${(d.phrases ? d.phrases.length : 0) + (d.questionsOuvertes ? d.questionsOuvertes.length : 0)} exercices</span>
+                        </div>
+                        <button class="btn btn-warning" onclick="ouvrirFicheDevoir('${d.id}')">Remplir le devoir ▶</button>
+                    `;
+                    cAFaire.appendChild(card);
+                });
+            }
+
+            const cFaits = document.getElementById('conteneur-faits');
+            if (faits.length === 0) {
+                cFaits.innerHTML = `<div style="background:white; padding:30px; text-align:center; border-radius:10px; color:#888;">Aucun devoir terminé pour l'instant.</div>`;
+            } else {
+                cFaits.innerHTML = "";
+                faits.forEach(d => {
+                    const card = document.createElement('div');
+                    card.className = "devoir-card fait";
+                    card.innerHTML = `
+                        <div>
+                            <h3 style="margin:0 0 5px 0; color:var(--primary);">${d.devoirTitre}</h3>
+                            <span style="color:var(--success); font-weight:bold;">Terminé ✓ Prêt pour le cours</span>
+                        </div>
+                        <div style="display:flex; gap:8px;">
+                            <button class="btn" style="background:#8e44ad;" onclick="ouvrirFicheDevoir('${d.id}')">Consulter & Exporter PDF</button>
+                        </div>
+                    `;
+                    cFaits.appendChild(card);
+                });
+            }
+        });
+    }
+
+    // --- OUVERTURE DE LA FICHE D'EXERCICE TRANQUILLE ---
+    window.ouvrirFicheDevoir = function(id) {
+        const d = devoirsChargesMap[id];
+        if (!d) return alert("Devoir introuvable.");
+
+        devoirActuel = d;
+        assignationIdActuelle = d.id;
+        reponsesEnregistrees = d.reponsesSaisies || {};
+        reponsesOuvertesEnregistrees = d.reponsesOuvertes || {};
+
+        document.getElementById('ecran-tableau-de-bord').style.display = 'none';
+        document.getElementById('ecran-exercice').style.display = 'block';
+        document.getElementById('exo-titre').textContent = d.devoirTitre;
+
+        // 1. Grammaire en coréen
+        const boxGrammaire = document.getElementById('box-grammaire');
+        if (d.grammaireCoreen) {
+            document.getElementById('texte-grammaire-coreen').textContent = d.grammaireCoreen;
+            boxGrammaire.style.display = 'block';
+        } else {
+            boxGrammaire.style.display = 'none';
+        }
+
+        // 2. Phrases à trous
+        const cPhrases = document.getElementById('phrases-conteneur');
+        cPhrases.innerHTML = "";
+        const phrases = Array.isArray(d.phrases) ? d.phrases : [];
+
+        phrases.forEach((p, idx) => {
+            const div = document.createElement('div');
+            div.className = "phrase-item";
+            const parts = p.q.includes('____') ? p.q.split('____') : p.q.split('___');
+            const val = reponsesEnregistrees[idx] || "";
+
+            div.innerHTML = `
+                <span>${idx + 1}.</span> ${parts[0]}
+                <input type="text" class="input-calme" id="input-trou-${idx}" value="${val}" placeholder="..." oninput="noterReponse(${idx}, this.value)">
+                ${parts[1] || ""}
+            `;
+            cPhrases.appendChild(div);
+        });
+
+        // 3. Questions ouvertes
+        const secOuvertes = document.getElementById('section-ouvertes');
+        const cOuvertes = document.getElementById('ouvertes-conteneur');
+        cOuvertes.innerHTML = "";
+        const ouvertes = Array.isArray(d.questionsOuvertes) ? d.questionsOuvertes : [];
+
+        if (ouvertes.length > 0) {
+            secOuvertes.style.display = 'block';
+            ouvertes.forEach((q, idx) => {
+                const div = document.createElement('div');
+                div.className = "phrase-item";
+                const val = reponsesOuvertesEnregistrees[idx] || "";
+                div.innerHTML = `
+                    <div style="font-weight:bold; color:var(--primary); margin-bottom:6px;">${idx + 1}. ${q}</div>
+                    <textarea class="textarea-calme" rows="2" placeholder="Écrivez votre réponse ici..." oninput="noterOuverte(${idx}, this.value)">${val}</textarea>
+                `;
+                cOuvertes.appendChild(div);
+            });
+        } else {
+            secOuvertes.style.display = 'none';
+        }
+    };
+
+    window.noterReponse = function(idx, val) {
+        reponsesEnregistrees[idx] = val;
+    };
+
+    window.noterOuverte = function(idx, val) {
+        reponsesOuvertesEnregistrees[idx] = val;
+    };
+
+    // SAUVEGARDE EN LIGNE DANS FIRESTORE
+    async function sauvegarderProgression(statut) {
+        if (!assignationIdActuelle) return;
+        await db.collection("assignations").doc(assignationIdActuelle).update({
+            reponsesSaisies: reponsesEnregistrees,
+            reponsesOuvertes: reponsesOuvertesEnregistrees,
+            statut: statut,
+            dateDerniereActivite: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+
+    window.sauvegarderEtQuitter = async function() {
+        await sauvegarderProgression("en_cours");
+        alert("💾 Votre travail a été sauvegardé ! Vous pourrez le reprendre quand vous voulez.");
+        retourTableau();
+    };
+
+    window.marquerTermine = async function() {
+        if (confirm("Marquer ce devoir comme terminé ?\n(Vous pourrez toujours consulter et exporter vos réponses)")) {
+            await sauvegarderProgression("termine");
+            alert("✅ Devoir terminé ! Vos réponses sont enregistrées pour le prochain cours.");
+            retourTableau();
+        }
+    };
+
+    function retourTableau() {
+        document.getElementById('ecran-exercice').style.display = 'none';
+        document.getElementById('ecran-tableau-de-bord').style.display = 'block';
+    }
+
+    // --- MODAL D'EXTRACTION PDF AVEC RÉPONSES EN SURBRILLANCE ---
+    window.ouvrirModalExtraction = function() {
+        if (!devoirActuel) return;
+
+        document.getElementById('pdf-titre').textContent = devoirActuel.devoirTitre;
+        document.getElementById('pdf-eleve').textContent = codeEleveActuel;
+        document.getElementById('pdf-date').textContent = new Date().toLocaleDateString('fr-FR');
+
+        const zone = document.getElementById('pdf-contenu-exercices');
+        zone.innerHTML = "";
+
+        // Synthèse grammaire
+        if (devoirActuel.grammaireCoreen) {
+            const gDiv = document.createElement('div');
+            gDiv.style.background = "#f9f9f9";
+            gDiv.style.border = "1px solid #ddd";
+            gDiv.style.padding = "15px";
+            gDiv.style.marginBottom = "20px";
+            gDiv.innerHTML = `<h3 style="margin-top:0;">📖 문법 정리</h3><pre style="white-space:pre-wrap; font-family:inherit; margin:0;">${devoirActuel.grammaireCoreen}</pre>`;
+            zone.appendChild(gDiv);
+        }
+
+        // Exercices à trous avec réponses en SURBRILLANCE
+        const phrases = Array.isArray(devoirActuel.phrases) ? devoirActuel.phrases : [];
+        if (phrases.length > 0) {
+            const h3 = document.createElement('h3');
+            h3.textContent = "Exercices à compléter :";
+            zone.appendChild(h3);
+
+            const ol = document.createElement('ol');
+            ol.style.lineHeight = "2";
+            phrases.forEach((p, idx) => {
+                const parts = p.q.includes('____') ? p.q.split('____') : p.q.split('___');
+                const rep = reponsesEnregistrees[idx] || "_______________";
+                const li = document.createElement('li');
+                li.innerHTML = `${parts[0]} <span class="surbrillance">${rep}</span> ${parts[1] || ""}`;
+                ol.appendChild(li);
+            });
+            zone.appendChild(ol);
+        }
+
+        // Questions ouvertes avec réponses en SURBRILLANCE
+        const ouvertes = Array.isArray(devoirActuel.questionsOuvertes) ? devoirActuel.questionsOuvertes : [];
+        if (ouvertes.length > 0) {
+            const h3 = document.createElement('h3');
+            h3.textContent = "Questions ouvertes / Expression :";
+            h3.style.marginTop = "25px";
+            zone.appendChild(h3);
+
+            const ol = document.createElement('ol');
+            ol.style.lineHeight = "1.8";
+            ouvertes.forEach((q, idx) => {
+                const rep = reponsesOuvertesEnregistrees[idx] || "(Pas de réponse rédigée)";
+                const li = document.createElement('li');
+                li.style.marginBottom = "15px";
+                li.innerHTML = `<strong>${q}</strong><br>➔ Réponse élève : <span class="surbrillance">${rep}</span>`;
+                ol.appendChild(li);
+            });
+            zone.appendChild(ol);
+        }
+
+        document.getElementById('modal-export').style.display = "flex";
+    };
+
+    window.fermerModalExport = function() {
+        document.getElementById('modal-export').style.display = "none";
+    };
+
+    window.imprimerFeuille = function() {
+        window.print();
+    };
+
+    // Démarrage
+    verifierSession();
+</script>
+</body>
+</html>

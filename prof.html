@@ -34,8 +34,8 @@
         input[type="text"], textarea, select { width: 100%; padding: 11px; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.95em; }
         input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
 
-        .btn { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
-        .btn:hover { opacity: 0.9; }
+        .btn { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .btn:hover { opacity: 0.9; transform: translateY(-1px); }
         .btn-success { background: var(--success); }
         .btn-danger { background: var(--danger); }
         .btn-purple { background: var(--purple); }
@@ -45,6 +45,8 @@
         table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 0.95em; }
         th { background: #f8fafc; color: #475569; }
+        .ligne-cliquable { cursor: pointer; transition: background 0.15s; }
+        .ligne-cliquable:hover { background-color: #f1f5f9; }
 
         .badge-interactif { background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
         .badge-chapitre { background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
@@ -52,6 +54,11 @@
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
+
+        .pagination-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
+        .recherche-box { position: relative; margin-bottom: 12px; }
+        .recherche-box input { padding-left: 36px; }
+        .recherche-box span { position: absolute; left: 12px; top: 12px; color: #94a3b8; font-size: 1.1em; }
     </style>
 </head>
 <body>
@@ -72,40 +79,113 @@
 
     <!-- ONGLET 1 : ÉLÈVES & SUIVI GLOBAL -->
     <div id="tab-eleves" class="tab-pane">
-        <div class="card">
-            <h2>Ajouter un profil élève</h2>
-            <div style="display:flex; gap:12px; flex-wrap:wrap;">
-                <input type="text" id="nouvel-eleve-code" placeholder="Code élève (ex: Lucas01)" style="flex:1;">
-                <input type="text" id="nouvel-eleve-cle" placeholder="Clé API Gemini (Optionnel)" style="flex:1;">
-                <button class="btn btn-success" onclick="creerEleve()">Ajouter l'élève</button>
+
+        <!-- 1.A : VUE LISTE GÉNÉRALE DES ÉLÈVES -->
+        <div id="vue-liste-eleves">
+            <div class="card">
+                <h2>Ajouter un profil élève</h2>
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <input type="text" id="nouvel-eleve-code" placeholder="Code élève (ex: Lucas01)" style="flex:1;">
+                    <input type="text" id="nouvel-eleve-cle" placeholder="Clé API Gemini (Optionnel)" style="flex:1;">
+                    <button class="btn btn-success" onclick="creerEleve()">Ajouter l'élève</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📋 Annuaire des Élèves (Cliquez sur un élève pour le gérer)</h2>
+                
+                <div class="recherche-box">
+                    <span>🔍</span>
+                    <input type="text" id="input-recherche-eleve" placeholder="Rechercher par code élève..." oninput="filtrerEleves()">
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Code Élève</th>
+                            <th>Clé personnalisée</th>
+                            <th>Devoirs en cours</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-eleves-corps">
+                        <tr><td colspan="4">Chargement...</td></tr>
+                    </tbody>
+                </table>
+
+                <div class="pagination-bar">
+                    <button class="btn btn-secondary btn-sm" id="btn-page-prec" onclick="changerPage(-1)">◀ Précédent</button>
+                    <span id="info-pagination" style="font-size:0.9em; color:#64748b;">Page 1 sur 1</span>
+                    <button class="btn btn-secondary btn-sm" id="btn-page-suiv" onclick="changerPage(1)">Suivant ▶</button>
+                </div>
+            </div>
+
+            <!-- NOUVEAUTÉ : LES 10 DERNIERS DEVOIRS REMIS -->
+            <div class="card">
+                <h2>⏱️ 10 Derniers Devoirs Réalisés (Toute la classe)</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Élève</th>
+                            <th>Devoir</th>
+                            <th>Type</th>
+                            <th>Statut / Résultat</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-derniers-devoirs-corps">
+                        <tr><td colspan="5">Chargement...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <div class="card">
-            <h2>📋 Élèves enregistrés</h2>
-            <table>
-                <thead>
-                    <tr><th>Code Élève</th><th>Clé personnalisée</th><th>Actions</th></tr>
-                </thead>
-                <tbody id="table-eleves-corps"><tr><td colspan="3">Chargement...</td></tr></tbody>
-            </table>
+        <!-- 1.B : VUE INDIVIDUELLE : GESTION COMPLÈTE DE L'ÉLÈVE -->
+        <div id="vue-fiche-eleve" style="display:none;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <button class="btn btn-secondary" onclick="fermerFicheEleve()">← Revenir à la liste des élèves</button>
+                <button class="btn btn-danger" onclick="supprimerEleveActif()">🗑️ Supprimer définitivement cet élève</button>
+            </div>
+
+            <div class="card" style="border-left: 6px solid var(--accent);">
+                <h2>Fiche de l'élève : <span id="fiche-titre-code" style="color:var(--accent);">-</span></h2>
+                
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-top:15px;">
+                    <div>
+                        <label>Modifier le code élève :</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="fiche-edit-code">
+                            <button class="btn btn-success" onclick="sauvegarderNouveauCodeEleve()">Renommer</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label>Clé API Gemini personnalisée :</label>
+                        <div style="display:flex; gap:10px;">
+                            <input type="text" id="fiche-edit-cle" placeholder="AIzaSy... (laisser vide si aucune)">
+                            <button class="btn btn-purple" onclick="sauvegarderCleEleve()">Enregistrer Clé</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>📚 Devoirs assignés à cet élève</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Devoir</th>
+                            <th>Type</th>
+                            <th>Progression</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-fiche-assignations-corps">
+                        <tr><td colspan="4">Chargement...</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <div class="card">
-            <h2>📊 Devoirs assignés & Suivi des résultats</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Élève</th>
-                        <th>Devoir</th>
-                        <th>Type</th>
-                        <th>Avancement</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="table-assignations-corps"><tr><td colspan="5">Aucun devoir assigné.</td></tr></tbody>
-            </table>
-        </div>
     </div>
 
     <!-- ONGLET 2 : CRÉER UN EXERCICE IA (EMMA) -->
@@ -269,19 +349,245 @@
 
     let listeEleves = [];
     let listeDevoirs = [];
+    let listeAssignations = [];
     let devoirsMap = {};
     let assignationsMap = {};
-    let donneesIAPret = null;
+    let eleveSelectionne = null;
+
+    // Gestion pagination & recherche
+    let pageActuelleEleves = 1;
+    const parPage = 10;
+    let elevesFiltres = [];
 
     function basculerOnglet(tabId, btn) {
         document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).style.display = 'block';
         if (btn) btn.classList.add('active');
+        if (tabId === 'tab-eleves') fermerFicheEleve();
     }
 
+    // --- RECHERCHE ET PAGINATION ÉLÈVES ---
+    function filtrerEleves() {
+        const texte = (document.getElementById('input-recherche-eleve').value || '').trim().toLowerCase();
+        elevesFiltres = listeEleves.filter(e => e.code.toLowerCase().includes(texte));
+        pageActuelleEleves = 1;
+        afficherTableauEleves();
+    }
+
+    function changerPage(delta) {
+        const totalPages = Math.ceil(elevesFiltres.length / parPage) || 1;
+        const nouv = pageActuelleEleves + delta;
+        if (nouv >= 1 && nouv <= totalPages) {
+            pageActuelleEleves = nouv;
+            afficherTableauEleves();
+        }
+    }
+
+    function afficherTableauEleves() {
+        const tbody = document.getElementById('table-eleves-corps');
+        tbody.innerHTML = "";
+
+        const totalPages = Math.ceil(elevesFiltres.length / parPage) || 1;
+        document.getElementById('info-pagination').textContent = `Page ${pageActuelleEleves} sur ${totalPages} (${elevesFiltres.length} élèves)`;
+        document.getElementById('btn-page-prec').disabled = (pageActuelleEleves <= 1);
+        document.getElementById('btn-page-suiv').disabled = (pageActuelleEleves >= totalPages);
+
+        const debut = (pageActuelleEleves - 1) * parPage;
+        const pageItems = elevesFiltres.slice(debut, debut + parPage);
+
+        if (pageItems.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">Aucun élève trouvé.</td></tr>`;
+            return;
+        }
+
+        pageItems.forEach(e => {
+            const nbDevoirs = listeAssignations.filter(a => a.eleveCode && a.eleveCode.toUpperCase() === e.code.toUpperCase()).length;
+            const tr = document.createElement('tr');
+            tr.className = "ligne-cliquable";
+            tr.onclick = (evt) => {
+                // Éviter de déclencher si clic direct sur bouton
+                if (evt.target.tagName !== 'BUTTON') ouvrirFicheEleve(e.id);
+            };
+            tr.innerHTML = `
+                <td><strong style="color:var(--accent); font-size:1.05em;">👤 ${e.code}</strong></td>
+                <td><code>${e.cleApiPerso ? "● Clé personnalisée" : "(Clé par défaut)"}</code></td>
+                <td><strong>${nbDevoirs}</strong> devoir(s)</td>
+                <td><button class="btn btn-sm btn-purple" onclick="ouvrirFicheEleve('${e.id}')">⚙️ Gérer</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // --- INTERFACE DE GESTION DE L'ÉLÈVE SÉLECTIONNÉ ---
+    window.ouvrirFicheEleve = function(eleveId) {
+        eleveSelectionne = listeEleves.find(e => e.id === eleveId);
+        if (!eleveSelectionne) return;
+
+        document.getElementById('vue-liste-eleves').style.display = 'none';
+        document.getElementById('vue-fiche-eleve').style.display = 'block';
+
+        document.getElementById('fiche-titre-code').textContent = eleveSelectionne.code;
+        document.getElementById('fiche-edit-code').value = eleveSelectionne.code;
+        document.getElementById('fiche-edit-cle').value = eleveSelectionne.cleApiPerso || "";
+
+        afficherDevoirsFicheEleve();
+    };
+
+    window.fermerFicheEleve = function() {
+        eleveSelectionne = null;
+        document.getElementById('vue-fiche-eleve').style.display = 'none';
+        document.getElementById('vue-liste-eleves').style.display = 'block';
+    };
+
+    window.sauvegarderNouveauCodeEleve = async function() {
+        if (!eleveSelectionne) return;
+        const ancienCode = eleveSelectionne.code;
+        const nouvCode = document.getElementById('fiche-edit-code').value.trim().toUpperCase();
+
+        if (!nouvCode) return alert("Le code ne peut pas être vide.");
+        if (nouvCode === ancienCode) return alert("Aucun changement de nom détecté.");
+
+        if (confirm(`Renommer l'élève "${ancienCode}" en "${nouvCode}" ?\nTous ses devoirs seront mis à jour.`)) {
+            // Mettre à jour l'élève
+            await db.collection("eleves").doc(eleveSelectionne.id).update({ code: nouvCode });
+
+            // Mettre à jour toutes ses assignations
+            const snap = await db.collection("assignations").where("eleveCode", "==", ancienCode).get();
+            const batch = db.batch();
+            snap.forEach(doc => {
+                batch.update(doc.ref, { eleveCode: nouvCode });
+            });
+            await batch.commit();
+
+            eleveSelectionne.code = nouvCode;
+            document.getElementById('fiche-titre-code').textContent = nouvCode;
+            alert(`✅ Élève renommé avec succès en ${nouvCode} !`);
+        }
+    };
+
+    window.sauvegarderCleEleve = async function() {
+        if (!eleveSelectionne) return;
+        const cle = document.getElementById('fiche-edit-cle').value.trim();
+        await db.collection("eleves").doc(eleveSelectionne.id).update({
+            cleApiPerso: cle || null
+        });
+        eleveSelectionne.cleApiPerso = cle || null;
+        alert("✅ Clé API mise à jour !");
+    };
+
+    window.supprimerEleveActif = async function() {
+        if (!eleveSelectionne) return;
+        const code = eleveSelectionne.code;
+
+        if (confirm(`Êtes-vous sûr de vouloir supprimer définitivement l'élève ${code} et tous ses devoirs associés ?`)) {
+            await db.collection("eleves").doc(eleveSelectionne.id).delete();
+            const snap = await db.collection("assignations").where("eleveCode", "==", code).get();
+            const batch = db.batch();
+            snap.forEach(doc => batch.delete(doc.ref));
+            await batch.commit();
+
+            alert(`✅ L'élève ${code} a été supprimé.`);
+            fermerFicheEleve();
+        }
+    };
+
+    function afficherDevoirsFicheEleve() {
+        if (!eleveSelectionne) return;
+        const tbody = document.getElementById('table-fiche-assignations-corps');
+        tbody.innerHTML = "";
+
+        const sesAssignations = listeAssignations.filter(a => a.eleveCode && a.eleveCode.toUpperCase() === eleveSelectionne.code.toUpperCase());
+
+        if (sesAssignations.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">Aucun devoir assigné à cet élève pour l'instant.</td></tr>`;
+            return;
+        }
+
+        sesAssignations.forEach(a => {
+            const tr = document.createElement('tr');
+            let badgeType = "";
+            let prog = "";
+            let btnAction = "";
+
+            if (a.typeDevoir === "emma") {
+                badgeType = `<span class="badge-emma">🤖 Emma IA</span>`;
+                const nb = Object.keys(a.retoursEmma || {}).length;
+                const tot = (a.questions || []).length;
+                prog = `${nb} / ${tot} questions répondues`;
+                btnAction = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Voir les corrections</button>`;
+            } else if (a.typeDevoir === "interactif") {
+                badgeType = `<span class="badge-interactif">⚡ Interactif</span>`;
+                prog = `Score : ${a.score || 0} / ${a.totalQuestions || 0}`;
+            } else {
+                badgeType = `<span class="badge-chapitre">📖 Cours</span>`;
+                prog = `Suivi par blocs`;
+            }
+
+            tr.innerHTML = `
+                <td><strong>${a.devoirTitre}</strong></td>
+                <td>${badgeType}</td>
+                <td><strong>${prog}</strong></td>
+                <td style="display:flex; gap:8px;">
+                    ${btnAction}
+                    <button class="btn btn-sm btn-danger" onclick="supprimerAssignation('${a.id}')">🗑️ Retirer</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    // --- AFFICHAGE DES 10 DERNIERS DEVOIRS TERMINÉS/TRAVAILLÉS ---
+    function afficherDerniersDevoirsGlobaux() {
+        const tbody = document.getElementById('table-derniers-devoirs-corps');
+        tbody.innerHTML = "";
+
+        // Prendre les assignations triées par activité
+        const copies = [...listeAssignations].filter(a => a.statut === "termine" || a.statut === "en_cours");
+        const dixDerniers = copies.slice(0, 10);
+
+        if (dixDerniers.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">Aucun devoir récent.</td></tr>`;
+            return;
+        }
+
+        dixDerniers.forEach(a => {
+            const tr = document.createElement('tr');
+            let badgeType = "";
+            let statutInfo = "";
+            let actionBtn = "";
+
+            if (a.typeDevoir === "emma") {
+                badgeType = `<span class="badge-emma">🤖 Emma IA</span>`;
+                statutInfo = (a.statut === "termine") ? `<span style="color:var(--success); font-weight:bold;">✅ Terminé</span>` : `<span style="color:var(--accent);">💬 En cours</span>`;
+                actionBtn = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Voir l'échange</button>`;
+            } else if (a.typeDevoir === "interactif") {
+                badgeType = `<span class="badge-interactif">⚡ Interactif</span>`;
+                statutInfo = `Score : <strong>${a.score || 0} / ${a.totalQuestions || 0}</strong>`;
+            } else {
+                badgeType = `<span class="badge-chapitre">📖 Cours</span>`;
+                statutInfo = `Blocs consultés`;
+            }
+
+            tr.innerHTML = `
+                <td><strong style="color:var(--accent); cursor:pointer;" onclick="ouvrirFicheEleveParCode('${a.eleveCode}')">👤 ${a.eleveCode}</strong></td>
+                <td><strong>${a.devoirTitre}</strong></td>
+                <td>${badgeType}</td>
+                <td>${statutInfo}</td>
+                <td>${actionBtn}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    window.ouvrirFicheEleveParCode = function(code) {
+        const e = listeEleves.find(x => x.code.toUpperCase() === (code || '').toUpperCase());
+        if (e) ouvrirFicheEleve(e.id);
+    };
+
+    // --- ACTIONS DEVOIRS & MODALS ---
     async function creerEleve() {
-        const code = document.getElementById('nouvel-eleve-code').value.trim();
+        const code = document.getElementById('nouvel-eleve-code').value.trim().toUpperCase();
         const cle = document.getElementById('nouvel-eleve-cle').value.trim();
         if (!code) return alert("Indiquez le code élève (ex: Lucas01).");
 
@@ -295,12 +601,10 @@
         alert(`✅ Élève ${code} enregistré !`);
     }
 
-    async function supprimerEleve(id) {
-        if (confirm("Supprimer cet élève ?")) await db.collection("eleves").doc(id).delete();
-    }
-
     async function supprimerAssignation(id) {
-        if (confirm("Retirer ce devoir à l'élève ?")) await db.collection("assignations").doc(id).delete();
+        if (confirm("Retirer ce devoir à l'élève ?")) {
+            await db.collection("assignations").doc(id).delete();
+        }
     }
 
     async function supprimerDevoir(id) {
@@ -514,22 +818,12 @@
     function ecouterDonnees() {
         if (!db) return;
 
-        db.collection("eleves").onSnapshot(snap => {
+        db.collection("eleves").orderBy("dateCreation", "desc").onSnapshot(snap => {
             listeEleves = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            const tbody = document.getElementById('table-eleves-corps');
-            tbody.innerHTML = "";
-            listeEleves.forEach(e => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${e.code}</strong></td>
-                    <td><code>${e.cleApiPerso ? "● Clé perso" : "(Clé prof par défaut)"}</code></td>
-                    <td><button class="btn btn-danger btn-sm" onclick="supprimerEleve('${e.id}')">🗑️</button></td>
-                `;
-                tbody.appendChild(tr);
-            });
+            filtrerEleves();
         });
 
-        db.collection("devoirs").onSnapshot(snap => {
+        db.collection("devoirs").orderBy("dateCreation", "desc").onSnapshot(snap => {
             listeDevoirs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             devoirsMap = {};
             listeDevoirs.forEach(d => { devoirsMap[d.id] = d; });
@@ -565,47 +859,14 @@
             });
         });
 
-        db.collection("assignations").onSnapshot(snap => {
-            const assignations = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        db.collection("assignations").orderBy("dateAssignation", "desc").onSnapshot(snap => {
+            listeAssignations = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             assignationsMap = {};
-            assignations.forEach(a => { assignationsMap[a.id] = a; });
+            listeAssignations.forEach(a => { assignationsMap[a.id] = a; });
 
-            const tbody = document.getElementById('table-assignations-corps');
-            tbody.innerHTML = "";
-            assignations.forEach(a => {
-                const tr = document.createElement('tr');
-                let badgeType = "";
-                let avancement = "";
-                let actions = "";
-
-                if (a.typeDevoir === "emma") {
-                    badgeType = `<span class="badge-emma">🤖 Emma IA</span>`;
-                    const nbRep = Object.keys(a.retoursEmma || {}).length;
-                    const total = (a.questions || []).length;
-                    avancement = `<strong>${nbRep} / ${total}</strong> réponses`;
-                    actions = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Corrections</button>`;
-                } else if (a.typeDevoir === "interactif") {
-                    badgeType = `<span class="badge-interactif">⚡ Interactif</span>`;
-                    avancement = `Score : <strong>${a.score || 0} / ${a.totalQuestions || 0}</strong>`;
-                    actions = `<span style="color:#64748b;">Automatique</span>`;
-                } else {
-                    badgeType = `<span class="badge-chapitre">📖 Chapitre</span>`;
-                    avancement = `Par blocs`;
-                    actions = `<span style="color:#64748b;">Suivi cours</span>`;
-                }
-
-                tr.innerHTML = `
-                    <td><strong style="color:var(--accent);">${a.eleveCode}</strong></td>
-                    <td><strong>${a.devoirTitre}</strong></td>
-                    <td>${badgeType}</td>
-                    <td>${avancement}</td>
-                    <td style="display:flex; gap:6px;">
-                        ${actions}
-                        <button class="btn btn-danger btn-sm" onclick="supprimerAssignation('${a.id}')">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
+            afficherTableauEleves();
+            afficherDerniersDevoirsGlobaux();
+            if (eleveSelectionne) afficherDevoirsFicheEleve();
         });
     }
 

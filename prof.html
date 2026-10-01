@@ -59,6 +59,13 @@
         .recherche-box { position: relative; margin-bottom: 12px; }
         .recherche-box input { padding-left: 36px; }
         .recherche-box span { position: absolute; left: 12px; top: 12px; color: #94a3b8; font-size: 1.1em; }
+
+        /* LISTE DE COCHES POUR L'ASSIGNATION */
+        .liste-coches-eleves { max-height: 300px; overflow-y: auto; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-top: 10px; }
+        .item-coche-eleve { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; transition: background 0.15s; }
+        .item-coche-eleve:hover { background: #f8fafc; }
+        .item-coche-eleve input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+        .item-coche-eleve label { margin: 0; cursor: pointer; flex: 1; font-weight: normal; }
     </style>
 </head>
 <body>
@@ -120,7 +127,6 @@
                 </div>
             </div>
 
-            <!-- NOUVEAUTÉ : LES 10 DERNIERS DEVOIRS REMIS -->
             <div class="card">
                 <h2>⏱️ 10 Derniers Devoirs Réalisés (Toute la classe)</h2>
                 <table>
@@ -140,7 +146,7 @@
             </div>
         </div>
 
-        <!-- 1.B : VUE INDIVIDUELLE : GESTION COMPLÈTE DE L'ÉLÈVE -->
+        <!-- 1.B : VUE INDIVIDUELLE : FICHE ÉLÈVE -->
         <div id="vue-fiche-eleve" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
                 <button class="btn btn-secondary" onclick="fermerFicheEleve()">← Revenir à la liste des élèves</button>
@@ -287,6 +293,28 @@
     </div>
 </div>
 
+<!-- NOUVELLE MODALE D'ASSIGNATION AVEC CASES À COCHER -->
+<div class="modal" id="modal-assignation">
+    <div class="modal-content" style="max-width: 550px;">
+        <h2 style="margin-top:0; color:var(--primary);">➕ Assigner un devoir</h2>
+        <p style="margin:0 0 10px 0; color:#64748b;">Devoir sélectionné : <strong id="assign-titre-devoir" style="color:var(--accent);">-</strong></p>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+            <input type="text" id="recherche-assign-eleve" placeholder="Filtrer les élèves..." oninput="filtrerCochesAssignation()" style="padding:8px 12px; font-size:0.9em; flex:1; margin-right:10px;">
+            <button type="button" class="btn btn-secondary btn-sm" onclick="basculerToutesLesCoches()">☑️ Tout cocher / Décocher</button>
+        </div>
+
+        <div class="liste-coches-eleves" id="conteneur-coches-eleves">
+            <!-- Rempli en JS -->
+        </div>
+
+        <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+            <button type="button" class="btn btn-secondary" onclick="fermerModalAssignation()">Annuler</button>
+            <button type="button" class="btn btn-success" id="btn-valider-assignation" onclick="confirmerAssignationGroupee()">✅ Assigner aux élèves cochés</button>
+        </div>
+    </div>
+</div>
+
 <!-- MODAL RETOURS EMMA PROF -->
 <div class="modal" id="modal-fautes">
     <div class="modal-content">
@@ -354,7 +382,10 @@
     let assignationsMap = {};
     let eleveSelectionne = null;
 
-    // Gestion pagination & recherche
+    // Gestion assignation par modale
+    let devoirAAssigner = null;
+
+    // Pagination & recherche élèves
     let pageActuelleEleves = 1;
     const parPage = 10;
     let elevesFiltres = [];
@@ -406,7 +437,6 @@
             const tr = document.createElement('tr');
             tr.className = "ligne-cliquable";
             tr.onclick = (evt) => {
-                // Éviter de déclencher si clic direct sur bouton
                 if (evt.target.tagName !== 'BUTTON') ouvrirFicheEleve(e.id);
             };
             tr.innerHTML = `
@@ -419,7 +449,7 @@
         });
     }
 
-    // --- INTERFACE DE GESTION DE L'ÉLÈVE SÉLECTIONNÉ ---
+    // --- FICHE INDIVIDUELLE ÉLÈVE ---
     window.ouvrirFicheEleve = function(eleveId) {
         eleveSelectionne = listeEleves.find(e => e.id === eleveId);
         if (!eleveSelectionne) return;
@@ -446,32 +476,26 @@
         const nouvCode = document.getElementById('fiche-edit-code').value.trim().toUpperCase();
 
         if (!nouvCode) return alert("Le code ne peut pas être vide.");
-        if (nouvCode === ancienCode) return alert("Aucun changement de nom détecté.");
+        if (nouvCode === ancienCode) return alert("Aucun changement détecté.");
 
         if (confirm(`Renommer l'élève "${ancienCode}" en "${nouvCode}" ?\nTous ses devoirs seront mis à jour.`)) {
-            // Mettre à jour l'élève
             await db.collection("eleves").doc(eleveSelectionne.id).update({ code: nouvCode });
 
-            // Mettre à jour toutes ses assignations
             const snap = await db.collection("assignations").where("eleveCode", "==", ancienCode).get();
             const batch = db.batch();
-            snap.forEach(doc => {
-                batch.update(doc.ref, { eleveCode: nouvCode });
-            });
+            snap.forEach(doc => batch.update(doc.ref, { eleveCode: nouvCode }));
             await batch.commit();
 
             eleveSelectionne.code = nouvCode;
             document.getElementById('fiche-titre-code').textContent = nouvCode;
-            alert(`✅ Élève renommé avec succès en ${nouvCode} !`);
+            alert(`✅ Élève renommé en ${nouvCode} !`);
         }
     };
 
     window.sauvegarderCleEleve = async function() {
         if (!eleveSelectionne) return;
         const cle = document.getElementById('fiche-edit-cle').value.trim();
-        await db.collection("eleves").doc(eleveSelectionne.id).update({
-            cleApiPerso: cle || null
-        });
+        await db.collection("eleves").doc(eleveSelectionne.id).update({ cleApiPerso: cle || null });
         eleveSelectionne.cleApiPerso = cle || null;
         alert("✅ Clé API mise à jour !");
     };
@@ -480,7 +504,7 @@
         if (!eleveSelectionne) return;
         const code = eleveSelectionne.code;
 
-        if (confirm(`Êtes-vous sûr de vouloir supprimer définitivement l'élève ${code} et tous ses devoirs associés ?`)) {
+        if (confirm(`Supprimer définitivement l'élève ${code} et tous ses devoirs associés ?`)) {
             await db.collection("eleves").doc(eleveSelectionne.id).delete();
             const snap = await db.collection("assignations").where("eleveCode", "==", code).get();
             const batch = db.batch();
@@ -500,7 +524,7 @@
         const sesAssignations = listeAssignations.filter(a => a.eleveCode && a.eleveCode.toUpperCase() === eleveSelectionne.code.toUpperCase());
 
         if (sesAssignations.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">Aucun devoir assigné à cet élève pour l'instant.</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">Aucun devoir assigné.</td></tr>`;
             return;
         }
 
@@ -537,12 +561,11 @@
         });
     }
 
-    // --- AFFICHAGE DES 10 DERNIERS DEVOIRS TERMINÉS/TRAVAILLÉS ---
+    // --- 10 DERNIERS DEVOIRS GLOBAUX ---
     function afficherDerniersDevoirsGlobaux() {
         const tbody = document.getElementById('table-derniers-devoirs-corps');
         tbody.innerHTML = "";
 
-        // Prendre les assignations triées par activité
         const copies = [...listeAssignations].filter(a => a.statut === "termine" || a.statut === "en_cours");
         const dixDerniers = copies.slice(0, 10);
 
@@ -582,10 +605,141 @@
 
     window.ouvrirFicheEleveParCode = function(code) {
         const e = listeEleves.find(x => x.code.toUpperCase() === (code || '').toUpperCase());
-        if (e) ouvrirFicheEleve(e.id);
+        if (e) {
+            basculerOnglet('tab-eleves', document.getElementById('btn-tab-eleves'));
+            ouvrirFicheEleve(e.id);
+        }
     };
 
-    // --- ACTIONS DEVOIRS & MODALS ---
+    // ==========================================
+    // SYSTÈME D'ASSIGNATION AVEC COCHES
+    // ==========================================
+    window.ouvrirModalAssignation = function(devoirId) {
+        devoirAAssigner = devoirsMap[devoirId];
+        if (!devoirAAssigner) return;
+
+        if (listeEleves.length === 0) {
+            return alert("Aucun élève enregistré. Ajoutez au moins un élève avant d'assigner.");
+        }
+
+        document.getElementById('assign-titre-devoir').textContent = devoirAAssigner.titre;
+        document.getElementById('recherche-assign-eleve').value = "";
+        
+        genererListeCochesEleves(listeEleves);
+        document.getElementById('modal-assignation').style.display = "flex";
+    };
+
+    function genererListeCochesEleves(eleves) {
+        const conteneur = document.getElementById('conteneur-coches-eleves');
+        conteneur.innerHTML = "";
+
+        if (eleves.length === 0) {
+            conteneur.innerHTML = `<div style="color:#64748b; padding:10px; text-align:center;">Aucun élève ne correspond.</div>`;
+            return;
+        }
+
+        eleves.forEach(e => {
+            const div = document.createElement('div');
+            div.className = "item-coche-eleve";
+            div.innerHTML = `
+                <input type="checkbox" id="chk-eleve-${e.id}" value="${e.code}" class="chk-assign-eleve">
+                <label for="chk-eleve-${e.id}">👤 <strong>${e.code}</strong></label>
+            `;
+            conteneur.appendChild(div);
+        });
+    }
+
+    window.filtrerCochesAssignation = function() {
+        const txt = (document.getElementById('recherche-assign-eleve').value || '').trim().toLowerCase();
+        const filtrés = listeEleves.filter(e => e.code.toLowerCase().includes(txt));
+        genererListeCochesEleves(filtrés);
+    };
+
+    window.basculerToutesLesCoches = function() {
+        const checkboxes = document.querySelectorAll('.chk-assign-eleve');
+        const tousCoches = Array.from(checkboxes).every(c => c.checked);
+        checkboxes.forEach(c => c.checked = !tousCoches);
+    };
+
+    window.fermerModalAssignation = function() {
+        devoirAAssigner = null;
+        document.getElementById('modal-assignation').style.display = "none";
+    };
+
+    window.confirmerAssignationGroupee = async function() {
+        if (!devoirAAssigner) return;
+
+        const selectionnes = Array.from(document.querySelectorAll('.chk-assign-eleve:checked')).map(c => c.value);
+        if (selectionnes.length === 0) {
+            return alert("Veuillez cocher au moins un élève !");
+        }
+
+        const btn = document.getElementById('btn-valider-assignation');
+        btn.disabled = true;
+        btn.textContent = "⏳ Assignation en cours...";
+
+        try {
+            const batch = db.batch();
+
+            selectionnes.forEach(codeEleve => {
+                const nouvRef = db.collection("assignations").doc();
+
+                if (devoirAAssigner.typeDevoir === "emma") {
+                    batch.set(nouvRef, {
+                        eleveCode: codeEleve,
+                        devoirId: devoirAAssigner.id,
+                        devoirTitre: devoirAAssigner.titre,
+                        typeDevoir: "emma",
+                        questions: devoirAAssigner.questions || [],
+                        statut: "non_commence",
+                        retoursEmma: {},
+                        dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else if (devoirAAssigner.typeDevoir === "interactif") {
+                    batch.set(nouvRef, {
+                        eleveCode: codeEleve,
+                        devoirId: devoirAAssigner.id,
+                        devoirTitre: devoirAAssigner.titre,
+                        typeDevoir: "interactif",
+                        phrases: devoirAAssigner.phrases || [],
+                        statut: "non_commence",
+                        score: 0,
+                        totalQuestions: (devoirAAssigner.phrases || []).length,
+                        totalErreurs: 0,
+                        fautesDetails: [],
+                        reponsesValidees: {},
+                        dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                } else {
+                    const suiviBlocs = { cours: { statut: "non_lu" } };
+                    (devoirAAssigner.blocs_exercices || []).forEach(b => { suiviBlocs[b.id] = { statut: "non_fait", reponses: {} }; });
+                    batch.set(nouvRef, {
+                        eleveCode: codeEleve,
+                        devoirId: devoirAAssigner.id,
+                        devoirTitre: devoirAAssigner.titre,
+                        typeDevoir: "chapitre_cours",
+                        bloc_cours: devoirAAssigner.bloc_cours || null,
+                        blocs_exercices: devoirAAssigner.blocs_exercices || [],
+                        suiviBlocs: suiviBlocs,
+                        dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+            });
+
+            await batch.commit();
+            alert(`✅ "${devoirAAssigner.titre}" assigné avec succès à ${selectionnes.length} élève(s) !`);
+            fermerModalAssignation();
+            // L'enseignant reste sur la Banque de devoirs sans être redirigé
+
+        } catch(err) {
+            alert("Erreur lors de l'assignation : " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "✅ Assigner aux élèves cochés";
+        }
+    };
+
+    // --- ACTIONS BASIQUES PROF ---
     async function creerEleve() {
         const code = document.getElementById('nouvel-eleve-code').value.trim().toUpperCase();
         const cle = document.getElementById('nouvel-eleve-cle').value.trim();
@@ -726,62 +880,6 @@
         basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
     }
 
-    async function assignerDevoir(devoirId) {
-        const d = devoirsMap[devoirId];
-        if (!d || listeEleves.length === 0) return alert("Sélectionnez un devoir et vérifiez vos élèves.");
-
-        const options = listeEleves.map((e, idx) => `${idx + 1}. ${e.code}`).join('\n');
-        const choix = prompt(`À quel élève assigner "${d.titre}" ?\n\n${options}\n\nTapez le numéro :`);
-        const num = parseInt(choix);
-
-        if (num >= 1 && num <= listeEleves.length) {
-            const eleve = listeEleves[num - 1];
-
-            if (d.typeDevoir === "emma") {
-                await db.collection("assignations").add({
-                    eleveCode: eleve.code,
-                    devoirId: d.id,
-                    devoirTitre: d.titre,
-                    typeDevoir: "emma",
-                    questions: d.questions || [],
-                    statut: "non_commence",
-                    retoursEmma: {},
-                    dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            } else if (d.typeDevoir === "interactif") {
-                await db.collection("assignations").add({
-                    eleveCode: eleve.code,
-                    devoirId: d.id,
-                    devoirTitre: d.titre,
-                    typeDevoir: "interactif",
-                    phrases: d.phrases || [],
-                    statut: "non_commence",
-                    score: 0,
-                    totalQuestions: (d.phrases || []).length,
-                    totalErreurs: 0,
-                    fautesDetails: [],
-                    reponsesValidees: {},
-                    dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            } else {
-                const suiviBlocs = { cours: { statut: "non_lu" } };
-                (d.blocs_exercices || []).forEach(b => { suiviBlocs[b.id] = { statut: "non_fait", reponses: {} }; });
-                await db.collection("assignations").add({
-                    eleveCode: eleve.code,
-                    devoirId: d.id,
-                    devoirTitre: d.titre,
-                    typeDevoir: "chapitre_cours",
-                    bloc_cours: d.bloc_cours || null,
-                    blocs_exercices: d.blocs_exercices || [],
-                    suiviBlocs: suiviBlocs,
-                    dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
-                });
-            }
-            alert(`✅ Devoir assigné à ${eleve.code} !`);
-            basculerOnglet('tab-eleves', document.getElementById('btn-tab-eleves'));
-        }
-    }
-
     window.voirRetoursEmmaProf = function(assignationId) {
         const a = assignationsMap[assignationId];
         if (!a) return;
@@ -851,7 +949,7 @@
                     <td>${badge}</td>
                     <td>${info}</td>
                     <td>
-                        <button class="btn btn-sm btn-success" onclick="assignerDevoir('${d.id}')">➕ Assigner</button>
+                        <button class="btn btn-sm btn-success" onclick="ouvrirModalAssignation('${d.id}')">➕ Assigner</button>
                         <button class="btn btn-sm btn-danger" onclick="supprimerDevoir('${d.id}')">🗑️</button>
                     </td>
                 `;

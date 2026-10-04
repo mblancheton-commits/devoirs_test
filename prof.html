@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -51,6 +52,7 @@
         .badge-interactif { background: #fef3c7; color: #92400e; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
         .badge-chapitre { background: #e0e7ff; color: #3730a3; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
         .badge-emma { background: #fae8ff; color: #86198f; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
+        .badge-auto { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
         .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
@@ -60,7 +62,7 @@
         .recherche-box input { padding-left: 36px; }
         .recherche-box span { position: absolute; left: 12px; top: 12px; color: #94a3b8; font-size: 1.1em; }
 
-        /* LISTE DE COCHES POUR L'ASSIGNATION */
+        /* LISTE DE COCHES ASSIGNATION */
         .liste-coches-eleves { max-height: 300px; overflow-y: auto; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-top: 10px; }
         .item-coche-eleve { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; transition: background 0.15s; }
         .item-coche-eleve:hover { background: #f8fafc; }
@@ -111,7 +113,7 @@
                         <tr>
                             <th>Code Élève</th>
                             <th>Clé personnalisée</th>
-                            <th>Devoirs en cours</th>
+                            <th>Devoirs & Entraînements</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -175,13 +177,13 @@
             </div>
 
             <div class="card">
-                <h2>📚 Devoirs assignés à cet élève</h2>
+                <h2>📚 Devoirs & Auto-entraînements de cet élève</h2>
                 <table>
                     <thead>
                         <tr>
                             <th>Devoir</th>
                             <th>Type</th>
-                            <th>Progression</th>
+                            <th>Progression / Score</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -271,10 +273,11 @@
             <h2>📖 Aperçu et Retouche du contenu généré</h2>
             <label>Titre de la leçon :</label>
             <input type="text" id="ia-titre">
-            <div id="zone-apercu-blocs-ia" style="margin-top:15px;"></div>
+
+            <div id="zone-apercu-blocs-ia" style="margin-top:20px; line-height:1.7;"></div>
 
             <div style="margin-top:20px;">
-                <button class="btn btn-success" onclick="sauvegarderDevoirIA()">💾 Enregistrer ce Chapitre dans ma Banque</button>
+                <button class="btn btn-success" onclick="sauvegarderDevoirIA()">💾 Enregistrer ce Chapitre complet dans ma Banque</button>
             </div>
         </div>
     </div>
@@ -293,7 +296,7 @@
     </div>
 </div>
 
-<!-- NOUVELLE MODALE D'ASSIGNATION AVEC CASES À COCHER -->
+<!-- MODALE D'ASSIGNATION AVEC CASES À COCHER -->
 <div class="modal" id="modal-assignation">
     <div class="modal-content" style="max-width: 550px;">
         <h2 style="margin-top:0; color:var(--primary);">➕ Assigner un devoir</h2>
@@ -304,9 +307,7 @@
             <button type="button" class="btn btn-secondary btn-sm" onclick="basculerToutesLesCoches()">☑️ Tout cocher / Décocher</button>
         </div>
 
-        <div class="liste-coches-eleves" id="conteneur-coches-eleves">
-            <!-- Rempli en JS -->
-        </div>
+        <div class="liste-coches-eleves" id="conteneur-coches-eleves"></div>
 
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
             <button type="button" class="btn btn-secondary" onclick="fermerModalAssignation()">Annuler</button>
@@ -381,11 +382,10 @@
     let devoirsMap = {};
     let assignationsMap = {};
     let eleveSelectionne = null;
+    let donneesIAPret = null;
 
-    // Gestion assignation par modale
     let devoirAAssigner = null;
 
-    // Pagination & recherche élèves
     let pageActuelleEleves = 1;
     const parPage = 10;
     let elevesFiltres = [];
@@ -398,7 +398,6 @@
         if (tabId === 'tab-eleves') fermerFicheEleve();
     }
 
-    // --- RECHERCHE ET PAGINATION ÉLÈVES ---
     function filtrerEleves() {
         const texte = (document.getElementById('input-recherche-eleve').value || '').trim().toLowerCase();
         elevesFiltres = listeEleves.filter(e => e.code.toLowerCase().includes(texte));
@@ -449,7 +448,6 @@
         });
     }
 
-    // --- FICHE INDIVIDUELLE ÉLÈVE ---
     window.ouvrirFicheEleve = function(eleveId) {
         eleveSelectionne = listeEleves.find(e => e.id === eleveId);
         if (!eleveSelectionne) return;
@@ -541,17 +539,19 @@
                 prog = `${nb} / ${tot} questions répondues`;
                 btnAction = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Voir les corrections</button>`;
             } else if (a.typeDevoir === "interactif") {
-                badgeType = `<span class="badge-interactif">⚡ Interactif</span>`;
-                prog = `Score : ${a.score || 0} / ${a.totalQuestions || 0}`;
+                badgeType = a.estAutoEntrainement 
+                    ? `<span class="badge-auto">✨ Auto-entraînement</span>` 
+                    : `<span class="badge-interactif">⚡ Interactif</span>`;
+                prog = `Score : <strong>${a.score || 0} / ${a.totalQuestions || 0}</strong>`;
             } else {
-                badgeType = `<span class="badge-chapitre">📖 Cours</span>`;
-                prog = `Suivi par blocs`;
+                badgeType = `<span class="badge-chapitre">📖 Cours + Quiz</span>`;
+                prog = `Accès modules`;
             }
 
             tr.innerHTML = `
                 <td><strong>${a.devoirTitre}</strong></td>
                 <td>${badgeType}</td>
-                <td><strong>${prog}</strong></td>
+                <td>${prog}</td>
                 <td style="display:flex; gap:8px;">
                     ${btnAction}
                     <button class="btn btn-sm btn-danger" onclick="supprimerAssignation('${a.id}')">🗑️ Retirer</button>
@@ -561,7 +561,6 @@
         });
     }
 
-    // --- 10 DERNIERS DEVOIRS GLOBAUX ---
     function afficherDerniersDevoirsGlobaux() {
         const tbody = document.getElementById('table-derniers-devoirs-corps');
         tbody.innerHTML = "";
@@ -585,11 +584,11 @@
                 statutInfo = (a.statut === "termine") ? `<span style="color:var(--success); font-weight:bold;">✅ Terminé</span>` : `<span style="color:var(--accent);">💬 En cours</span>`;
                 actionBtn = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Voir l'échange</button>`;
             } else if (a.typeDevoir === "interactif") {
-                badgeType = `<span class="badge-interactif">⚡ Interactif</span>`;
+                badgeType = a.estAutoEntrainement ? `<span class="badge-auto">✨ Entraînement</span>` : `<span class="badge-interactif">⚡ Interactif</span>`;
                 statutInfo = `Score : <strong>${a.score || 0} / ${a.totalQuestions || 0}</strong>`;
             } else {
-                badgeType = `<span class="badge-chapitre">📖 Cours</span>`;
-                statutInfo = `Blocs consultés`;
+                badgeType = `<span class="badge-chapitre">📖 Cours + Quiz</span>`;
+                statutInfo = `Actif`;
             }
 
             tr.innerHTML = `
@@ -718,6 +717,8 @@
                         devoirId: devoirAAssigner.id,
                         devoirTitre: devoirAAssigner.titre,
                         typeDevoir: "chapitre_cours",
+                        points_importants: devoirAAssigner.points_importants || null,
+                        quiz_theorique: devoirAAssigner.quiz_theorique || null,
                         bloc_cours: devoirAAssigner.bloc_cours || null,
                         blocs_exercices: devoirAAssigner.blocs_exercices || [],
                         suiviBlocs: suiviBlocs,
@@ -729,7 +730,6 @@
             await batch.commit();
             alert(`✅ "${devoirAAssigner.titre}" assigné avec succès à ${selectionnes.length} élève(s) !`);
             fermerModalAssignation();
-            // L'enseignant reste sur la Banque de devoirs sans être redirigé
 
         } catch(err) {
             alert("Erreur lors de l'assignation : " + err.message);
@@ -739,7 +739,6 @@
         }
     };
 
-    // --- ACTIONS BASIQUES PROF ---
     async function creerEleve() {
         const code = document.getElementById('nouvel-eleve-code').value.trim().toUpperCase();
         const cle = document.getElementById('nouvel-eleve-cle').value.trim();
@@ -840,7 +839,7 @@
 
         const btn = document.getElementById('btn-analyser-pdf');
         btn.disabled = true;
-        btn.textContent = "⏳ Analyse en cours avec Gemini 3.8 Flash...";
+        btn.textContent = "⏳ Analyse Gemini 3.8 Flash (Points clés, cours & quiz)...";
 
         const formData = new FormData();
         formData.append("pdf", fileInput.files[0]);
@@ -856,8 +855,25 @@
 
             donneesIAPret = data;
             document.getElementById('ia-titre').value = data.titre || "Chapitre de cours";
+            
+            // Aperçu des points clés et du quiz théorique
+            const pointsFr = (data.points_importants && data.points_importants.fr) ? data.points_importants.fr : [];
+            const nbQuestionsQuiz = (data.quiz_theorique && data.quiz_theorique.questions) ? data.quiz_theorique.questions.length : 0;
+            const nbExos = (data.blocs_exercices || []).length;
+
+            document.getElementById('zone-apercu-blocs-ia').innerHTML = `
+                <div style="background:#f8fafc; border:1px solid #cbd5e0; padding:15px; border-radius:8px;">
+                    <strong style="color:var(--primary); font-size:1.05em;">💡 Points clés générés (3 langues) :</strong>
+                    <ul style="margin:6px 0 12px 20px;">
+                        ${pointsFr.map(p => `<li>${p}</li>`).join('')}
+                    </ul>
+                    <div>🧠 <strong>Quiz théorique intermédiaire :</strong> ${nbQuestionsQuiz} questions de compréhension (FR / EN / KO).</div>
+                    <div>✍️ <strong>Blocs d'exercices d'application :</strong> ${nbExos} blocs.</div>
+                </div>
+            `;
+
             document.getElementById('card-resultat-ia').style.display = "block";
-            alert("✅ Analyse 3.8 Flash réussie !");
+            alert("✅ Analyse Gemini 3.8 Flash réussie ! Module de cours, points clés et quiz générés avec succès.");
         } catch(e) {
             alert("Erreur : " + e.message);
         } finally {
@@ -871,11 +887,13 @@
         await db.collection("devoirs").add({
             titre: document.getElementById('ia-titre').value.trim() || donneesIAPret.titre,
             typeDevoir: "chapitre_cours",
+            points_importants: donneesIAPret.points_importants || null,
+            quiz_theorique: donneesIAPret.quiz_theorique || null,
             bloc_cours: donneesIAPret.bloc_cours || null,
             blocs_exercices: donneesIAPret.blocs_exercices || [],
             dateCreation: firebase.firestore.FieldValue.serverTimestamp()
         });
-        alert("✅ Chapitre enregistré dans la banque !");
+        alert("✅ Chapitre complet enregistré dans la banque !");
         document.getElementById('card-resultat-ia').style.display = "none";
         basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
     }
@@ -940,8 +958,8 @@
                     badge = `<span class="badge-interactif">⚡ Interactif</span>`;
                     info = `${(d.phrases || []).length} phrases`;
                 } else {
-                    badge = `<span class="badge-chapitre">📖 Chapitre</span>`;
-                    info = `Fiches + ${(d.blocs_exercices || []).length} blocs`;
+                    badge = `<span class="badge-chapitre">📖 Cours + Quiz</span>`;
+                    info = `Points clés + Quiz + ${(d.blocs_exercices || []).length} blocs`;
                 }
 
                 tr.innerHTML = `
@@ -972,3 +990,4 @@
 </script>
 </body>
 </html>
+```

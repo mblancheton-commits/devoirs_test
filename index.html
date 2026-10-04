@@ -44,6 +44,7 @@
         .btn-warning { background: var(--warning); }
         .btn-purple { background: var(--purple); }
         .btn-secondary { background: #64748b; padding: 8px 16px; font-size: 0.9em; }
+        .btn-sm { padding: 6px 12px; font-size: 0.85em; border-radius: 8px; }
 
         #header-eleve { display: none; background: white; padding: 15px 22px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); margin-bottom: 25px; justify-content: space-between; align-items: center; }
 
@@ -55,44 +56,47 @@
         #vue-emma-ia { display: none; }
         .emma-header-card { background: #faf5ff; border: 2px solid #e9d5ff; border-radius: 12px; padding: 20px; margin-bottom: 25px; display: flex; align-items: center; gap: 18px; }
         .emma-avatar { width: 60px; height: 60px; background: #c084fc; color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2em; flex-shrink: 0; }
-
         .emma-chat-item { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); padding: 22px; margin-bottom: 25px; }
         .bulle-emma { background: #f3e8ff; border-left: 4px solid var(--purple); padding: 12px 16px; border-radius: 8px; font-size: 1.1em; color: #581c87; font-weight: 600; margin-bottom: 15px; }
 
         .input-eleve-emma { width: 100%; padding: 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1.05em; font-family: inherit; box-sizing: border-box; }
         .input-eleve-emma:focus { outline: none; border-color: var(--purple); }
 
-        /* LE COIN DU PROF */
-        .coin-du-prof-box {
-            background: #f8fafc;
-            border: 2px solid #cbd5e0;
-            border-left: 6px solid #3b82f6;
-            border-radius: 8px;
-            padding: 16px 20px;
-            margin-top: 18px;
-            line-height: 1.8;
-            font-size: 1em;
-        }
+        .coin-du-prof-box { background: #f8fafc; border: 2px solid #cbd5e0; border-left: 6px solid #3b82f6; border-radius: 8px; padding: 16px 20px; margin-top: 18px; line-height: 1.8; font-size: 1em; }
+        .traduction-texte { font-size: 0.9em; color: #64748b; margin-top: 4px; font-style: italic; }
 
-        .traduction-texte {
-            font-size: 0.9em;
-            color: #64748b;
-            margin-top: 4px;
-            font-style: italic;
-        }
-
-        /* VUE A : INTERACTIF */
+        /* VUE INTERACTIF */
         #vue-exo-interactif { display: none; }
-        .phrase-box-interactif { background: white; padding: 16px 20px; border-radius: 10px; margin-bottom: 14px; font-size: 1.08em; line-height: 2.2; }
+        .phrase-box-interactif { background: white; padding: 18px 22px; border-radius: 10px; margin-bottom: 14px; font-size: 1.1em; line-height: 2.2; border: 1px solid #e2e8f0; }
+        .select-interactif, .input-interactif { padding: 6px 12px; border: 2px solid #cbd5e0; border-radius: 6px; font-size: 1em; font-family: inherit; margin: 0 4px; }
+        .bonne-reponse { border-color: var(--success) !important; background-color: #ecfdf5; color: #065f46; font-weight: bold; }
+        .mauvaise-reponse { border-color: var(--danger) !important; background-color: #fef2f2; color: #991b1b; }
 
-        /* VUE B : CHAPITRES PAR BLOCS */
+        /* VUE CHAPITRE PAR BLOCS & COURS TRILINGUE */
         #vue-chapitre-blocs { display: none; }
-        .bloc-nav-card { background: white; padding: 18px 22px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e2e8f0; }
+        .bloc-nav-card { background: white; padding: 18px 22px; border-radius: 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 2px solid #e2e8f0; transition: border-color 0.2s; }
+        .bloc-nav-card:hover { border-color: var(--accent); }
+
+        .points-cles-box { background: #eff6ff; border: 2px solid #bfdbfe; border-left: 6px solid var(--accent); border-radius: 12px; padding: 20px; margin-bottom: 22px; }
+        .points-cles-box h3 { margin-top: 0; color: #1e40af; display: flex; align-items: center; gap: 8px; font-size: 1.2em; }
+        .points-cles-box ul { margin: 8px 0 0 0; padding-left: 22px; line-height: 1.8; font-size: 1.05em; }
 
         #vue-contenu-bloc-chapitre { display: none; }
         .cours-slide-container { background: white; padding: 30px; border-radius: 14px; line-height: 1.9; font-size: 1.1em; }
-        .phrase-item { background: white; border: 1px solid #e2e8f0; padding: 16px; border-radius: 10px; margin-bottom: 15px; font-size: 1.08em; line-height: 2.2; }
-        .input-calme { padding: 8px 12px; border: 2px solid #cbd5e0; border-radius: 8px; font-size: 1em; font-family: inherit; }
+
+        /* QUIZ THÉORIQUE DU COURS */
+        .quiz-item-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; margin-bottom: 18px; }
+        .quiz-question-txt { font-weight: bold; font-size: 1.1em; color: var(--primary); margin-bottom: 12px; }
+        .quiz-option-btn { display: block; width: 100%; text-align: left; background: #f8fafc; border: 2px solid #cbd5e0; padding: 10px 15px; border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 1em; font-family: inherit; transition: all 0.15s; }
+        .quiz-option-btn:hover { border-color: var(--accent); background: #eff6ff; }
+        .quiz-option-btn.correct { background: #ecfdf5; border-color: var(--success); color: #065f46; font-weight: bold; }
+        .quiz-option-btn.incorrect { background: #fef2f2; border-color: var(--danger); color: #991b1b; }
+        .quiz-explication-box { margin-top: 10px; padding: 10px 14px; border-radius: 8px; background: #f1f5f9; font-size: 0.95em; line-height: 1.6; }
+
+        /* MODALE ENTRAINEMENT */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); justify-content: center; align-items: center; z-index: 10000; }
+        .modal-content { background: white; padding: 25px 30px; border-radius: 14px; width: 90%; max-width: 480px; box-shadow: 0 10px 25px rgba(0,0,0,0.15); }
+        .radio-option { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; margin-bottom: 8px; }
     </style>
 </head>
 <body>
@@ -173,7 +177,7 @@
         </div>
     </div>
 
-    <!-- VUE A : INTERACTIF RAPIDE -->
+    <!-- 4. VUE EXERCICE INTERACTIF -->
     <div id="vue-exo-interactif">
         <div style="background:white; padding:15px 20px; border-radius:10px; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center;">
             <div>
@@ -181,31 +185,96 @@
                 <h2 id="interactif-titre" style="margin:8px 0 0 0; color:var(--primary); font-size:1.3em;">-</h2>
             </div>
             <div>
-                <strong>Score : <span id="interactif-score">0</span> / <span id="interactif-total">0</span></strong>
+                <strong>Score : <span id="interactif-score" style="color:var(--success); font-size:1.2em;">0</span> / <span id="interactif-total">0</span></strong>
             </div>
         </div>
         <div id="interactif-phrases-conteneur"></div>
+        <div style="text-align:center; margin-top:25px;">
+            <button type="button" class="btn btn-success" onclick="marquerInteractifTermine()">✅ Valider l'exercice</button>
+        </div>
     </div>
 
-    <!-- VUE B : CHAPITRE PAR BLOCS -->
+    <!-- 5. VUE CHAPITRE PAR BLOCS (COURS PDF + POINTS CLÉS + QUIZ THÉORIQUE) -->
     <div id="vue-chapitre-blocs">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <button type="button" class="btn btn-secondary" onclick="retourTableauPrincipal()">← Retour</button>
-            <h2 id="chapitre-titre" style="margin:0;">-</h2>
+            <h2 id="chapitre-titre" style="margin:0; color:var(--primary);">-</h2>
             <div></div>
         </div>
+
+        <!-- POINTS CLÉS DU COURS ADAPTÉS À LA LANGUE CHOISIE -->
+        <div class="points-cles-box" id="zone-points-cles">
+            <h3 id="txt-titre-points-cles">💡 Points Importants de la Leçon</h3>
+            <ul id="liste-points-cles"></ul>
+        </div>
+
+        <!-- LISTE DES MODULES D'APPRENTISSAGE -->
         <div id="chapitre-liste-blocs"></div>
     </div>
 
-    <!-- VUE B-2 : CONTENU BLOC -->
+    <!-- 5.B : CONTENU DU BLOC ACTIF (COURS OU QUIZ OU EXERCICES) -->
     <div id="vue-contenu-bloc-chapitre">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-            <button type="button" class="btn btn-secondary" onclick="retourMenuBlocs()">← Retour aux blocs</button>
+            <button type="button" class="btn btn-secondary" onclick="retourMenuBlocs()">← Retour au menu du chapitre</button>
             <h2 id="chapitre-bloc-actif-titre" style="margin:0;">-</h2>
             <div></div>
         </div>
-        <div id="chapitre-zone-cours" style="display:none;"><div class="cours-slide-container"><div id="cours-slide-contenu" style="white-space:pre-wrap;"></div></div></div>
-        <div id="chapitre-zone-exercice" style="display:none;"><div id="chapitre-questions-conteneur"></div></div>
+
+        <!-- ZONE 1 : COURS THÉORIQUE -->
+        <div id="chapitre-zone-cours" style="display:none;">
+            <div class="cours-slide-container">
+                <div id="cours-slide-contenu" style="white-space:pre-wrap;"></div>
+            </div>
+        </div>
+
+        <!-- ZONE 2 : QUIZ THÉORIQUE INTERMÉDIAIRE DU COURS -->
+        <div id="chapitre-zone-quiz-theorique" style="display:none;">
+            <div id="quiz-theorique-conteneur"></div>
+        </div>
+
+        <!-- ZONE 3 : EXERCICES PRATIQUES -->
+        <div id="chapitre-zone-exercice" style="display:none;">
+            <div id="chapitre-questions-conteneur"></div>
+        </div>
+    </div>
+
+    <!-- MODAL GÉNÉRATION ENTRAÎNEMENT PAR L'ÉLÈVE -->
+    <div class="modal" id="modal-generer-entrainement">
+        <div class="modal-content">
+            <h2 id="txt-titre-modal-entrainement" style="margin-top:0; color:var(--primary);">✨ Créer un entraînement personnalisé</h2>
+            <p id="txt-soustitre-modal-entrainement" style="color:#64748b; font-size:0.95em;">L'IA va générer une série d'exercices inédits sur ce même thème :</p>
+            <p><strong id="nom-devoir-source" style="color:var(--accent);">-</strong></p>
+
+            <label style="font-weight:bold; margin-top:15px; display:block;" id="lbl-format-entrainement">Format de l'exercice :</label>
+            <div style="margin-top:8px;">
+                <label class="radio-option">
+                    <input type="radio" name="format-entrainement" value="select" checked>
+                    <span id="txt-format-select">📋 Menu déroulant (QCM à choix)</span>
+                </label>
+                <label class="radio-option">
+                    <input type="radio" name="format-entrainement" value="text">
+                    <span id="txt-format-text">✍️ Saisie de texte libre (Orthographe)</span>
+                </label>
+            </div>
+
+            <label style="font-weight:bold; margin-top:15px; display:block;" id="lbl-nb-phrases">Nombre de phrases :</label>
+            <div style="display:flex; gap:10px; margin-top:8px;">
+                <label class="radio-option" style="flex:1; justify-content:center;">
+                    <input type="radio" name="nb-phrases-entrainement" value="5" checked> 5
+                </label>
+                <label class="radio-option" style="flex:1; justify-content:center;">
+                    <input type="radio" name="nb-phrases-entrainement" value="10"> 10
+                </label>
+                <label class="radio-option" style="flex:1; justify-content:center;">
+                    <input type="radio" name="nb-phrases-entrainement" value="15"> 15
+                </label>
+            </div>
+
+            <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:25px;">
+                <button type="button" class="btn btn-secondary" onclick="fermerModalEntrainement()" id="btn-annuler-entrainement">Annuler</button>
+                <button type="button" class="btn btn-purple" id="btn-lancer-entrainement" onclick="lancerCreationEntrainement()">🚀 Créer mes exercices</button>
+            </div>
+        </div>
     </div>
 
 </div>
@@ -232,6 +301,7 @@
     let codeEleveActuel = localStorage.getItem("codeEleve") || "";
     let assignationsMap = {};
     let assignationActive = null;
+    let devoirSourcePourEntrainement = null;
 
     const dictionnaires = {
         fr: {
@@ -246,7 +316,8 @@
             aucunDevoir: "🎉 Aucun devoir en attente !",
             btnParlerEmma: "Parler avec Emma ▶",
             btnCommencer: "Commencer ▶",
-            btnOuvrirCours: "Ouvrir le cours ▶",
+            btnOuvrirCours: "Ouvrir la leçon ▶",
+            btnEntrainement: "✨ Créer un entraînement",
             retourDevoirs: "Retour aux devoirs",
             descriptionEmma: "Ton amie française bienveillante (A2-B1). Réponds à ses questions et elle corrigera tes phrases en détail !",
             placeholderEmma: "Tape ta réponse en français...",
@@ -257,7 +328,13 @@
             ceQuiEstBien: "Ce qui est bien",
             lesFautes: "Les Fautes",
             phraseCorrigee: "Phrase Corrigée",
-            ameliorations: "Améliorations"
+            ameliorations: "Améliorations",
+            titrePointsCles: "💡 Points Importants du Cours",
+            moduleCours: "📖 Fiches de cours théorique",
+            moduleQuizTheorique: "🧠 Quiz théorique de compréhension",
+            moduleExo: "✍️ Exercices d'application",
+            quizBravo: "Bravo ! Bonne réponse !",
+            quizErreur: "Pas tout à fait. Regarde l'explication :"
         },
         ko: {
             titreLogin: "👋 프랑스어 학습 공간",
@@ -272,6 +349,7 @@
             btnParlerEmma: "엠마와 대화하기 ▶",
             btnCommencer: "시작하기 ▶",
             btnOuvrirCours: "수업 열기 ▶",
+            btnEntrainement: "✨ 맞춤 연습문제 생성",
             retourDevoirs: "과제 목록으로",
             descriptionEmma: "친절한 프랑스인 친구 엠마(A2-B1)입니다. 질문에 답하면 문장을 자세히 교정해 줍니다!",
             placeholderEmma: "프랑스어로 답변을 작성하세요...",
@@ -282,7 +360,13 @@
             ceQuiEstBien: "잘한 점",
             lesFautes: "틀린 점",
             phraseCorrigee: "수정된 문장",
-            ameliorations: "개선 팁"
+            ameliorations: "개선 팁",
+            titrePointsCles: "💡 수업 핵심 포인트",
+            moduleCours: "📖 이론 강의 카드",
+            moduleQuizTheorique: "🧠 개념 확인 퀴즈",
+            moduleExo: "✍️ 실전 응용 문제",
+            quizBravo: "정답입니다! 잘하셨어요!",
+            quizErreur: "오답입니다. 해설을 확인하세요 :"
         },
         en: {
             titreLogin: "👋 French Learning Space",
@@ -297,6 +381,7 @@
             btnParlerEmma: "Talk with Emma ▶",
             btnCommencer: "Start ▶",
             btnOuvrirCours: "Open lesson ▶",
+            btnEntrainement: "✨ Create practice drill",
             retourDevoirs: "Back to homework",
             descriptionEmma: "Your friendly French pal (A2-B1). Answer her questions and she will review your sentences in detail!",
             placeholderEmma: "Type your answer in French...",
@@ -307,7 +392,13 @@
             ceQuiEstBien: "What's good",
             lesFautes: "Mistakes",
             phraseCorrigee: "Corrected sentence",
-            ameliorations: "Improvements"
+            ameliorations: "Improvements",
+            titrePointsCles: "💡 Key Points of the Lesson",
+            moduleCours: "📖 Theoretical Course Notes",
+            moduleQuizTheorique: "🧠 Theory Check Quiz",
+            moduleExo: "✍️ Practice Exercises",
+            quizBravo: "Well done! Correct answer!",
+            quizErreur: "Not quite. Check the explanation:"
         }
     };
 
@@ -329,6 +420,7 @@
         document.getElementById('txt-retour-devoirs').textContent = t('retourDevoirs');
         document.getElementById('emma-description').textContent = t('descriptionEmma');
         document.getElementById('txt-terminer-emma').textContent = t('btnTerminerEmma');
+        document.getElementById('txt-titre-points-cles').textContent = t('titrePointsCles');
     }
 
     window.choisirLangue = function(lang) {
@@ -347,6 +439,7 @@
         document.getElementById('vue-emma-ia').style.display = 'none';
         document.getElementById('vue-exo-interactif').style.display = 'none';
         document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'none';
     };
 
     window.verifierSession = function() {
@@ -411,17 +504,18 @@
 
             conteneur.innerHTML = mesDevoirs.map(d => {
                 let badge = "";
-                let bouton = "";
+                let boutonPrincipal = "";
 
                 if (d.typeDevoir === "emma") {
                     badge = `<span class="badge-type" style="background:#fae8ff; color:#86198f;">🤖 Emma IA</span>`;
-                    bouton = `<button class="btn btn-purple" onclick="ouvrirDevoirEmma('${d.id}')">${t('btnParlerEmma')}</button>`;
-                } else if (d.typeDevoir === "interactif") {
-                    badge = `<span class="badge-type" style="background:#fef3c7; color:#92400e;">⚡ Interactif</span>`;
-                    bouton = `<button class="btn" onclick="ouvrirDevoirInteractif('${d.id}')">${t('btnCommencer')}</button>`;
+                    boutonPrincipal = `<button class="btn btn-purple" onclick="ouvrirDevoirEmma('${d.id}')">${t('btnParlerEmma')}</button>`;
+                } else if (d.typeDevoir === "chapitre_cours") {
+                    badge = `<span class="badge-type" style="background:#e0e7ff; color:#3730a3;">📖 Cours & Quiz</span>`;
+                    boutonPrincipal = `<button class="btn btn-purple" onclick="ouvrirMenuChapitreBlocs('${d.id}')">${t('btnOuvrirCours')}</button>`;
                 } else {
-                    badge = `<span class="badge-type" style="background:#e0e7ff; color:#3730a3;">📖 Cours</span>`;
-                    bouton = `<button class="btn btn-purple" onclick="ouvrirMenuChapitreBlocs('${d.id}')">${t('btnOuvrirCours')}</button>`;
+                    const estAuto = d.estAutoEntrainement ? "✨ Entraînement" : "⚡ Devoir";
+                    badge = `<span class="badge-type" style="background:#fef3c7; color:#92400e;">${estAuto}</span>`;
+                    boutonPrincipal = `<button class="btn" onclick="ouvrirDevoirInteractif('${d.id}')">${t('btnCommencer')}</button>`;
                 }
 
                 return `
@@ -430,12 +524,278 @@
                             <h3 style="margin:0 0 6px 0; color:var(--primary);">${d.devoirTitre}</h3>
                             <div>${badge}</div>
                         </div>
-                        <div>${bouton}</div>
+                        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                            <button class="btn btn-secondary btn-sm" onclick="ouvrirModalEntrainement('${d.id}')">${t('btnEntrainement')}</button>
+                            ${boutonPrincipal}
+                        </div>
                     </div>
                 `;
             }).join('');
         });
     }
+
+    // ==========================================
+    // MODULE CHAPITRE COMPLET : POINTS CLÉS, COURS, QUIZ & EXERCICES
+    // ==========================================
+    window.ouvrirMenuChapitreBlocs = function(id) {
+        const d = assignationsMap[id];
+        if (!d) return;
+
+        assignationActive = d;
+        document.getElementById('ecran-tableau-de-bord').style.display = 'none';
+        document.getElementById('vue-chapitre-blocs').style.display = 'block';
+        document.getElementById('chapitre-titre').textContent = d.devoirTitre;
+
+        // 1. AFFICHAGE DES POINTS IMPORTANTS TRILINGUES
+        const points = d.points_importants || {};
+        const lang = (langueActuelle || 'fr').toLowerCase();
+        const listeCles = points[lang] || points['fr'] || [];
+        const zonePoints = document.getElementById('zone-points-cles');
+        const ul = document.getElementById('liste-points-cles');
+
+        if (listeCles.length > 0) {
+            ul.innerHTML = listeCles.map(pt => `<li>${pt}</li>`).join('');
+            zonePoints.style.display = "block";
+        } else {
+            zonePoints.style.display = "none";
+        }
+
+        // 2. LISTE DES MODULES (COURS -> QUIZ THÉORIQUE -> EXERCICES)
+        const conteneur = document.getElementById('chapitre-liste-blocs');
+        conteneur.innerHTML = "";
+
+        // Module 1 : Cours
+        const cardCours = document.createElement('div');
+        cardCours.className = "bloc-nav-card";
+        cardCours.innerHTML = `
+            <div>
+                <strong style="font-size:1.1em; color:var(--primary);">${t('moduleCours')}</strong>
+                <div style="color:#64748b; font-size:0.9em;">Règles, explications et exemples détaillés</div>
+            </div>
+            <button class="btn btn-sm btn-purple" onclick="afficherBlocCours()">Lire le cours ▶</button>
+        `;
+        conteneur.appendChild(cardCours);
+
+        // Module 2 : Quiz théorique intermédiaire
+        if (d.quiz_theorique && (d.quiz_theorique.questions || []).length > 0) {
+            const cardQuiz = document.createElement('div');
+            cardQuiz.className = "bloc-nav-card";
+            cardQuiz.innerHTML = `
+                <div>
+                    <strong style="font-size:1.1em; color:var(--primary);">${t('moduleQuizTheorique')}</strong>
+                    <div style="color:#64748b; font-size:0.9em;">Vérifiez et renforcez votre compréhension avant la pratique</div>
+                </div>
+                <button class="btn btn-sm btn-success" onclick="afficherBlocQuizTheorique()">Faire le quiz ▶</button>
+            `;
+            conteneur.appendChild(cardQuiz);
+        }
+
+        // Module 3 : Blocs d'exercices pratiques
+        (d.blocs_exercices || []).forEach((b, idx) => {
+            const cardExo = document.createElement('div');
+            cardExo.className = "bloc-nav-card";
+            cardExo.innerHTML = `
+                <div>
+                    <strong style="font-size:1.1em; color:var(--primary);">${b.titre || `Exercice ${idx + 1}`}</strong>
+                    <div style="color:#64748b; font-size:0.9em;">${(b.questions || []).length} phrases d'application</div>
+                </div>
+                <button class="btn btn-sm" onclick="afficherBlocExercice(${idx})">Commencer ▶</button>
+            `;
+            conteneur.appendChild(cardExo);
+        });
+    };
+
+    window.retourMenuBlocs = function() {
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'none';
+        document.getElementById('vue-chapitre-blocs').style.display = 'block';
+    };
+
+    // AFFICHER LE COURS THÉORIQUE
+    window.afficherBlocCours = function() {
+        document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'block';
+        document.getElementById('chapitre-zone-cours').style.display = 'block';
+        document.getElementById('chapitre-zone-quiz-theorique').style.display = 'none';
+        document.getElementById('chapitre-zone-exercice').style.display = 'none';
+
+        document.getElementById('chapitre-bloc-actif-titre').textContent = t('moduleCours');
+
+        const lang = (langueActuelle || 'fr').toLowerCase();
+        const slides = (assignationActive.bloc_cours && assignationActive.bloc_cours.slides) ? assignationActive.bloc_cours.slides : [];
+
+        const html = slides.map(s => {
+            let explication = s.contenu_fr || "";
+            if (lang === 'ko' && s.contenu_ko) explication = s.contenu_ko;
+            else if (lang === 'en' && s.contenu_en) explication = s.contenu_en;
+
+            return `
+                <div style="margin-bottom:25px; border-bottom:1px solid #e2e8f0; padding-bottom:15px;">
+                    <h3 style="color:var(--accent); margin-top:0;">${s.titre || `Fiche ${s.numero}`}</h3>
+                    <p style="line-height:1.8;">${explication}</p>
+                </div>
+            `;
+        }).join('');
+
+        document.getElementById('cours-slide-contenu').innerHTML = html || "<p>Aucune fiche disponible.</p>";
+    };
+
+    // AFFICHER LE QUIZ THÉORIQUE
+    window.afficherBlocQuizTheorique = function() {
+        document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'block';
+        document.getElementById('chapitre-zone-cours').style.display = 'none';
+        document.getElementById('chapitre-zone-quiz-theorique').style.display = 'block';
+        document.getElementById('chapitre-zone-exercice').style.display = 'none';
+
+        document.getElementById('chapitre-bloc-actif-titre').textContent = t('moduleQuizTheorique');
+
+        const quiz = assignationActive.quiz_theorique || {};
+        const questions = quiz.questions || [];
+        const lang = (langueActuelle || 'fr').toLowerCase();
+        const conteneur = document.getElementById('quiz-theorique-conteneur');
+        conteneur.innerHTML = "";
+
+        questions.forEach((q, qIdx) => {
+            const div = document.createElement('div');
+            div.className = "quiz-item-card";
+
+            const intitule = (q.question && q.question[lang]) ? q.question[lang] : (q.question ? q.question.fr : "Question");
+            const opts = (q.options && q.options[lang]) ? q.options[lang] : (q.options ? q.options.fr : []);
+
+            let optionsHtml = opts.map((opt, optIdx) => `
+                <button type="button" class="quiz-option-btn" id="qbtn-${qIdx}-${optIdx}" onclick="validerOptionQuiz(${qIdx}, ${optIdx})">
+                    ${String.fromCharCode(65 + optIdx)}. ${opt}
+                </button>
+            `).join('');
+
+            div.innerHTML = `
+                <div class="quiz-question-txt">${qIdx + 1}. ${intitule}</div>
+                <div>${optionsHtml}</div>
+                <div id="quiz-explic-${qIdx}" class="quiz-explication-box" style="display:none;"></div>
+            `;
+            conteneur.appendChild(div);
+        });
+    };
+
+    window.validerOptionQuiz = function(qIdx, optIdx) {
+        const quiz = assignationActive.quiz_theorique || {};
+        const q = (quiz.questions || [])[qIdx];
+        if (!q) return;
+
+        const lang = (langueActuelle || 'fr').toLowerCase();
+        const estCorrect = (optIdx === q.reponse_correcte_index);
+
+        // Bloquer tous les boutons de cette question
+        const opts = (q.options && q.options[lang]) ? q.options[lang] : (q.options ? q.options.fr : []);
+        opts.forEach((_, idx) => {
+            const btn = document.getElementById(`qbtn-${qIdx}-${idx}`);
+            if (btn) btn.disabled = true;
+        });
+
+        const btnChoisi = document.getElementById(`qbtn-${qIdx}-${optIdx}`);
+        const btnVrai = document.getElementById(`qbtn-${qIdx}-${q.reponse_correcte_index}`);
+
+        if (btnVrai) btnVrai.className = "quiz-option-btn correct";
+        if (!estCorrect && btnChoisi) btnChoisi.className = "quiz-option-btn incorrect";
+
+        const zoneExp = document.getElementById(`quiz-explic-${qIdx}`);
+        const texteExp = (q.explication && q.explication[lang]) ? q.explication[lang] : (q.explication ? q.explication.fr : "");
+
+        zoneExp.innerHTML = `
+            <strong>${estCorrect ? '✅ ' + t('quizBravo') : '❌ ' + t('quizErreur')}</strong><br>
+            ${texteExp}
+        `;
+        zoneExp.style.display = "block";
+    };
+
+    // AFFICHER UN BLOC D'EXERCICES PRATIQUES
+    window.afficherBlocExercice = function(blocIdx) {
+        document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'block';
+        document.getElementById('chapitre-zone-cours').style.display = 'none';
+        document.getElementById('chapitre-zone-quiz-theorique').style.display = 'none';
+        document.getElementById('chapitre-zone-exercice').style.display = 'block';
+
+        const bloc = assignationActive.blocs_exercices[blocIdx];
+        document.getElementById('chapitre-bloc-actif-titre').textContent = bloc.titre || `Exercice ${blocIdx + 1}`;
+
+        const conteneur = document.getElementById('chapitre-questions-conteneur');
+        conteneur.innerHTML = (bloc.questions || []).map((qItem, idx) => `
+            <div class="phrase-box-interactif">
+                <strong>${idx + 1}. </strong> ${qItem.q}
+            </div>
+        `).join('');
+    };
+
+    // ==========================================
+    // CRÉATION D'ENTRAÎNEMENT SUPPLÉMENTAIRE
+    // ==========================================
+    window.ouvrirModalEntrainement = function(assignationId) {
+        devoirSourcePourEntrainement = assignationsMap[assignationId];
+        if (!devoirSourcePourEntrainement) return;
+
+        document.getElementById('nom-devoir-source').textContent = devoirSourcePourEntrainement.devoirTitre;
+        document.getElementById('modal-generer-entrainement').style.display = "flex";
+    };
+
+    window.fermerModalEntrainement = function() {
+        devoirSourcePourEntrainement = null;
+        document.getElementById('modal-generer-entrainement').style.display = "none";
+    };
+
+    window.lancerCreationEntrainement = async function() {
+        if (!devoirSourcePourEntrainement) return;
+
+        const format = document.querySelector('input[name="format-entrainement"]:checked').value;
+        const nbPhrases = document.querySelector('input[name="nb-phrases-entrainement"]:checked').value;
+
+        const btn = document.getElementById('btn-lancer-entrainement');
+        btn.disabled = true;
+        btn.textContent = "⏳ Génération des exercices...";
+
+        try {
+            const contexte = devoirSourcePourEntrainement.questions || (devoirSourcePourEntrainement.phrases || []).map(p => p.q);
+
+            const res = await fetch("https://das-plateforme.onrender.com/api/generer-entrainement", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    titreSource: devoirSourcePourEntrainement.devoirTitre,
+                    contexteExemples: contexte,
+                    format: format,
+                    nbPhrases: nbPhrases
+                })
+            });
+
+            const data = await res.json();
+            if (data.error) throw new Error(data.error);
+
+            await db.collection("assignations").add({
+                eleveCode: codeEleveActuel,
+                devoirTitre: data.titre || `Entraînement : ${devoirSourcePourEntrainement.devoirTitre}`,
+                typeDevoir: "interactif",
+                estAutoEntrainement: true,
+                sourceDevoirTitre: devoirSourcePourEntrainement.devoirTitre,
+                phrases: data.phrases || [],
+                statut: "non_commence",
+                score: 0,
+                totalQuestions: (data.phrases || []).length,
+                totalErreurs: 0,
+                fautesDetails: [],
+                reponsesValidees: {},
+                dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
+            });
+
+            alert("✅ Vos exercices supplémentaires sont prêts ! Ils ont été ajoutés à votre liste de devoirs.");
+            fermerModalEntrainement();
+
+        } catch(err) {
+            alert("Erreur lors de la génération : " + err.message);
+        } finally {
+            btn.disabled = false;
+            btn.textContent = "🚀 Créer mes exercices";
+        }
+    };
 
     // ==========================================
     // EXERCICE EMMA IA
@@ -522,14 +882,10 @@
         const zone = document.getElementById(`coin-prof-emma-${idx}`);
         
         let tradReponse = "";
-        if (data.traduction_reponse) {
-            tradReponse = `<div class="traduction-texte">🌐 ${data.traduction_reponse}</div>`;
-        }
+        if (data.traduction_reponse) tradReponse = `<div class="traduction-texte">🌐 ${data.traduction_reponse}</div>`;
 
         let tradPhraseCorrigee = "";
-        if (data.traduction_phrase_corrigee) {
-            tradPhraseCorrigee = `<div class="traduction-texte">🌐 ${data.traduction_phrase_corrigee}</div>`;
-        }
+        if (data.traduction_phrase_corrigee) tradPhraseCorrigee = `<div class="traduction-texte">🌐 ${data.traduction_phrase_corrigee}</div>`;
 
         zone.innerHTML = `
             <div style="margin-top:15px; background:#faf5ff; border-radius:8px; padding:12px; font-weight:600; color:#581c87;">
@@ -559,10 +915,119 @@
         retourTableauPrincipal();
     };
 
+    // ==========================================
+    // EXERCICE INTERACTIF
+    // ==========================================
+    window.ouvrirDevoirInteractif = function(id) {
+        const d = assignationsMap[id];
+        if (!d) return;
+
+        assignationActive = d;
+        document.getElementById('ecran-tableau-de-bord').style.display = 'none';
+        document.getElementById('vue-exo-interactif').style.display = 'block';
+
+        document.getElementById('interactif-titre').textContent = d.devoirTitre;
+        document.getElementById('interactif-score').textContent = d.score || 0;
+        document.getElementById('interactif-total').textContent = (d.phrases || []).length;
+
+        const conteneur = document.getElementById('interactif-phrases-conteneur');
+        conteneur.innerHTML = "";
+
+        const reponsesVal = d.reponsesValidees || {};
+
+        (d.phrases || []).forEach((item, idx) => {
+            const div = document.createElement('div');
+            div.className = "phrase-box-interactif";
+
+            const estDejaValide = reponsesVal[idx] !== undefined;
+            const reponseDonnee = estDejaValide ? reponsesVal[idx].saisie : "";
+            const estCorrect = estDejaValide ? reponsesVal[idx].correct : false;
+
+            let zoneReponseHtml = "";
+
+            if (item.type === "select") {
+                const optionsHtml = (item.options || []).map(opt => {
+                    const sel = (reponseDonnee === opt) ? "selected" : "";
+                    return `<option value="${opt}" ${sel}>${opt}</option>`;
+                }).join('');
+
+                zoneReponseHtml = `
+                    <select id="champ-rep-${idx}" class="select-interactif ${estDejaValide ? (estCorrect ? 'bonne-reponse' : 'mauvaise-reponse') : ''}" ${estCorrect ? 'disabled' : ''} onchange="verifierReponseInteractif(${idx})">
+                        <option value="">-- Choisir --</option>
+                        ${optionsHtml}
+                    </select>
+                `;
+            } else {
+                zoneReponseHtml = `
+                    <input type="text" id="champ-rep-${idx}" class="input-interactif ${estDejaValide ? (estCorrect ? 'bonne-reponse' : 'mauvaise-reponse') : ''}" value="${reponseDonnee}" ${estCorrect ? 'disabled' : ''} onkeydown="if(event.key==='Enter') verifierReponseInteractif(${idx})">
+                    ${!estCorrect ? `<button type="button" class="btn btn-sm btn-purple" onclick="verifierReponseInteractif(${idx})">Vérifier</button>` : ''}
+                `;
+            }
+
+            const phraseDecoupee = item.q.split('____');
+            div.innerHTML = `
+                <span>${idx + 1}. </span>
+                ${phraseDecoupee[0] || ""}
+                ${zoneReponseHtml}
+                ${phraseDecoupee[1] || ""}
+                <span id="feedback-interactif-${idx}" style="margin-left:10px; font-weight:bold;">
+                    ${estDejaValide ? (estCorrect ? '✅' : '❌') : ''}
+                </span>
+            `;
+            conteneur.appendChild(div);
+        });
+    };
+
+    window.verifierReponseInteractif = async function(idx) {
+        const item = assignationActive.phrases[idx];
+        const champ = document.getElementById(`champ-rep-${idx}`);
+        const feedback = document.getElementById(`feedback-interactif-${idx}`);
+        const saisie = (champ.value || '').trim();
+
+        if (!saisie) return;
+
+        const bonnesReponses = (item.a || []).map(x => x.toLowerCase().trim());
+        const estCorrect = bonnesReponses.includes(saisie.toLowerCase());
+
+        if (!assignationActive.reponsesValidees) assignationActive.reponsesValidees = {};
+        assignationActive.reponsesValidees[idx] = { saisie: saisie, correct: estCorrect };
+
+        if (estCorrect) {
+            champ.className = (item.type === "select" ? "select-interactif" : "input-interactif") + " bonne-reponse";
+            champ.disabled = true;
+            feedback.textContent = "✅";
+        } else {
+            champ.className = (item.type === "select" ? "select-interactif" : "input-interactif") + " mauvaise-reponse";
+            feedback.textContent = "❌";
+        }
+
+        let nouveauScore = 0;
+        Object.values(assignationActive.reponsesValidees).forEach(v => {
+            if (v.correct) nouveauScore++;
+        });
+
+        assignationActive.score = nouveauScore;
+        document.getElementById('interactif-score').textContent = nouveauScore;
+
+        await db.collection("assignations").doc(assignationActive.id).update({
+            reponsesValidees: assignationActive.reponsesValidees,
+            score: nouveauScore,
+            statut: "en_cours"
+        });
+    };
+
+    window.marquerInteractifTermine = async function() {
+        if (!assignationActive) return;
+        await db.collection("assignations").doc(assignationActive.id).update({ statut: "termine" });
+        alert(`🎉 Exercice validé ! Votre score est de ${assignationActive.score || 0} / ${(assignationActive.phrases || []).length}.`);
+        retourTableauPrincipal();
+    };
+
     window.retourTableauPrincipal = function() {
         document.getElementById('vue-emma-ia').style.display = 'none';
         document.getElementById('vue-exo-interactif').style.display = 'none';
         document.getElementById('vue-chapitre-blocs').style.display = 'none';
+        document.getElementById('vue-contenu-bloc-chapitre').style.display = 'none';
         document.getElementById('ecran-tableau-de-bord').style.display = 'block';
     };
 

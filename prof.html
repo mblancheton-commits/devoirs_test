@@ -54,7 +54,7 @@
         .badge-auto { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
 
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 850px; max-height: 85vh; overflow-y: auto; }
+        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 900px; max-height: 88vh; overflow-y: auto; }
 
         .pagination-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
         .recherche-box { position: relative; margin-bottom: 12px; }
@@ -67,6 +67,15 @@
         .item-coche-eleve:hover { background: #f8fafc; }
         .item-coche-eleve input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
         .item-coche-eleve label { margin: 0; cursor: pointer; flex: 1; font-weight: normal; }
+
+        /* SOUS-ONGLETS DE LANGUE DANS L'APERÇU */
+        .subtabs-lang { display: flex; gap: 6px; margin: 15px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        .subtab-lang-btn { background: #f1f5f9; border: 1px solid #cbd5e0; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95em; }
+        .subtab-lang-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .apercu-section { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 18px; margin-bottom: 20px; }
+        .apercu-section h3 { margin-top: 0; color: var(--primary); font-size: 1.15em; border-bottom: 1px dashed #cbd5e0; padding-bottom: 8px; }
+        .quiz-item-apercu { background: white; border: 1px solid #cbd5e0; border-radius: 8px; padding: 14px; margin-bottom: 12px; }
     </style>
 </head>
 <body>
@@ -268,15 +277,26 @@
             </div>
         </div>
 
+        <!-- ZONE D'APERÇU TRILINGUE ET RETOUCHE DU COURS PDF -->
         <div class="card" id="card-resultat-ia" style="display:none;">
-            <h2>📖 Aperçu et Retouche du contenu généré</h2>
+            <h2>📖 Aperçu Trilingue & Validation du Cours Généré</h2>
+            
             <label>Titre de la leçon :</label>
-            <input type="text" id="ia-titre">
+            <input type="text" id="ia-titre" style="margin-bottom:15px;">
 
-            <div id="zone-apercu-blocs-ia" style="margin-top:20px; line-height:1.7;"></div>
+            <!-- SOUS-ONGLETS DE LANGUE POUR L'APERÇU -->
+            <div class="subtabs-lang">
+                <button type="button" class="subtab-lang-btn active" onclick="changerLangueApercu('fr', this)">🇫🇷 Aperçu Français</button>
+                <button type="button" class="subtab-lang-btn" onclick="changerLangueApercu('en', this)">🇬🇧 English Preview</button>
+                <button type="button" class="subtab-lang-btn" onclick="changerLangueApercu('ko', this)">🇰🇷 한국어 미리보기</button>
+            </div>
 
-            <div style="margin-top:20px;">
-                <button class="btn btn-success" onclick="sauvegarderDevoirIA()">💾 Enregistrer ce Chapitre complet dans ma Banque</button>
+            <div id="zone-apercu-dynamique">
+                <!-- Rempli dynamiquement selon la langue choisie -->
+            </div>
+
+            <div style="margin-top:25px; display:flex; justify-content:flex-end;">
+                <button class="btn btn-success" style="font-size:1.1em; padding:12px 24px;" onclick="sauvegarderDevoirIA()">💾 Enregistrer ce Chapitre complet dans ma Banque</button>
             </div>
         </div>
     </div>
@@ -311,6 +331,22 @@
         <div style="display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
             <button type="button" class="btn btn-secondary" onclick="fermerModalAssignation()">Annuler</button>
             <button type="button" class="btn btn-success" id="btn-valider-assignation" onclick="confirmerAssignationGroupee()">✅ Assigner aux élèves cochés</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONSULTATION COURS DEPUIS LA BANQUE -->
+<div class="modal" id="modal-apercu-cours">
+    <div class="modal-content">
+        <h2 id="modal-apercu-titre" style="margin-top:0; color:var(--primary);">-</h2>
+        <div class="subtabs-lang">
+            <button type="button" class="subtab-lang-btn active" id="btn-modal-fr" onclick="changerLangueModalApercu('fr')">🇫🇷 Français</button>
+            <button type="button" class="subtab-lang-btn" id="btn-modal-en" onclick="changerLangueModalApercu('en')">🇬🇧 English</button>
+            <button type="button" class="subtab-lang-btn" id="btn-modal-ko" onclick="changerLangueModalApercu('ko')">🇰🇷 한국어</button>
+        </div>
+        <div id="modal-apercu-contenu"></div>
+        <div style="text-align:right; margin-top:20px;">
+            <button class="btn btn-secondary" onclick="document.getElementById('modal-apercu-cours').style.display='none'">Fermer</button>
         </div>
     </div>
 </div>
@@ -382,6 +418,9 @@
     let assignationsMap = {};
     let eleveSelectionne = null;
     let donneesIAPret = null;
+    let langueApercuActive = 'fr';
+    let coursApercuModal = null;
+    let langueModalApercuActive = 'fr';
 
     let devoirAAssigner = null;
 
@@ -738,254 +777,7 @@
         }
     };
 
+    // --- ACTIONS BASIQUES ---
     async function creerEleve() {
         const code = document.getElementById('nouvel-eleve-code').value.trim().toUpperCase();
-        const cle = document.getElementById('nouvel-eleve-cle').value.trim();
-        if (!code) return alert("Indiquez le code élève (ex: Lucas01).");
-
-        await db.collection("eleves").add({
-            code: code,
-            cleApiPerso: cle || null,
-            dateCreation: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        document.getElementById('nouvel-eleve-code').value = "";
-        document.getElementById('nouvel-eleve-cle').value = "";
-        alert(`✅ Élève ${code} enregistré !`);
-    }
-
-    async function supprimerAssignation(id) {
-        if (confirm("Retirer ce devoir à l'élève ?")) {
-            await db.collection("assignations").doc(id).delete();
-        }
-    }
-
-    async function supprimerDevoir(id) {
-        if (confirm("Supprimer ce devoir de la banque et chez tous les élèves ?")) {
-            await db.collection("devoirs").doc(id).delete();
-            const snap = await db.collection("assignations").where("devoirId", "==", id).get();
-            const batch = db.batch();
-            snap.forEach(doc => batch.delete(doc.ref));
-            await batch.commit();
-        }
-    }
-
-    function piocherQuestionsEmma() {
-        const melange = [...questionsBanqueEmma].sort(() => 0.5 - Math.random());
-        document.getElementById('questions-emma-texte').value = melange.slice(0, 10).join('\n');
-    }
-
-    async function enregistrerDevoirEmma() {
-        const titre = document.getElementById('titre-emma').value.trim();
-        const lignes = document.getElementById('questions-emma-texte').value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        if (!titre) return alert("Indiquez un titre.");
-        if (lignes.length === 0) return alert("Indiquez au moins une question.");
-
-        await db.collection("devoirs").add({
-            titre: titre,
-            typeDevoir: "emma",
-            questions: lignes,
-            dateCreation: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        alert("✅ Exercice IA avec Emma enregistré !");
-        document.getElementById('titre-emma').value = "";
-        document.getElementById('questions-emma-texte').value = "";
-        basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
-    }
-
-    function ajusterFormulaireManuel() {
-        const type = document.querySelector('input[name="type-exo-manuel"]:checked').value;
-        document.getElementById('box-options-identiques').style.display = (type === 'select-identique') ? 'block' : 'none';
-    }
-
-    async function enregistrerDevoirManuel() {
-        const titre = document.getElementById('titre-devoir-manuel').value.trim();
-        const type = document.querySelector('input[name="type-exo-manuel"]:checked').value;
-        const lignes = document.getElementById('texte-brut-manuel').value.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-        if (!titre || lignes.length === 0) return alert("Remplissez le titre et les phrases.");
-
-        const phrases = [];
-        lignes.forEach(l => {
-            const p = l.split(';').map(x => x.trim());
-            if (p.length < 2) return;
-            if (type === 'select-identique') {
-                const opts = document.getElementById('options-globales').value.split(',').map(o => o.trim());
-                phrases.push({ q: p[0], type: 'select', options: opts, a: [p[1]] });
-            } else if (type === 'select-variable') {
-                const rep = p[p.length - 1];
-                const opts = p.slice(1, p.length - 1);
-                if (!opts.includes(rep)) opts.push(rep);
-                phrases.push({ q: p[0], type: 'select', options: opts, a: [rep] });
-            } else {
-                phrases.push({ q: p[0], type: 'text', a: p[1].split('|').map(v => v.trim()) });
-            }
-        });
-
-        await db.collection("devoirs").add({
-            titre: titre,
-            typeDevoir: "interactif",
-            phrases: phrases,
-            dateCreation: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        alert("✅ Devoir interactif enregistré !");
-        basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
-    }
-
-    async function analyserPDFAvecIA() {
-        const urlApi = document.getElementById('api-url').value.trim();
-        const fileInput = document.getElementById('pdf-file-input');
-        if (!urlApi || !fileInput.files[0]) return alert("Indiquez l'URL Render et le fichier PDF.");
-
-        const btn = document.getElementById('btn-analyser-pdf');
-        btn.disabled = true;
-        btn.textContent = "⏳ Analyse Gemini 3.8 Flash (Points clés, cours & quiz)...";
-
-        const formData = new FormData();
-        formData.append("pdf", fileInput.files[0]);
-
-        try {
-            const res = await fetch(urlApi.replace(/\/$/, "") + "/api/analyser-pdf", {
-                method: "POST",
-                headers: { "x-gemini-model": "gemini-3.8-flash" },
-                body: formData
-            });
-            const data = await res.json();
-            if (data.error) throw new Error(data.error);
-
-            donneesIAPret = data;
-            document.getElementById('ia-titre').value = data.titre || "Chapitre de cours";
-            
-            // Aperçu des points clés et du quiz théorique
-            const pointsFr = (data.points_importants && data.points_importants.fr) ? data.points_importants.fr : [];
-            const nbQuestionsQuiz = (data.quiz_theorique && data.quiz_theorique.questions) ? data.quiz_theorique.questions.length : 0;
-            const nbExos = (data.blocs_exercices || []).length;
-
-            document.getElementById('zone-apercu-blocs-ia').innerHTML = `
-                <div style="background:#f8fafc; border:1px solid #cbd5e0; padding:15px; border-radius:8px;">
-                    <strong style="color:var(--primary); font-size:1.05em;">💡 Points clés générés (3 langues) :</strong>
-                    <ul style="margin:6px 0 12px 20px;">
-                        ${pointsFr.map(p => `<li>${p}</li>`).join('')}
-                    </ul>
-                    <div>🧠 <strong>Quiz théorique intermédiaire :</strong> ${nbQuestionsQuiz} questions de compréhension (FR / EN / KO).</div>
-                    <div>✍️ <strong>Blocs d'exercices d'application :</strong> ${nbExos} blocs.</div>
-                </div>
-            `;
-
-            document.getElementById('card-resultat-ia').style.display = "block";
-            alert("✅ Analyse Gemini 3.8 Flash réussie ! Module de cours, points clés et quiz générés avec succès.");
-        } catch(e) {
-            alert("Erreur : " + e.message);
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "🚀 Analyser avec Gemini 3.8 Flash";
-        }
-    }
-
-    async function sauvegarderDevoirIA() {
-        if (!donneesIAPret) return;
-        await db.collection("devoirs").add({
-            titre: document.getElementById('ia-titre').value.trim() || donneesIAPret.titre,
-            typeDevoir: "chapitre_cours",
-            points_importants: donneesIAPret.points_importants || null,
-            quiz_theorique: donneesIAPret.quiz_theorique || null,
-            bloc_cours: donneesIAPret.bloc_cours || null,
-            blocs_exercices: donneesIAPret.blocs_exercices || [],
-            dateCreation: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        alert("✅ Chapitre complet enregistré dans la banque !");
-        document.getElementById('card-resultat-ia').style.display = "none";
-        basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
-    }
-
-    window.voirRetoursEmmaProf = function(assignationId) {
-        const a = assignationsMap[assignationId];
-        if (!a) return;
-
-        const modal = document.getElementById('modal-fautes');
-        document.getElementById('modal-titre').textContent = `Corrections Emma - ${a.eleveCode}`;
-
-        const retours = a.retoursEmma || {};
-        let html = `<div style="line-height:1.7;">`;
-
-        (a.questions || []).forEach((q, idx) => {
-            const r = retours[idx];
-            html += `<div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:15px; margin-bottom:15px;">
-                <strong style="color:var(--primary);">Q${idx+1} : ${q}</strong><br>`;
-            if (r) {
-                html += `👀 <strong>Phrase élève</strong> : "${r.phrase_eleve}"<br>
-                         💬 <strong>Emma</strong> : ${r.reponse_amicale}<br>`;
-                if (r.traduction_reponse) html += `🌐 <em>Traduction Emma</em> : ${r.traduction_reponse}<br>`;
-                html += `✅ <strong>Ce qui est bien</strong> : ${r.ce_qui_est_bien}<br>
-                         ❌ <strong>Fautes</strong> : ${r.les_fautes}<br>
-                         ➡️ <strong>Corrigé</strong> : <strong style="color:var(--success);">${r.phrase_corrigee}</strong><br>`;
-                if (r.traduction_phrase_corrigee) html += `🌐 <em>Traduction corrigé</em> : ${r.traduction_phrase_corrigee}<br>`;
-                html += `💡 <strong>Améliorations</strong> : ${r.ameliorations}`;
-            } else {
-                html += `<span style="color:#aaa;">(Pas encore répondu)</span>`;
-            }
-            html += `</div>`;
-        });
-        html += `</div>`;
-        document.getElementById('modal-contenu').innerHTML = html;
-        modal.style.display = "flex";
-    };
-
-    function ecouterDonnees() {
-        if (!db) return;
-
-        db.collection("eleves").orderBy("dateCreation", "desc").onSnapshot(snap => {
-            listeEleves = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            filtrerEleves();
-        });
-
-        db.collection("devoirs").orderBy("dateCreation", "desc").onSnapshot(snap => {
-            listeDevoirs = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            devoirsMap = {};
-            listeDevoirs.forEach(d => { devoirsMap[d.id] = d; });
-
-            const tbody = document.getElementById('table-devoirs-corps');
-            tbody.innerHTML = "";
-            listeDevoirs.forEach(d => {
-                const tr = document.createElement('tr');
-                let badge = "";
-                let info = "";
-
-                if (d.typeDevoir === "emma") {
-                    badge = `<span class="badge-emma">🤖 Emma IA</span>`;
-                    info = `${(d.questions || []).length} questions`;
-                } else if (d.typeDevoir === "interactif") {
-                    badge = `<span class="badge-interactif">⚡ Interactif</span>`;
-                    info = `${(d.phrases || []).length} phrases`;
-                } else {
-                    badge = `<span class="badge-chapitre">📖 Cours + Quiz</span>`;
-                    info = `Points clés + Quiz + ${(d.blocs_exercices || []).length} blocs`;
-                }
-
-                tr.innerHTML = `
-                    <td><strong>${d.titre}</strong></td>
-                    <td>${badge}</td>
-                    <td>${info}</td>
-                    <td>
-                        <button class="btn btn-sm btn-success" onclick="ouvrirModalAssignation('${d.id}')">➕ Assigner</button>
-                        <button class="btn btn-sm btn-danger" onclick="supprimerDevoir('${d.id}')">🗑️</button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        });
-
-        db.collection("assignations").orderBy("dateAssignation", "desc").onSnapshot(snap => {
-            listeAssignations = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            assignationsMap = {};
-            listeAssignations.forEach(a => { assignationsMap[a.id] = a; });
-
-            afficherTableauEleves();
-            afficherDerniersDevoirsGlobaux();
-            if (eleveSelectionne) afficherDevoirsFicheEleve();
-        });
-    }
-
-    ecouterDonnees();
-</script>
-</body>
-</html>
+        const cle = document.getElementById('nouvel-eleve-cle').

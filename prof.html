@@ -19,7 +19,7 @@
             --bg: #f8fafc;
         }
         body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); color: #1e293b; margin: 0; padding: 25px; }
-        .container { max-width: 1250px; margin: 0 auto; }
+        .container { max-width: 1250px; margin: 0 auto; position: relative; z-index: 1; }
         header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #e2e8f0; padding-bottom: 15px; margin-bottom: 25px; }
         h1 { margin: 0; color: var(--primary); font-size: 1.6em; }
 
@@ -34,7 +34,7 @@
         input[type="text"], textarea, select { width: 100%; padding: 11px; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.95em; }
         input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
 
-        .btn { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; }
+        .btn { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; display: inline-block; }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
         .btn-success { background: var(--success); }
         .btn-danger { background: var(--danger); }
@@ -53,23 +53,42 @@
         .badge-emma { background: #fae8ff; color: #86198f; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
         .badge-auto { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
 
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); justify-content: center; align-items: center; z-index: 10000; }
-        .modal-content { background: white; padding: 30px; border-radius: 12px; width: 90%; max-width: 900px; max-height: 88vh; overflow-y: auto; }
+        /* MODALES SÉCURISÉES : FERMÉES ET SANS POINTER-EVENTS PAR DÉFAUT */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.65); 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 99999; 
+        }
+        .modal-content { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            width: 90%; 
+            max-width: 900px; 
+            max-height: 88vh; 
+            overflow-y: auto; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+        }
 
         .pagination-bar { display: flex; justify-content: space-between; align-items: center; margin-top: 15px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
         .recherche-box { position: relative; margin-bottom: 12px; }
         .recherche-box input { padding-left: 36px; }
         .recherche-box span { position: absolute; left: 12px; top: 12px; color: #94a3b8; font-size: 1.1em; }
 
-        /* LISTE DE COCHES ASSIGNATION */
-        .liste-coches-eleves { max-height: 300px; overflow-y: auto; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-top: 10px; }
-        .item-coche-eleve { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; transition: background 0.15s; }
+        .liste-coches-eleves { max-height: 280px; overflow-y: auto; border: 2px solid #e2e8f0; border-radius: 8px; padding: 10px; margin-top: 10px; }
+        .item-coche-eleve { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 6px; }
         .item-coche-eleve:hover { background: #f8fafc; }
         .item-coche-eleve input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
         .item-coche-eleve label { margin: 0; cursor: pointer; flex: 1; font-weight: normal; }
 
-        /* SOUS-ONGLETS DE LANGUE DANS L'APERÇU */
-        .subtabs-lang { display: flex; gap: 6px; margin: 15px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+        .subtabs-lang { display: flex; gap: 8px; margin: 15px 0; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
         .subtab-lang-btn { background: #f1f5f9; border: 1px solid #cbd5e0; padding: 8px 16px; border-radius: 6px; font-weight: bold; cursor: pointer; font-size: 0.95em; }
         .subtab-lang-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
@@ -97,14 +116,13 @@
     <!-- ONGLET 1 : ÉLÈVES & SUIVI GLOBAL -->
     <div id="tab-eleves" class="tab-pane">
 
-        <!-- 1.A : VUE LISTE GÉNÉRALE DES ÉLÈVES -->
         <div id="vue-liste-eleves">
             <div class="card">
                 <h2>Ajouter un profil élève</h2>
                 <div style="display:flex; gap:12px; flex-wrap:wrap;">
                     <input type="text" id="nouvel-eleve-code" placeholder="Code élève (ex: Lucas01)" style="flex:1;">
                     <input type="text" id="nouvel-eleve-cle" placeholder="Clé API Gemini (Optionnel)" style="flex:1;">
-                    <button class="btn btn-success" onclick="creerEleve()">Ajouter l'élève</button>
+                    <button type="button" class="btn btn-success" onclick="creerEleve()">Ajouter l'élève</button>
                 </div>
             </div>
 
@@ -131,9 +149,9 @@
                 </table>
 
                 <div class="pagination-bar">
-                    <button class="btn btn-secondary btn-sm" id="btn-page-prec" onclick="changerPage(-1)">◀ Précédent</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-page-prec" onclick="changerPage(-1)">◀ Précédent</button>
                     <span id="info-pagination" style="font-size:0.9em; color:#64748b;">Page 1 sur 1</span>
-                    <button class="btn btn-secondary btn-sm" id="btn-page-suiv" onclick="changerPage(1)">Suivant ▶</button>
+                    <button type="button" class="btn btn-secondary btn-sm" id="btn-page-suiv" onclick="changerPage(1)">Suivant ▶</button>
                 </div>
             </div>
 
@@ -156,11 +174,10 @@
             </div>
         </div>
 
-        <!-- 1.B : VUE INDIVIDUELLE : FICHE ÉLÈVE -->
         <div id="vue-fiche-eleve" style="display:none;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-                <button class="btn btn-secondary" onclick="fermerFicheEleve()">← Revenir à la liste des élèves</button>
-                <button class="btn btn-danger" onclick="supprimerEleveActif()">🗑️ Supprimer définitivement cet élève</button>
+                <button type="button" class="btn btn-secondary" onclick="fermerFicheEleve()">← Revenir à la liste des élèves</button>
+                <button type="button" class="btn btn-danger" onclick="supprimerEleveActif()">🗑️ Supprimer définitivement cet élève</button>
             </div>
 
             <div class="card" style="border-left: 6px solid var(--accent);">
@@ -171,14 +188,14 @@
                         <label>Modifier le code élève :</label>
                         <div style="display:flex; gap:10px;">
                             <input type="text" id="fiche-edit-code">
-                            <button class="btn btn-success" onclick="sauvegarderNouveauCodeEleve()">Renommer</button>
+                            <button type="button" class="btn btn-success" onclick="sauvegarderNouveauCodeEleve()">Renommer</button>
                         </div>
                     </div>
                     <div>
                         <label>Clé API Gemini personnalisée :</label>
                         <div style="display:flex; gap:10px;">
                             <input type="text" id="fiche-edit-cle" placeholder="AIzaSy... (laisser vide si aucune)">
-                            <button class="btn btn-purple" onclick="sauvegarderCleEleve()">Enregistrer Clé</button>
+                            <button type="button" class="btn btn-purple" onclick="sauvegarderCleEleve()">Enregistrer Clé</button>
                         </div>
                     </div>
                 </div>
@@ -221,7 +238,7 @@
             <textarea id="questions-emma-texte" rows="10" placeholder="Bonjour ! Qu'est-ce que tu as mangé ce midi ?&#10;Bonjour ! Quelle est ta ville préférée ?&#10;Bonjour ! Tu préfères l'été ou l'hiver ?"></textarea>
 
             <div style="margin-top:20px;">
-                <button class="btn btn-success" onclick="enregistrerDevoirEmma()">💾 Enregistrer cet Exercice IA dans ma Banque</button>
+                <button type="button" class="btn btn-success" onclick="enregistrerDevoirEmma()">💾 Enregistrer cet Exercice IA dans ma Banque</button>
             </div>
         </div>
     </div>
@@ -249,7 +266,7 @@
             <textarea id="texte-brut-manuel" rows="8" placeholder="Phrase avec ____;bonne_reponse"></textarea>
 
             <div style="margin-top:15px;">
-                <button class="btn btn-success" onclick="enregistrerDevoirManuel()">💾 Sauvegarder ce Devoir Interactif</button>
+                <button type="button" class="btn btn-success" onclick="enregistrerDevoirManuel()">💾 Sauvegarder ce Devoir Interactif</button>
             </div>
         </div>
     </div>
@@ -273,30 +290,27 @@
             <input type="file" id="pdf-file-input" accept="application/pdf">
 
             <div style="margin-top:20px;">
-                <button class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser avec Gemini 3.8 Flash</button>
+                <button type="button" class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser avec Gemini 3.8 Flash</button>
             </div>
         </div>
 
-        <!-- ZONE D'APERÇU TRILINGUE ET RETOUCHE DU COURS PDF -->
+        <!-- ZONE APERÇU TRILINGUE DU COURS ANALYSÉ -->
         <div class="card" id="card-resultat-ia" style="display:none;">
             <h2>📖 Aperçu Trilingue & Validation du Cours Généré</h2>
             
             <label>Titre de la leçon :</label>
             <input type="text" id="ia-titre" style="margin-bottom:15px;">
 
-            <!-- SOUS-ONGLETS DE LANGUE POUR L'APERÇU -->
             <div class="subtabs-lang">
-                <button type="button" class="subtab-lang-btn active" onclick="changerLangueApercu('fr', this)">🇫🇷 Aperçu Français</button>
-                <button type="button" class="subtab-lang-btn" onclick="changerLangueApercu('en', this)">🇬🇧 English Preview</button>
-                <button type="button" class="subtab-lang-btn" onclick="changerLangueApercu('ko', this)">🇰🇷 한국어 미리보기</button>
+                <button type="button" class="subtab-lang-btn active" id="subtab-btn-fr" onclick="changerLangueApercu('fr', this)">🇫🇷 Aperçu Français</button>
+                <button type="button" class="subtab-lang-btn" id="subtab-btn-en" onclick="changerLangueApercu('en', this)">🇬🇧 English Preview</button>
+                <button type="button" class="subtab-lang-btn" id="subtab-btn-ko" onclick="changerLangueApercu('ko', this)">🇰🇷 한국어 미리보기</button>
             </div>
 
-            <div id="zone-apercu-dynamique">
-                <!-- Rempli dynamiquement selon la langue choisie -->
-            </div>
+            <div id="zone-apercu-dynamique"></div>
 
             <div style="margin-top:25px; display:flex; justify-content:flex-end;">
-                <button class="btn btn-success" style="font-size:1.1em; padding:12px 24px;" onclick="sauvegarderDevoirIA()">💾 Enregistrer ce Chapitre complet dans ma Banque</button>
+                <button type="button" class="btn btn-success" style="font-size:1.1em; padding:12px 24px;" onclick="sauvegarderDevoirIA()">💾 Enregistrer ce Chapitre complet dans ma Banque</button>
             </div>
         </div>
     </div>
@@ -315,7 +329,7 @@
     </div>
 </div>
 
-<!-- MODALE D'ASSIGNATION AVEC CASES À COCHER -->
+<!-- 1. MODALE D'ASSIGNATION AVEC CASES À COCHER -->
 <div class="modal" id="modal-assignation">
     <div class="modal-content" style="max-width: 550px;">
         <h2 style="margin-top:0; color:var(--primary);">➕ Assigner un devoir</h2>
@@ -335,7 +349,7 @@
     </div>
 </div>
 
-<!-- MODAL CONSULTATION COURS DEPUIS LA BANQUE -->
+<!-- 2. MODALE CONSULTATION COURS DEPUIS LA BANQUE -->
 <div class="modal" id="modal-apercu-cours">
     <div class="modal-content">
         <h2 id="modal-apercu-titre" style="margin-top:0; color:var(--primary);">-</h2>
@@ -346,18 +360,18 @@
         </div>
         <div id="modal-apercu-contenu"></div>
         <div style="text-align:right; margin-top:20px;">
-            <button class="btn btn-secondary" onclick="document.getElementById('modal-apercu-cours').style.display='none'">Fermer</button>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-apercu-cours').style.display='none'">Fermer</button>
         </div>
     </div>
 </div>
 
-<!-- MODAL RETOURS EMMA PROF -->
+<!-- 3. MODALE RETOURS EMMA PROF -->
 <div class="modal" id="modal-fautes">
     <div class="modal-content">
         <h2 id="modal-titre" style="margin-top:0; color:var(--primary);">-</h2>
         <div id="modal-contenu"></div>
         <div style="text-align:right; margin-top:20px;">
-            <button class="btn btn-secondary" onclick="document.getElementById('modal-fautes').style.display='none'">Fermer</button>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-fautes').style.display='none'">Fermer</button>
         </div>
     </div>
 </div>
@@ -418,9 +432,7 @@
     let assignationsMap = {};
     let eleveSelectionne = null;
     let donneesIAPret = null;
-    let langueApercuActive = 'fr';
     let coursApercuModal = null;
-    let langueModalApercuActive = 'fr';
 
     let devoirAAssigner = null;
 
@@ -428,29 +440,29 @@
     const parPage = 10;
     let elevesFiltres = [];
 
-    function basculerOnglet(tabId, btn) {
+    window.basculerOnglet = function(tabId, btn) {
         document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
         document.getElementById(tabId).style.display = 'block';
         if (btn) btn.classList.add('active');
         if (tabId === 'tab-eleves') fermerFicheEleve();
-    }
+    };
 
-    function filtrerEleves() {
+    window.filtrerEleves = function() {
         const texte = (document.getElementById('input-recherche-eleve').value || '').trim().toLowerCase();
         elevesFiltres = listeEleves.filter(e => e.code.toLowerCase().includes(texte));
         pageActuelleEleves = 1;
         afficherTableauEleves();
-    }
+    };
 
-    function changerPage(delta) {
+    window.changerPage = function(delta) {
         const totalPages = Math.ceil(elevesFiltres.length / parPage) || 1;
         const nouv = pageActuelleEleves + delta;
         if (nouv >= 1 && nouv <= totalPages) {
             pageActuelleEleves = nouv;
             afficherTableauEleves();
         }
-    }
+    };
 
     function afficherTableauEleves() {
         const tbody = document.getElementById('table-eleves-corps');
@@ -480,7 +492,7 @@
                 <td><strong style="color:var(--accent); font-size:1.05em;">👤 ${e.code}</strong></td>
                 <td><code>${e.cleApiPerso ? "● Clé personnalisée" : "(Clé par défaut)"}</code></td>
                 <td><strong>${nbDevoirs}</strong> devoir(s)</td>
-                <td><button class="btn btn-sm btn-purple" onclick="ouvrirFicheEleve('${e.id}')">⚙️ Gérer</button></td>
+                <td><button type="button" class="btn btn-sm btn-purple" onclick="ouvrirFicheEleve('${e.id}')">⚙️ Gérer</button></td>
             `;
             tbody.appendChild(tr);
         });
@@ -491,293 +503,4 @@
         if (!eleveSelectionne) return;
 
         document.getElementById('vue-liste-eleves').style.display = 'none';
-        document.getElementById('vue-fiche-eleve').style.display = 'block';
-
-        document.getElementById('fiche-titre-code').textContent = eleveSelectionne.code;
-        document.getElementById('fiche-edit-code').value = eleveSelectionne.code;
-        document.getElementById('fiche-edit-cle').value = eleveSelectionne.cleApiPerso || "";
-
-        afficherDevoirsFicheEleve();
-    };
-
-    window.fermerFicheEleve = function() {
-        eleveSelectionne = null;
-        document.getElementById('vue-fiche-eleve').style.display = 'none';
-        document.getElementById('vue-liste-eleves').style.display = 'block';
-    };
-
-    window.sauvegarderNouveauCodeEleve = async function() {
-        if (!eleveSelectionne) return;
-        const ancienCode = eleveSelectionne.code;
-        const nouvCode = document.getElementById('fiche-edit-code').value.trim().toUpperCase();
-
-        if (!nouvCode) return alert("Le code ne peut pas être vide.");
-        if (nouvCode === ancienCode) return alert("Aucun changement détecté.");
-
-        if (confirm(`Renommer l'élève "${ancienCode}" en "${nouvCode}" ?\nTous ses devoirs seront mis à jour.`)) {
-            await db.collection("eleves").doc(eleveSelectionne.id).update({ code: nouvCode });
-
-            const snap = await db.collection("assignations").where("eleveCode", "==", ancienCode).get();
-            const batch = db.batch();
-            snap.forEach(doc => batch.update(doc.ref, { eleveCode: nouvCode }));
-            await batch.commit();
-
-            eleveSelectionne.code = nouvCode;
-            document.getElementById('fiche-titre-code').textContent = nouvCode;
-            alert(`✅ Élève renommé en ${nouvCode} !`);
-        }
-    };
-
-    window.sauvegarderCleEleve = async function() {
-        if (!eleveSelectionne) return;
-        const cle = document.getElementById('fiche-edit-cle').value.trim();
-        await db.collection("eleves").doc(eleveSelectionne.id).update({ cleApiPerso: cle || null });
-        eleveSelectionne.cleApiPerso = cle || null;
-        alert("✅ Clé API mise à jour !");
-    };
-
-    window.supprimerEleveActif = async function() {
-        if (!eleveSelectionne) return;
-        const code = eleveSelectionne.code;
-
-        if (confirm(`Supprimer définitivement l'élève ${code} et tous ses devoirs associés ?`)) {
-            await db.collection("eleves").doc(eleveSelectionne.id).delete();
-            const snap = await db.collection("assignations").where("eleveCode", "==", code).get();
-            const batch = db.batch();
-            snap.forEach(doc => batch.delete(doc.ref));
-            await batch.commit();
-
-            alert(`✅ L'élève ${code} a été supprimé.`);
-            fermerFicheEleve();
-        }
-    };
-
-    function afficherDevoirsFicheEleve() {
-        if (!eleveSelectionne) return;
-        const tbody = document.getElementById('table-fiche-assignations-corps');
-        tbody.innerHTML = "";
-
-        const sesAssignations = listeAssignations.filter(a => a.eleveCode && a.eleveCode.toUpperCase() === eleveSelectionne.code.toUpperCase());
-
-        if (sesAssignations.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; color:#64748b;">Aucun devoir assigné.</td></tr>`;
-            return;
-        }
-
-        sesAssignations.forEach(a => {
-            const tr = document.createElement('tr');
-            let badgeType = "";
-            let prog = "";
-            let btnAction = "";
-
-            if (a.typeDevoir === "emma") {
-                badgeType = `<span class="badge-emma">🤖 Emma IA</span>`;
-                const nb = Object.keys(a.retoursEmma || {}).length;
-                const tot = (a.questions || []).length;
-                prog = `${nb} / ${tot} questions répondues`;
-                btnAction = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Voir les corrections</button>`;
-            } else if (a.typeDevoir === "interactif") {
-                badgeType = a.estAutoEntrainement 
-                    ? `<span class="badge-auto">✨ Auto-entraînement</span>` 
-                    : `<span class="badge-interactif">⚡ Interactif</span>`;
-                prog = `Score : <strong>${a.score || 0} / ${a.totalQuestions || 0}</strong>`;
-            } else {
-                badgeType = `<span class="badge-chapitre">📖 Cours + Quiz</span>`;
-                prog = `Accès modules`;
-            }
-
-            tr.innerHTML = `
-                <td><strong>${a.devoirTitre}</strong></td>
-                <td>${badgeType}</td>
-                <td>${prog}</td>
-                <td style="display:flex; gap:8px;">
-                    ${btnAction}
-                    <button class="btn btn-sm btn-danger" onclick="supprimerAssignation('${a.id}')">🗑️ Retirer</button>
-                </td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    function afficherDerniersDevoirsGlobaux() {
-        const tbody = document.getElementById('table-derniers-devoirs-corps');
-        tbody.innerHTML = "";
-
-        const copies = [...listeAssignations].filter(a => a.statut === "termine" || a.statut === "en_cours");
-        const dixDerniers = copies.slice(0, 10);
-
-        if (dixDerniers.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:#64748b;">Aucun devoir récent.</td></tr>`;
-            return;
-        }
-
-        dixDerniers.forEach(a => {
-            const tr = document.createElement('tr');
-            let badgeType = "";
-            let statutInfo = "";
-            let actionBtn = "";
-
-            if (a.typeDevoir === "emma") {
-                badgeType = `<span class="badge-emma">🤖 Emma IA</span>`;
-                statutInfo = (a.statut === "termine") ? `<span style="color:var(--success); font-weight:bold;">✅ Terminé</span>` : `<span style="color:var(--accent);">💬 En cours</span>`;
-                actionBtn = `<button class="btn btn-sm btn-purple" onclick="voirRetoursEmmaProf('${a.id}')">🔍 Voir l'échange</button>`;
-            } else if (a.typeDevoir === "interactif") {
-                badgeType = a.estAutoEntrainement ? `<span class="badge-auto">✨ Entraînement</span>` : `<span class="badge-interactif">⚡ Interactif</span>`;
-                statutInfo = `Score : <strong>${a.score || 0} / ${a.totalQuestions || 0}</strong>`;
-            } else {
-                badgeType = `<span class="badge-chapitre">📖 Cours + Quiz</span>`;
-                statutInfo = `Actif`;
-            }
-
-            tr.innerHTML = `
-                <td><strong style="color:var(--accent); cursor:pointer;" onclick="ouvrirFicheEleveParCode('${a.eleveCode}')">👤 ${a.eleveCode}</strong></td>
-                <td><strong>${a.devoirTitre}</strong></td>
-                <td>${badgeType}</td>
-                <td>${statutInfo}</td>
-                <td>${actionBtn}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-    }
-
-    window.ouvrirFicheEleveParCode = function(code) {
-        const e = listeEleves.find(x => x.code.toUpperCase() === (code || '').toUpperCase());
-        if (e) {
-            basculerOnglet('tab-eleves', document.getElementById('btn-tab-eleves'));
-            ouvrirFicheEleve(e.id);
-        }
-    };
-
-    // ==========================================
-    // SYSTÈME D'ASSIGNATION AVEC COCHES
-    // ==========================================
-    window.ouvrirModalAssignation = function(devoirId) {
-        devoirAAssigner = devoirsMap[devoirId];
-        if (!devoirAAssigner) return;
-
-        if (listeEleves.length === 0) {
-            return alert("Aucun élève enregistré. Ajoutez au moins un élève avant d'assigner.");
-        }
-
-        document.getElementById('assign-titre-devoir').textContent = devoirAAssigner.titre;
-        document.getElementById('recherche-assign-eleve').value = "";
-        
-        genererListeCochesEleves(listeEleves);
-        document.getElementById('modal-assignation').style.display = "flex";
-    };
-
-    function genererListeCochesEleves(eleves) {
-        const conteneur = document.getElementById('conteneur-coches-eleves');
-        conteneur.innerHTML = "";
-
-        if (eleves.length === 0) {
-            conteneur.innerHTML = `<div style="color:#64748b; padding:10px; text-align:center;">Aucun élève ne correspond.</div>`;
-            return;
-        }
-
-        eleves.forEach(e => {
-            const div = document.createElement('div');
-            div.className = "item-coche-eleve";
-            div.innerHTML = `
-                <input type="checkbox" id="chk-eleve-${e.id}" value="${e.code}" class="chk-assign-eleve">
-                <label for="chk-eleve-${e.id}">👤 <strong>${e.code}</strong></label>
-            `;
-            conteneur.appendChild(div);
-        });
-    }
-
-    window.filtrerCochesAssignation = function() {
-        const txt = (document.getElementById('recherche-assign-eleve').value || '').trim().toLowerCase();
-        const filtrés = listeEleves.filter(e => e.code.toLowerCase().includes(txt));
-        genererListeCochesEleves(filtrés);
-    };
-
-    window.basculerToutesLesCoches = function() {
-        const checkboxes = document.querySelectorAll('.chk-assign-eleve');
-        const tousCoches = Array.from(checkboxes).every(c => c.checked);
-        checkboxes.forEach(c => c.checked = !tousCoches);
-    };
-
-    window.fermerModalAssignation = function() {
-        devoirAAssigner = null;
-        document.getElementById('modal-assignation').style.display = "none";
-    };
-
-    window.confirmerAssignationGroupee = async function() {
-        if (!devoirAAssigner) return;
-
-        const selectionnes = Array.from(document.querySelectorAll('.chk-assign-eleve:checked')).map(c => c.value);
-        if (selectionnes.length === 0) {
-            return alert("Veuillez cocher au moins un élève !");
-        }
-
-        const btn = document.getElementById('btn-valider-assignation');
-        btn.disabled = true;
-        btn.textContent = "⏳ Assignation en cours...";
-
-        try {
-            const batch = db.batch();
-
-            selectionnes.forEach(codeEleve => {
-                const nouvRef = db.collection("assignations").doc();
-
-                if (devoirAAssigner.typeDevoir === "emma") {
-                    batch.set(nouvRef, {
-                        eleveCode: codeEleve,
-                        devoirId: devoirAAssigner.id,
-                        devoirTitre: devoirAAssigner.titre,
-                        typeDevoir: "emma",
-                        questions: devoirAAssigner.questions || [],
-                        statut: "non_commence",
-                        retoursEmma: {},
-                        dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                } else if (devoirAAssigner.typeDevoir === "interactif") {
-                    batch.set(nouvRef, {
-                        eleveCode: codeEleve,
-                        devoirId: devoirAAssigner.id,
-                        devoirTitre: devoirAAssigner.titre,
-                        typeDevoir: "interactif",
-                        phrases: devoirAAssigner.phrases || [],
-                        statut: "non_commence",
-                        score: 0,
-                        totalQuestions: (devoirAAssigner.phrases || []).length,
-                        totalErreurs: 0,
-                        fautesDetails: [],
-                        reponsesValidees: {},
-                        dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                } else {
-                    const suiviBlocs = { cours: { statut: "non_lu" } };
-                    (devoirAAssigner.blocs_exercices || []).forEach(b => { suiviBlocs[b.id] = { statut: "non_fait", reponses: {} }; });
-                    batch.set(nouvRef, {
-                        eleveCode: codeEleve,
-                        devoirId: devoirAAssigner.id,
-                        devoirTitre: devoirAAssigner.titre,
-                        typeDevoir: "chapitre_cours",
-                        points_importants: devoirAAssigner.points_importants || null,
-                        quiz_theorique: devoirAAssigner.quiz_theorique || null,
-                        bloc_cours: devoirAAssigner.bloc_cours || null,
-                        blocs_exercices: devoirAAssigner.blocs_exercices || [],
-                        suiviBlocs: suiviBlocs,
-                        dateAssignation: firebase.firestore.FieldValue.serverTimestamp()
-                    });
-                }
-            });
-
-            await batch.commit();
-            alert(`✅ "${devoirAAssigner.titre}" assigné avec succès à ${selectionnes.length} élève(s) !`);
-            fermerModalAssignation();
-
-        } catch(err) {
-            alert("Erreur lors de l'assignation : " + err.message);
-        } finally {
-            btn.disabled = false;
-            btn.textContent = "✅ Assigner aux élèves cochés";
-        }
-    };
-
-    // --- ACTIONS BASIQUES ---
-    async function creerEleve() {
-        const code = document.getElementById('nouvel-eleve-code').value.trim().toUpperCase();
-        const cle = document.getElementById('nouvel-eleve-cle').
+        documen

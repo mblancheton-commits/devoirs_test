@@ -31,8 +31,8 @@
         .card h2 { margin-top: 0; color: var(--primary); font-size: 1.25em; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
 
         label { display: block; font-weight: 600; margin-bottom: 6px; margin-top: 14px; font-size: 0.95em; color: #334155; }
-        input[type="text"], textarea, select { width: 100%; padding: 11px; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.95em; }
-        input[type="text"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
+        input[type="text"], input[type="password"], textarea, select { width: 100%; padding: 11px; border: 2px solid #cbd5e0; border-radius: 8px; box-sizing: border-box; font-family: inherit; font-size: 0.95em; }
+        input[type="text"]:focus, input[type="password"]:focus, textarea:focus, select:focus { outline: none; border-color: var(--accent); }
 
         .btn { background: var(--accent); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: all 0.2s; display: inline-block; }
         .btn:hover { opacity: 0.9; transform: translateY(-1px); }
@@ -53,7 +53,7 @@
         .badge-emma { background: #fae8ff; color: #86198f; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
         .badge-auto { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
 
-        /* SÉCURITÉ ABSOLUE : MODALES INACTIVES PAR DÉFAUT */
+        /* MODALES PROTÉGÉES */
         .modal { 
             display: none; 
             position: fixed; 
@@ -65,7 +65,7 @@
             justify-content: center; 
             align-items: center; 
             z-index: 99999; 
-            pointer-events: none; /* Ne bloque jamais les clics tant que non ouverte */
+            pointer-events: none;
         }
         .modal.ouverte {
             display: flex !important;
@@ -105,7 +105,6 @@
     </style>
 
     <script>
-        // INITIALISATION FIREBASE SÉCURISÉE
         let db = null;
         try {
             const firebaseConfig = {
@@ -169,7 +168,6 @@
         const parPage = 10;
         let elevesFiltres = [];
 
-        // TOUTES LES FONCTIONS ATTACHÉES À WINDOW SANS EXCEPTION
         window.basculerOnglet = function(tabId, btn) {
             document.querySelectorAll('.tab-pane').forEach(el => el.style.display = 'none');
             document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
@@ -401,7 +399,7 @@
             }
         };
 
-        // ASSIGNATION AVEC CASES À COCHER
+        // ASSIGNATION
         window.ouvrirModalAssignation = function(devoirId) {
             devoirAAssigner = devoirsMap[devoirId];
             if (!devoirAAssigner) return;
@@ -617,15 +615,21 @@
             basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
         };
 
-        // ANALYSE PDF & RETOUCHE IA
+        // ANALYSE PDF & SÉLECTION DU MOTEUR (NANOGPT OU GEMINI)
         window.analyserPDFAvecIA = async function() {
             const urlApi = document.getElementById('api-url').value.trim();
             const fileInput = document.getElementById('pdf-file-input');
+            const modelChoisi = document.getElementById('select-ia-model').value;
+            const cleNano = document.getElementById('nanogpt-key-input').value.trim();
+
             if (!urlApi || !fileInput.files[0]) return alert("Indiquez l'URL Render et le fichier PDF.");
+
+            // Sauvegarder la clé NanoGPT en local pour confort
+            if (cleNano) localStorage.setItem("nanoGptKey", cleNano);
 
             const btn = document.getElementById('btn-analyser-pdf');
             btn.disabled = true;
-            btn.textContent = "⏳ Analyse Gemini 3.8 Flash...";
+            btn.textContent = `⏳ Analyse avec ${modelChoisi}...`;
 
             const formData = new FormData();
             formData.append("pdf", fileInput.files[0]);
@@ -633,7 +637,10 @@
             try {
                 const res = await fetch(urlApi.replace(/\/$/, "") + "/api/analyser-pdf", {
                     method: "POST",
-                    headers: { "x-gemini-model": "gemini-3.8-flash" },
+                    headers: { 
+                        "x-model-choice": modelChoisi,
+                        "x-nanogpt-key": cleNano
+                    },
                     body: formData
                 });
                 const data = await res.json();
@@ -644,13 +651,13 @@
                 
                 changerLangueApercu('fr', document.getElementById('subtab-btn-fr'));
                 document.getElementById('card-resultat-ia').style.display = "block";
-                alert("✅ Analyse réussie ! Vous pouvez inspecter le cours ci-dessous.");
+                alert(`✅ Analyse réussie avec ${modelChoisi} ! Vous pouvez inspecter le cours ci-dessous.`);
 
             } catch(e) {
                 alert("Erreur lors de l'analyse : " + e.message);
             } finally {
                 btn.disabled = false;
-                btn.textContent = "🚀 Analyser avec Gemini 3.8 Flash";
+                btn.textContent = "🚀 Lancer l'analyse du cours";
             }
         };
 
@@ -661,6 +668,9 @@
             if (!instruction) return alert("Veuillez formuler votre demande de modification à l'IA.");
 
             const urlApi = document.getElementById('api-url').value.trim();
+            const modelChoisi = document.getElementById('select-ia-model').value;
+            const cleNano = document.getElementById('nanogpt-key-input').value.trim();
+
             const btn = document.getElementById('btn-appliquer-retouche');
             btn.disabled = true;
             btn.textContent = "⏳ L'IA retouche le cours complet...";
@@ -668,7 +678,11 @@
             try {
                 const res = await fetch(urlApi.replace(/\/$/, "") + "/api/ajuster-contenu", {
                     method: "POST",
-                    headers: { "Content-Type": "application/json" },
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "x-model-choice": modelChoisi,
+                        "x-nanogpt-key": cleNano
+                    },
                     body: JSON.stringify({
                         contenuActuel: donneesIAPret,
                         instruction: instruction
@@ -683,13 +697,13 @@
 
                 rendreApercuTrilingue(langueApercuActive);
                 document.getElementById('instruction-retouche-texte').value = "";
-                alert("✅ Modifications appliquées avec succès par Gemini 3.8 Flash !");
+                alert("✅ Modifications appliquées avec succès !");
 
             } catch(e) {
                 alert("Erreur lors de la retouche IA : " + e.message);
             } finally {
                 btn.disabled = false;
-                btn.textContent = "✨ Appliquer les modifications avec Gemini 3.8 Flash";
+                btn.textContent = "✨ Appliquer les modifications";
             }
         };
 
@@ -855,8 +869,12 @@
             modal.classList.add('ouverte');
         };
 
-        // ÉCOUTE FIRESTORE DÈS LE CHARGEMENT DE LA PAGE
         document.addEventListener('DOMContentLoaded', () => {
+            const cleStockee = localStorage.getItem("nanoGptKey");
+            if (cleStockee && document.getElementById('nanogpt-key-input')) {
+                document.getElementById('nanogpt-key-input').value = cleStockee;
+            }
+
             if (!db) return;
 
             db.collection("eleves").orderBy("dateCreation", "desc").onSnapshot(snap => {
@@ -1090,29 +1108,40 @@
         </div>
     </div>
 
-    <!-- ONGLET 4 : IMPORT PDF PAR GEMINI 3.8 FLASH -->
+    <!-- ONGLET 4 : IMPORT PDF AVEC CHOIX DU MODÈLE (NANOGPT / GEMINI) -->
     <div id="tab-pdf" class="tab-pane" style="display:none;">
         <div class="card">
-            <h2>📄 Importer un Cours & Exercices depuis un PDF (Gemini 3.8 Flash Exclusif)</h2>
-            <div style="display:flex; gap:15px; flex-wrap:wrap;">
-                <div style="flex:2;">
+            <h2>📄 Importer un Cours & Exercices depuis un PDF</h2>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">
+                <div>
                     <label>URL de votre serveur Render :</label>
                     <input type="text" id="api-url" value="https://das-plateforme.onrender.com">
                 </div>
-                <div style="flex:1;">
-                    <label>Modèle IA :</label>
-                    <input type="text" id="select-gemini-model" value="gemini-3.8-flash (Fixé)" readonly style="background:#f1f5f9; font-weight:bold; color:var(--primary);">
+                <div>
+                    <label>Modèle IA pour l'analyse :</label>
+                    <select id="select-ia-model">
+                        <option value="qwen3-235b-a22b" selected>🧠 Qwen3-235B-A22B (NanoGPT)</option>
+                        <option value="deepseek-4.1-flash">⚡ DeepSeek 4.1 Flash (NanoGPT)</option>
+                        <option value="gemini-3.8-flash">🚀 Gemini 3.8 Flash (Google)</option>
+                    </select>
                 </div>
+            </div>
+
+            <div style="margin-top:10px;">
+                <label>Votre Clé API NanoGPT :</label>
+                <input type="password" id="nanogpt-key-input" placeholder="nano-... (Nécessaire si vous utilisez Qwen ou DeepSeek)">
             </div>
 
             <label style="margin-top:15px;">Fichier PDF du cours :</label>
             <input type="file" id="pdf-file-input" accept="application/pdf">
 
             <div style="margin-top:20px;">
-                <button type="button" class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Analyser avec Gemini 3.8 Flash</button>
+                <button type="button" class="btn btn-purple" id="btn-analyser-pdf" onclick="analyserPDFAvecIA()">🚀 Lancer l'analyse du cours</button>
             </div>
         </div>
 
+        <!-- ZONE APERÇU TRILINGUE + RETOUCHE IA DU COURS ANALYSÉ -->
         <div class="card" id="card-resultat-ia" style="display:none;">
             <h2>📖 Aperçu Trilingue & Retouche du Cours Généré</h2>
             
@@ -1129,11 +1158,11 @@
 
             <div class="box-retouche-ia">
                 <h3 style="margin-top:0; color:#581c87;">🪄 Demander des ajustements à l'IA sur ce cours</h3>
-                <p style="color:#6b21a8; font-size:0.95em; margin-top:4px;">L'IA modifiera le cours, adaptera les explications et mettra à jour les 3 langues automatiquement.</p>
+                <p style="color:#6b21a8; font-size:0.95em; margin-top:4px;">L'IA appliquera vos consignes avec le modèle sélectionné et mettra à jour les 3 langues.</p>
                 <textarea id="instruction-retouche-texte" rows="3" placeholder="Exemples :&#10;- Ajoute 2 questions au quiz théorique sur les exceptions.&#10;- Simplifie les explications en coréen.&#10;- Rajoute un exercice d'application de 5 phrases avec 'en' et 'y'."></textarea>
                 
                 <div style="margin-top:12px; display:flex; justify-content:flex-end;">
-                    <button type="button" class="btn btn-purple" id="btn-appliquer-retouche" onclick="appliquerRetoucheIA()">✨ Appliquer les modifications avec Gemini 3.8 Flash</button>
+                    <button type="button" class="btn btn-purple" id="btn-appliquer-retouche" onclick="appliquerRetoucheIA()">✨ Appliquer les modifications</button>
                 </div>
             </div>
 

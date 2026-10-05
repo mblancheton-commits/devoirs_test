@@ -53,7 +53,7 @@
         .badge-emma { background: #fae8ff; color: #86198f; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
         .badge-auto { background: #dbeafe; color: #1e40af; padding: 3px 8px; border-radius: 6px; font-weight: bold; font-size: 0.85em; }
 
-        /* MODALES PROTÉGÉES */
+        /* MODALES */
         .modal { 
             display: none; 
             position: fixed; 
@@ -615,7 +615,7 @@
             basculerOnglet('tab-devoirs', document.getElementById('btn-tab-devoirs'));
         };
 
-        // ANALYSE PDF & SÉLECTION DU MOTEUR (NANOGPT OU GEMINI)
+        // ANALYSE PDF
         window.analyserPDFAvecIA = async function() {
             const urlApi = document.getElementById('api-url').value.trim();
             const fileInput = document.getElementById('pdf-file-input');
@@ -623,8 +623,6 @@
             const cleNano = document.getElementById('nanogpt-key-input').value.trim();
 
             if (!urlApi || !fileInput.files[0]) return alert("Indiquez l'URL Render et le fichier PDF.");
-
-            // Sauvegarder la clé NanoGPT en local pour confort
             if (cleNano) localStorage.setItem("nanoGptKey", cleNano);
 
             const btn = document.getElementById('btn-analyser-pdf');
@@ -651,7 +649,7 @@
                 
                 changerLangueApercu('fr', document.getElementById('subtab-btn-fr'));
                 document.getElementById('card-resultat-ia').style.display = "block";
-                alert(`✅ Analyse réussie avec ${modelChoisi} ! Vous pouvez inspecter le cours ci-dessous.`);
+                alert(`✅ Analyse réussie avec ${modelChoisi} !`);
 
             } catch(e) {
                 alert("Erreur lors de l'analyse : " + e.message);
@@ -718,12 +716,32 @@
             document.getElementById('zone-apercu-dynamique').innerHTML = construireHtmlContenuCours(donneesIAPret, lang);
         }
 
+        // =========================================================================
+        // NOUVEL ORDRE PÉDAGOGIQUE STRICT : COURS ➡️ MÉMO POINTS CLÉS ➡️ QUIZ ➡️ EXOS
+        // =========================================================================
         function construireHtmlContenuCours(data, lang) {
             if (!data) return "<p>Aucune donnée disponible.</p>";
 
+            // 1. Fiches de Cours Théorique
+            const slides = (data.bloc_cours && data.bloc_cours.slides) ? data.bloc_cours.slides : [];
+            const htmlCours = slides.map(s => {
+                let texte = s.contenu_fr || "";
+                if (lang === 'ko' && s.contenu_ko) texte = s.contenu_ko;
+                else if (lang === 'en' && s.contenu_en) texte = s.contenu_en;
+
+                return `
+                    <div style="border-bottom:1px solid #e2e8f0; padding-bottom:12px; margin-bottom:14px;">
+                        <h4 style="margin:0 0 6px 0; color:var(--accent); font-size:1.1em;">${s.titre || `Fiche ${s.numero}`}</h4>
+                        <p style="margin:0; white-space:pre-wrap; line-height:1.7;">${texte}</p>
+                    </div>
+                `;
+            }).join('') || "<p style='color:#64748b;'>Aucune fiche de cours.</p>";
+
+            // 2. Points Importants de la Leçon (Synthèse)
             const points = (data.points_importants && data.points_importants[lang]) ? data.points_importants[lang] : (data.points_importants ? (data.points_importants.fr || []) : []);
             const htmlPoints = points.map(pt => `<li>${pt}</li>`).join('');
 
+            // 3. Quiz Théorique Intermédiaire
             const questions = (data.quiz_theorique && data.quiz_theorique.questions) ? data.quiz_theorique.questions : [];
             let htmlQuiz = "";
             if (questions.length === 0) {
@@ -755,20 +773,7 @@
                 }).join('');
             }
 
-            const slides = (data.bloc_cours && data.bloc_cours.slides) ? data.bloc_cours.slides : [];
-            const htmlCours = slides.map(s => {
-                let texte = s.contenu_fr || "";
-                if (lang === 'ko' && s.contenu_ko) texte = s.contenu_ko;
-                else if (lang === 'en' && s.contenu_en) texte = s.contenu_en;
-
-                return `
-                    <div style="border-bottom:1px solid #e2e8f0; padding-bottom:12px; margin-bottom:14px;">
-                        <h4 style="margin:0 0 6px 0; color:var(--accent);">${s.titre || `Fiche ${s.numero}`}</h4>
-                        <p style="margin:0; white-space:pre-wrap; line-height:1.7;">${texte}</p>
-                    </div>
-                `;
-            }).join('') || "<p style='color:#64748b;'>Aucune fiche de cours.</p>";
-
+            // 4. Blocs d'Exercices Finaux
             const exos = data.blocs_exercices || [];
             const htmlExos = exos.map((b, bIdx) => `
                 <div style="background:white; border:1px solid #cbd5e0; border-radius:8px; padding:14px; margin-bottom:12px;">
@@ -780,25 +785,29 @@
             `).join('') || "<p style='color:#64748b;'>Aucun bloc d'exercices.</p>";
 
             return `
+                <!-- 1. EN PREMIER : LE COURS THÉORIQUE -->
+                <div class="apercu-section" style="border-left: 6px solid #8b5cf6;">
+                    <h3>📖 1. Fiches de Cours Théorique</h3>
+                    ${htmlCours}
+                </div>
+
+                <!-- 2. EN DEUXIÈME : LES POINTS CLÉS (SYNTHÈSE) -->
                 <div class="apercu-section" style="border-left: 6px solid #3b82f6;">
-                    <h3>💡 Points Importants de la Leçon</h3>
+                    <h3>💡 2. Points Importants de la Leçon (Synthèse)</h3>
                     <ul style="margin:6px 0 0 20px; line-height:1.8;">
                         ${htmlPoints}
                     </ul>
                 </div>
 
+                <!-- 3. EN TROISIÈME : LE QUIZ THÉORIQUE -->
                 <div class="apercu-section" style="border-left: 6px solid #10b981;">
-                    <h3>🧠 Quiz Théorique Intermédiaire (${questions.length} questions)</h3>
+                    <h3>🧠 3. Quiz Théorique Intermédiaire (${questions.length} questions)</h3>
                     ${htmlQuiz}
                 </div>
 
-                <div class="apercu-section" style="border-left: 6px solid #8b5cf6;">
-                    <h3>📖 Fiches de Cours Théorique</h3>
-                    ${htmlCours}
-                </div>
-
+                <!-- 4. EN DERNIER : LES EXERCICES D'APPLICATION -->
                 <div class="apercu-section" style="border-left: 6px solid #f59e0b;">
-                    <h3>✍️ Blocs d'Exercices Pratiques (${exos.length} blocs)</h3>
+                    <h3>✍️ 4. Blocs d'Exercices Pratiques (${exos.length} blocs)</h3>
                     ${htmlExos}
                 </div>
             `;
@@ -904,7 +913,7 @@
                         info = `${(d.phrases || []).length} phrases`;
                     } else {
                         badge = `<span class="badge-chapitre">📖 Cours + Quiz</span>`;
-                        info = `Points clés + Quiz + ${(d.blocs_exercices || []).length} blocs`;
+                        info = `Fiches + Quiz + ${(d.blocs_exercices || []).length} blocs`;
                         btnApercu = `<button type="button" class="btn btn-sm btn-purple" onclick="ouvrirApercuCoursDepuisBanque('${d.id}')">👁️ Aperçu complet</button>`;
                     }
 
@@ -1108,7 +1117,7 @@
         </div>
     </div>
 
-    <!-- ONGLET 4 : IMPORT PDF AVEC CHOIX DU MODÈLE (NANOGPT / GEMINI) -->
+    <!-- ONGLET 4 : IMPORT PDF -->
     <div id="tab-pdf" class="tab-pane" style="display:none;">
         <div class="card">
             <h2>📄 Importer un Cours & Exercices depuis un PDF</h2>
@@ -1121,16 +1130,16 @@
                 <div>
                     <label>Modèle IA pour l'analyse :</label>
                     <select id="select-ia-model">
-    <option value="qwen/qwen3-235b-a22b-thinking-2507" selected>🧠 Qwen 3 235B (Thinking)</option>
-    <option value="deepseek/deepseek-v4.1-flash:thinking">⚡ DeepSeek 4.1 Flash (Thinking)</option>
-    <option value="gemini-3.8-flash">🚀 Gemini 3.8 Flash (Google)</option>
-</select>
+                        <option value="deepseek/deepseek-v4.1-flash:thinking" selected>⚡ DeepSeek 4.1 Flash (Thinking - Recommandé)</option>
+                        <option value="qwen/qwen3-235b-a22b-thinking-2507">🧠 Qwen 3 235B (Thinking)</option>
+                        <option value="gemini-3.8-flash">🚀 Gemini 3.8 Flash (Google)</option>
+                    </select>
                 </div>
             </div>
 
             <div style="margin-top:10px;">
                 <label>Votre Clé API NanoGPT :</label>
-                <input type="password" id="nanogpt-key-input" placeholder="nano-... (Nécessaire si vous utilisez Qwen ou DeepSeek)">
+                <input type="password" id="nanogpt-key-input" placeholder="nano-... (Nécessaire si vous utilisez DeepSeek ou Qwen)">
             </div>
 
             <label style="margin-top:15px;">Fichier PDF du cours :</label>
@@ -1141,7 +1150,6 @@
             </div>
         </div>
 
-        <!-- ZONE APERÇU TRILINGUE + RETOUCHE IA DU COURS ANALYSÉ -->
         <div class="card" id="card-resultat-ia" style="display:none;">
             <h2>📖 Aperçu Trilingue & Retouche du Cours Généré</h2>
             

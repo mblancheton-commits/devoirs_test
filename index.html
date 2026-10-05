@@ -111,7 +111,7 @@
         .modal-content { background: white; padding: 25px 30px; border-radius: 14px; width: 90%; max-width: 500px; max-height: 85vh; overflow-y: auto; }
         .radio-option { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border: 1px solid #e2e8f0; border-radius: 8px; cursor: pointer; margin-bottom: 8px; }
 
-        /* 1. OVERLAY ROUGE TAQUIN (SI MODE DOUX INACTIF) */
+        /* OVERLAYS D'ERREUR */
         #punition-overlay { 
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; 
             background-color: rgba(231, 76, 60, 0.96); 
@@ -122,7 +122,6 @@
         #punition-text { font-family: 'Impact', 'Arial Black', sans-serif; color: #ffffff; font-size: 14vw; line-height: 1.1; text-align: center; }
         #punition-sub { color: #ffeaa7; font-size: 2.2vw; font-weight: bold; margin-top: 18px; text-transform: uppercase; text-align: center; }
 
-        /* 2. POPUP DOUX ET BIENVEILLANT (SI MODE DOUX ACTIF - PAS D'ÉCRAN ROUGE) */
         #soft-encouragement-toast {
             position: fixed;
             bottom: 30px;
@@ -191,7 +190,6 @@
         <h1 id="txt-welcome-heading">Bienvenue !</h1>
         <div class="welcome-user-box" id="bienvenue-nom-user">-</div>
         
-        <!-- OPTION BIENVEILLANTE (COCHÉE PAR DÉFAUT) -->
         <div class="soft-mode-card" onclick="toggleSoftMode()">
             <input type="checkbox" id="check-soft-mode" checked onclick="event.stopPropagation()">
             <label for="check-soft-mode" id="txt-soft-mode" style="cursor:pointer; font-weight:600; color:#1e40af;">
@@ -272,7 +270,7 @@
         </div>
     </div>
 
-    <!-- 5. VUE CHAPITRE PAR BLOCS (ORDRE STRICT : COURS ➡️ MÉMO ➡️ QUIZ ➡️ EXOS) -->
+    <!-- 5. VUE CHAPITRE PAR BLOCS (ORDRE STRICT : 1. COURS ➡️ 2. MÉMO ➡️ 3. QUIZ ➡️ 4. EXOS) -->
     <div id="vue-chapitre-blocs">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
             <button type="button" class="btn btn-secondary" onclick="retourTableauPrincipal()">← Retour aux devoirs</button>
@@ -292,12 +290,20 @@
             <div></div>
         </div>
 
-        <!-- ZONE 1 : COURS THÉORIQUE -->
+        <!-- ZONE 1 : LECTEUR DE COURS SLIDE PAR SLIDE -->
         <div id="chapitre-zone-cours" style="display:none;">
             <div class="cours-slide-container">
-                <div id="cours-slide-contenu" style="white-space:pre-wrap;"></div>
-                <div style="text-align:right; margin-top:20px;">
-                    <button type="button" class="btn btn-success" onclick="retourMenuBlocs()">✅ J'ai bien lu cette fiche</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:2px solid #f1f5f9; padding-bottom:14px; margin-bottom:20px;">
+                    <h3 id="cours-slide-titre" style="margin:0; color:#1e3a8a; font-size:1.3em;">-</h3>
+                    <span id="cours-slide-compteur" style="background:#eff6ff; color:#1d4ed8; padding:4px 12px; border-radius:20px; font-weight:bold; font-size:0.95em;">Fiche 1 / 1</span>
+                </div>
+                
+                <div id="cours-slide-contenu" style="white-space:pre-wrap; min-height:160px; font-size:1.1em; line-height:1.9;"></div>
+
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:30px; padding-top:20px; border-top:1px solid #e2e8f0; flex-wrap:wrap; gap:10px;">
+                    <button type="button" class="btn btn-secondary" id="btn-slide-prec" onclick="naviguerSlideCours(-1)">◀ Fiche précédente</button>
+                    <button type="button" class="btn btn-success" onclick="validerLectureCours()">✅ J'ai lu ce cours</button>
+                    <button type="button" class="btn btn-secondary" id="btn-slide-suiv" onclick="naviguerSlideCours(1)">Fiche suivante ▶</button>
                 </div>
             </div>
         </div>
@@ -366,17 +372,6 @@
     <span id="soft-toast-text">Ce n'est pas grave, continue !</span>
 </div>
 
-<!-- MODAL REVOIR LES FAUTES -->
-<div class="modal" id="modal-fautes-eleve">
-    <div class="modal-content">
-        <h2 id="modal-titre" style="margin-top:0; color:var(--primary);">Récapitulatif des erreurs</h2>
-        <div id="modal-liste-fautes"></div>
-        <div style="text-align:right; margin-top:20px;">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('modal-fautes-eleve').style.display='none'">Fermer</button>
-        </div>
-    </div>
-</div>
-
 <script>
     let db = null;
     try {
@@ -395,7 +390,6 @@
 
     const urlBackendRender = "https://das-plateforme.onrender.com";
 
-    // --- DICTIONNAIRE MULTILINGUE (i18n) ---
     const i18n = {
         fr: {
             select_lang: "Choisissez votre langue",
@@ -516,7 +510,6 @@
         }
     };
 
-    // --- LES 15 PHRASES BIENVEILLANTES EN 3 LANGUES (MODE DOUX) ---
     const encouragementsDoux = [
         { fr: "Ce n'est pas grave, tu apprends ! 🌱", en: "No worries, you're learning! 🌱", ko: "괜찮아요, 배우는 과정이에요! 🌱" },
         { fr: "Respire un grand coup et réessaie ! 💫", en: "Take a deep breath and try again! 💫", ko: "심호흡하고 다시 도전해보세요! 💫" },
@@ -535,7 +528,6 @@
         { fr: "Bravo pour ta persévérance aujourd'hui ! 👏", en: "Bravo for your perseverance today! 👏", ko: "오늘 노력하는 모습이 정말 멋집니다! 👏" }
     ];
 
-    // --- LES 15 TAQUINERIES (MODE NON DOUX) ---
     const insultesOriginales = [
         { kr: "메롱~ 😜", fr: "Nananère ! Raté !" },
         { kr: "바보야~ 🙃", fr: "Petit idiot mignon !" },
@@ -574,8 +566,6 @@
 
     let langueActuelle = localStorage.getItem("langEleve") || "";
     let codeEleveActuel = localStorage.getItem("codeEleve") || "";
-    
-    // SOIS DOUX AVEC MOI PAR DÉFAUT (true si non défini)
     let modeDouxActif = localStorage.getItem("modeDouxEleve") !== null ? (localStorage.getItem("modeDouxEleve") === "true") : true;
 
     let assignationsMap = {};
@@ -586,6 +576,9 @@
     let erreursInteractif = 0;
     let reponsesValideesInteractif = {};
     let fautesInteractif = [];
+
+    // GESTION LECTEUR DE DIAPOSITIVES COURS
+    let indexSlideCoursActif = 0;
 
     function t(cle) {
         const lang = langueActuelle || 'fr';
@@ -669,7 +662,6 @@
         document.getElementById('ecran-login').style.display = 'none';
         document.getElementById('bienvenue-nom-user').textContent = codeEleveActuel;
         
-        // Coché par défaut
         const check = document.getElementById('check-soft-mode');
         if (check) check.checked = modeDouxActif;
         
@@ -767,7 +759,7 @@
     }
 
     // =========================================================================
-    // MODULE CHAPITRE COMPLET : 1. COURS ➡️ 2. MÉMO ➡️ 3. QUIZ ➡️ 4. EXOS
+    // 5. MODULE CHAPITRE : 1. COURS ➡️ 2. MÉMO ➡️ 3. QUIZ ➡️ 4. EXOS
     // =========================================================================
     window.ouvrirMenuChapitreBlocs = function(id) {
         const d = assignationsMap[id];
@@ -781,13 +773,14 @@
         const conteneur = document.getElementById('chapitre-liste-blocs');
         conteneur.innerHTML = "";
 
-        // 1. EN PREMIER : FICHE DE COURS THÉORIQUE
+        // 1. EN PREMIER : FICHE DE COURS THÉORIQUE (SLIDE PAR SLIDE)
+        const slides = (d.bloc_cours && d.bloc_cours.slides) ? d.bloc_cours.slides : [];
         const cardCours = document.createElement('div');
         cardCours.className = "bloc-nav-card";
         cardCours.innerHTML = `
             <div>
                 <strong style="font-size:1.15em; color:var(--primary);">${t('moduleCours')}</strong>
-                <div style="color:#64748b; font-size:0.9em;">Explications théoriques détaillées et règles de grammaire</div>
+                <div style="color:#64748b; font-size:0.9em;">Explications théoriques détaillées (${slides.length} fiches)</div>
             </div>
             <button class="btn btn-purple" onclick="afficherBlocCours()">Lire le cours ▶</button>
         `;
@@ -841,6 +834,7 @@
         document.getElementById('vue-chapitre-blocs').style.display = 'block';
     };
 
+    // --- LECTEUR DE COURS SLIDE PAR SLIDE ---
     window.afficherBlocCours = function() {
         document.getElementById('vue-chapitre-blocs').style.display = 'none';
         document.getElementById('vue-contenu-bloc-chapitre').style.display = 'block';
@@ -850,25 +844,47 @@
 
         document.getElementById('chapitre-bloc-actif-titre').textContent = t('moduleCours');
 
-        const lang = (langueActuelle || 'fr').toLowerCase();
-        const slides = (assignationActive.bloc_cours && assignationActive.bloc_cours.slides) ? assignationActive.bloc_cours.slides : [];
-
-        const html = slides.map(s => {
-            let explication = s.contenu_fr || "";
-            if (lang === 'ko' && s.contenu_ko) explication = s.contenu_ko;
-            else if (lang === 'en' && s.contenu_en) explication = s.contenu_en;
-
-            return `
-                <div style="margin-bottom:25px; border-bottom:1px solid #e2e8f0; padding-bottom:15px;">
-                    <h3 style="color:var(--accent); margin-top:0;">${s.titre || `Fiche ${s.numero}`}</h3>
-                    <p style="line-height:1.8;">${explication}</p>
-                </div>
-            `;
-        }).join('');
-
-        document.getElementById('cours-slide-contenu').innerHTML = html || "<p>Aucune fiche disponible.</p>";
+        indexSlideCoursActif = 0;
+        afficherFicheCoursCourante();
     };
 
+    function afficherFicheCoursCourante() {
+        const slides = (assignationActive.bloc_cours && assignationActive.bloc_cours.slides) ? assignationActive.bloc_cours.slides : [];
+        if (slides.length === 0) {
+            document.getElementById('cours-slide-contenu').innerHTML = "<p>Aucune fiche disponible.</p>";
+            return;
+        }
+
+        if (indexSlideCoursActif < 0) indexSlideCoursActif = 0;
+        if (indexSlideCoursActif >= slides.length) indexSlideCoursActif = slides.length - 1;
+
+        const s = slides[indexSlideCoursActif];
+        const lang = (langueActuelle || 'fr').toLowerCase();
+
+        let texte = s.contenu_fr || "";
+        if (lang === 'ko' && s.contenu_ko) texte = s.contenu_ko;
+        else if (lang === 'en' && s.contenu_en) texte = s.contenu_en;
+
+        document.getElementById('cours-slide-titre').textContent = s.titre || `Fiche ${indexSlideCoursActif + 1}`;
+        document.getElementById('cours-slide-compteur').textContent = `Fiche ${indexSlideCoursActif + 1} / ${slides.length}`;
+        document.getElementById('cours-slide-contenu').textContent = texte;
+
+        // Mise à jour de l'état des boutons précédent / suivant
+        document.getElementById('btn-slide-prec').disabled = (indexSlideCoursActif === 0);
+        document.getElementById('btn-slide-suiv').disabled = (indexSlideCoursActif === slides.length - 1);
+    }
+
+    window.naviguerSlideCours = function(delta) {
+        indexSlideCoursActif += delta;
+        afficherFicheCoursCourante();
+    };
+
+    window.validerLectureCours = function() {
+        alert("✅ Cours validé !");
+        retourMenuBlocs();
+    };
+
+    // --- QUIZ THÉORIQUE INTERMÉDIAIRE ---
     window.afficherBlocQuizTheorique = function() {
         document.getElementById('vue-chapitre-blocs').style.display = 'none';
         document.getElementById('vue-contenu-bloc-chapitre').style.display = 'block';
@@ -936,6 +952,7 @@
         zoneExp.style.display = "block";
     };
 
+    // --- EXERCICES D'APPLICATION PRATIQUE ---
     window.afficherBlocExercice = function(blocIdx) {
         document.getElementById('vue-chapitre-blocs').style.display = 'none';
         document.getElementById('vue-contenu-bloc-chapitre').style.display = 'block';
@@ -1025,7 +1042,7 @@
     };
 
     // ==========================================
-    // EXERCICE INTERACTIF AVEC GESTION DES ERREURS
+    // EXERCICE INTERACTIF RAPIDE
     // ==========================================
     window.ouvrirDevoirInteractif = function(id) {
         const d = assignationsMap[id];
@@ -1129,16 +1146,14 @@
         }
     };
 
-    // GESTION DU TYPE D'ERREUR (DOUX OU TAQUIN)
     function declencherErreurNotification() {
         const lang = (langueActuelle || 'fr').toLowerCase();
 
-        // 1. SI MODE DOUX ACTIVÉ : TOAST BIENVEILLANT APPAISANT (AUCUN ÉCRAN ROUGE)
+        // 1. SI MODE DOUX ACTIVÉ : TOAST BIENVEILLANT SANS ÉCRAN ROUGE
         if (modeDouxActif) {
             const toast = document.getElementById('soft-encouragement-toast');
             const toastTxt = document.getElementById('soft-toast-text');
             
-            // Tirer au sort une phrase bienveillante dans la langue de l'élève
             const randItem = encouragementsDoux[Math.floor(Math.random() * encouragementsDoux.length)];
             toastTxt.textContent = randItem[lang] || randItem.fr;
 
